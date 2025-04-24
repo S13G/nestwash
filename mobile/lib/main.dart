@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/providers/global_provider.dart';
+import 'package:nestcare/providers/auth_provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'core/config/app_theme.dart';

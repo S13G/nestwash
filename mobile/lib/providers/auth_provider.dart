@@ -14,3 +14,5 @@ final loadingProvider = StateProvider<bool>((ref) => false);
 final pageIndexProvider = StateProvider<int>((ref) => 0);
 
 final passwordVisibilityProvider = StateProvider<bool>((ref) => false);
+
+final accountTypeProvider = StateProvider<String?>((ref) => null);

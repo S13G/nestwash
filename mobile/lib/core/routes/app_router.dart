@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/signup_screen.dart';
-import 'package:nestcare/features/general/presentation/home_screen.dart';
+import 'package:nestcare/features/general/presentation/bottom_nav_screen.dart';
 
 class AppRouter {
   final Ref ref;
@@ -17,9 +17,9 @@ class AppRouter {
         builder: (context, state) => const SignupScreen(),
       ),
       GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (context, state) => const HomeScreen(),
+        path: '/bottom_nav',
+        name: 'bottom_nav',
+        builder: (context, state) => const BottomNavScreen(),
       ),
     ],
   );

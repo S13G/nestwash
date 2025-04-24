@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/providers/global_provider.dart';
+import 'package:nestcare/providers/auth_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_form_fields.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
@@ -75,7 +75,7 @@ class SignupScreen extends ConsumerWidget {
       ref.read(loadingProvider.notifier).state = false;
 
       // Navigate to home screen
-      ref.read(routerProvider).goNamed("home");
+      ref.read(routerProvider).goNamed("bottom_nav");
     }
 
     void handleSubmit(
@@ -399,7 +399,7 @@ class SignupScreen extends ConsumerWidget {
                                 keyboardType: TextInputType.emailAddress,
                                 readOnly: true,
                                 decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.person),
+                                  prefixIcon: Icon(Icons.email),
                                   labelText: "Email address",
                                   labelStyle: theme.textTheme.bodyLarge
                                       ?.copyWith(color: Colors.grey),
@@ -485,6 +485,78 @@ class SignupScreen extends ConsumerWidget {
                                       theme.colorScheme.primaryContainer,
                                 ),
                               ),
+                              // Drop Down List
+                              DropdownButtonFormField<String>(
+                                value: ref.watch(accountTypeProvider),
+                                items: [
+                                  DropdownMenuItem(
+                                    value: "driver",
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.drive_eta),
+                                        SizedBox(width: 2.w),
+                                        Text("Driver"),
+                                      ],
+                                    ),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "customer",
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.person),
+                                        SizedBox(width: 2.w),
+                                        Text("Customer"),
+                                      ],
+                                    ),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "service_provider",
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.support_agent),
+                                        SizedBox(width: 2.w),
+                                        Text("Service Provider"),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  ref.read(accountTypeProvider.notifier).state =
+                                      value;
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please select an account type";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.category),
+                                  labelText: "Account Type",
+                                  labelStyle: theme.textTheme.bodyLarge
+                                      ?.copyWith(color: Colors.grey),
+                                  hintStyle: theme.textTheme.bodyLarge
+                                      ?.copyWith(color: Colors.grey),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 2.h,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: theme.colorScheme.primaryContainer,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: theme.colorScheme.primaryContainer,
+                                    ),
+                                  ),
+                                  focusColor:
+                                      theme.colorScheme.primaryContainer,
+                                ),
+                              ),
+                              SizedBox(height: 2.h),
                             ],
                             onSubmit: () {
                               handleRegisterSubmit(
