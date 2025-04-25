@@ -1,17 +1,25 @@
 import 'dart:ui';
 
-class ServiceItemModel {
-  final String title;
-  final String status;
-  final String imageName;
-  final List<String> items;
-  final Color backgroundColor;
+class ServiceModel {
+  final String? serviceTitle;
+  final String? serviceTitleImageName;
+  final String? itemCardImageName;
+  final List<ServiceItemModel>? items;
+  final String? status;
+  final Color? itemCardBackgroundColor;
 
-  ServiceItemModel({
-    required this.title,
-    required this.status,
-    required this.imageName,
-    required this.items,
-    required this.backgroundColor,
+  ServiceModel({
+    this.serviceTitle,
+    this.serviceTitleImageName,
+    this.itemCardImageName,
+    this.items,
+    this.status,
+    this.itemCardBackgroundColor,
   });
+}
+
+class ServiceItemModel {
+  final String item;
+
+  ServiceItemModel({required this.item});
 }

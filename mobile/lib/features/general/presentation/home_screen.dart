@@ -12,30 +12,30 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    final services = [
-      ServiceItemModel(
-        title: 'Wash & Iron',
+    final allActiveOrders = [
+      ServiceModel(
+        serviceTitle: 'Wash & Iron',
+        itemCardImageName: 'wash_and_iron',
         status: 'In Progress',
-        imageName: 'wash_and_iron',
+        itemCardBackgroundColor: theme.colorScheme.onPrimary,
         items: [
-          '1. jeans',
-          '2. Shorts with really long name',
-          '3. Abaya with too many characters',
-          '4. Shirt',
+          ServiceItemModel(item: '1. jeans'),
+          ServiceItemModel(item: '2. Shorts with really long name'),
+          ServiceItemModel(item: '3. wrappers'),
+          ServiceItemModel(item: '4. boxers'),
         ],
-        backgroundColor: theme.colorScheme.onPrimary,
       ),
-      ServiceItemModel(
-        title: 'Wash',
+      ServiceModel(
+        serviceTitle: 'Wash',
+        itemCardImageName: 'wash',
         status: 'Ready',
-        imageName: 'wash',
+        itemCardBackgroundColor: theme.colorScheme.primary,
         items: [
-          '1. jeans',
-          '2. Shorts with really long name',
-          '3. Abaya with too many characters',
-          '4. Shirt',
+          ServiceItemModel(item: '1. jeans'),
+          ServiceItemModel(item: '2. Shorts with really long name'),
+          ServiceItemModel(item: '3. wrappers'),
+          ServiceItemModel(item: '4. boxers'),
         ],
-        backgroundColor: theme.colorScheme.primary,
       ),
     ];
 
@@ -44,7 +44,7 @@ class HomeScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 6.h, left: 2.h),
+            padding: EdgeInsets.only(left: 2.h),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -67,7 +67,7 @@ class HomeScreen extends ConsumerWidget {
                       style: theme.textTheme.titleLarge?.copyWith(
                         color: Colors.white,
                         fontStyle: FontStyle.italic,
-                        fontSize: 4.5.h,
+                        fontSize: 4.h,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -181,9 +181,9 @@ class HomeScreen extends ConsumerWidget {
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: services.length,
+            itemCount: allActiveOrders.length,
             itemBuilder: (context, index) {
-              final service = services[index];
+              final service = allActiveOrders[index];
 
               return ServiceCard(service: service);
             },

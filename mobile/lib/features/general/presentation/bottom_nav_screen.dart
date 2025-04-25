@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/presentation/home_screen.dart';
+import 'package:nestcare/features/general/presentation/services_screen.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
@@ -16,14 +17,14 @@ class BottomNavScreen extends ConsumerWidget {
     final screens = [
       HomeScreen(),
       const Center(child: Text('Orders Screen')),
-      const Center(child: Text('Services Screen')),
+      ServicesScreen(),
       const Center(child: Text('Discounts Screen')),
     ];
 
     return NestScaffold(
       appBar: null,
       padding: EdgeInsets.only(top: 4.h, left: 4.h, right: 4.h),
-      body: screens[selectedIndex],
+      body: SafeArea(child: screens[selectedIndex]),
       bottomNavigationBar: NestCareBottomNavBar(),
     );
   }

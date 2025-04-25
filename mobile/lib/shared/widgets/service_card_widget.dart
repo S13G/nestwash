@@ -6,7 +6,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 class ServiceCard extends StatelessWidget {
   const ServiceCard({super.key, required this.service});
 
-  final ServiceItemModel service;
+  final ServiceModel service;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class ServiceCard extends StatelessWidget {
                 bottomLeft: Radius.circular(30),
               ),
               child: ImageWidget(
-                imageName: service.imageName,
+                imageName: service.itemCardImageName!,
                 height: 15.3.h,
                 width: 15.h,
                 fit: BoxFit.fill,
@@ -33,7 +33,7 @@ class ServiceCard extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(1.06.h),
                 decoration: BoxDecoration(
-                  color: service.backgroundColor,
+                  color: service.itemCardBackgroundColor,
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(30),
                     bottomRight: Radius.circular(30),
@@ -47,7 +47,7 @@ class ServiceCard extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.topRight,
                         child: Text(
-                          service.status,
+                          service.status!,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
@@ -57,7 +57,7 @@ class ServiceCard extends StatelessWidget {
                     ),
                     SizedBox(height: 1.h),
                     Text(
-                      service.title,
+                      service.serviceTitle!,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w900,
@@ -70,7 +70,7 @@ class ServiceCard extends StatelessWidget {
                       spacing: 2.w,
                       runSpacing: 1.h,
                       children:
-                          service.items.map((item) {
+                          service.items!.map((item) {
                             return SizedBox(
                               width:
                                   (MediaQuery.of(context).size.width -
@@ -78,7 +78,7 @@ class ServiceCard extends StatelessWidget {
                                       6.w) /
                                   3,
                               child: Text(
-                                item,
+                                item.item,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 style: const TextStyle(color: Colors.white),
