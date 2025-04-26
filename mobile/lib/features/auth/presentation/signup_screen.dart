@@ -220,6 +220,7 @@ class SignupScreen extends ConsumerWidget {
                               return null;
                             },
                             underlinedBorder: true,
+                            hintText: "Enter email address",
                             prefixIcon: Icon(Icons.email),
                           ),
                         ],
@@ -291,8 +292,9 @@ class SignupScreen extends ConsumerWidget {
                               }
                               return null;
                             },
-                            prefixIcon: Icon(Icons.lock),
                             underlinedBorder: true,
+                            hintText: "Enter code",
+                            prefixIcon: Icon(Icons.lock),
                           ),
                         ],
                         onSubmit: () {
@@ -329,32 +331,9 @@ class SignupScreen extends ConsumerWidget {
                                   }
                                   return null;
                                 },
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.person),
-                                  hintText: "Enter full name",
-                                  labelText: "Name",
-                                  labelStyle: theme.textTheme.bodyLarge
-                                      ?.copyWith(color: Colors.grey),
-                                  hintStyle: theme.textTheme.bodyLarge
-                                      ?.copyWith(color: Colors.grey),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 2.h,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: theme.colorScheme.primaryContainer,
-                                    ),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: theme.colorScheme.primaryContainer,
-                                    ),
-                                  ),
-                                  focusColor:
-                                      theme.colorScheme.primaryContainer,
-                                ),
+                                prefixIcon: Icon(Icons.person),
+                                hintText: "Enter full name",
+                                inFormLabelText: "Name",
                               ),
 
                               // Email
@@ -362,31 +341,8 @@ class SignupScreen extends ConsumerWidget {
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 readOnly: true,
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.email),
-                                  labelText: "Email address",
-                                  labelStyle: theme.textTheme.bodyLarge
-                                      ?.copyWith(color: Colors.grey),
-                                  hintStyle: theme.textTheme.bodyLarge
-                                      ?.copyWith(color: Colors.grey),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 2.h,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: theme.colorScheme.primaryContainer,
-                                    ),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: theme.colorScheme.primaryContainer,
-                                    ),
-                                  ),
-                                  focusColor:
-                                      theme.colorScheme.primaryContainer,
-                                ),
+                                prefixIcon: Icon(Icons.email),
+                                inFormLabelText: "Email",
                               ),
 
                               // Password
@@ -403,46 +359,23 @@ class SignupScreen extends ConsumerWidget {
                                   }
                                   return null;
                                 },
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.password),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      obscureText
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: Colors.black,
-                                    ),
-                                    onPressed: () {
-                                      ref
-                                          .read(
-                                            passwordVisibilityProvider.notifier,
-                                          )
-                                          .state = !obscureText;
-                                    },
+                                inFormLabelText: "Password",
+                                hintText: "Password",
+                                prefixIcon: Icon(Icons.password),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    obscureText
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Colors.black,
                                   ),
-                                  hintText: "Enter a password",
-                                  labelText: "Password",
-                                  labelStyle: theme.textTheme.bodyLarge
-                                      ?.copyWith(color: Colors.grey),
-                                  hintStyle: theme.textTheme.bodyLarge
-                                      ?.copyWith(color: Colors.grey),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 2.h,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: theme.colorScheme.primaryContainer,
-                                    ),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: theme.colorScheme.primaryContainer,
-                                    ),
-                                  ),
-                                  focusColor:
-                                      theme.colorScheme.primaryContainer,
+                                  onPressed: () {
+                                    ref
+                                        .read(
+                                          passwordVisibilityProvider.notifier,
+                                        )
+                                        .state = !obscureText;
+                                  },
                                 ),
                               ),
                               // Drop Down List
@@ -490,6 +423,7 @@ class SignupScreen extends ConsumerWidget {
                                   }
                                   return null;
                                 },
+
                                 decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.category),
                                   labelText: "Account Type",
@@ -572,55 +506,23 @@ class SignupScreen extends ConsumerWidget {
                         isLoading: isLoading,
                         fields: [
                           // Email
-                          NestFormField(
-                            controller: emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email address';
-                              }
-                              if (!value.contains('@')) {
-                                return 'Invalid email address';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.person),
-                              labelText: "Email address",
-                              labelStyle: theme.textTheme.bodyLarge?.copyWith(
-                                color: Colors.grey,
-                              ),
-                              hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                                color: Colors.grey,
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 2.h,
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                              focusColor: theme.colorScheme.primaryContainer,
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 2.h),
+                            child: NestFormField(
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your email address';
+                                }
+                                if (!value.contains('@')) {
+                                  return 'Invalid email address';
+                                }
+                                return null;
+                              },
+                              prefixIcon: Icon(Icons.email),
+                              inFormLabelText: "Email address",
+                              hintText: "Enter email address",
                             ),
                           ),
 
@@ -629,64 +531,27 @@ class SignupScreen extends ConsumerWidget {
                             controller: passwordController,
                             keyboardType: TextInputType.text,
                             obscureText: obscureText,
-                            belowSpacing: false,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a password';
                               }
                               return null;
                             },
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.password),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: Colors.black,
-                                ),
-                                onPressed: () {
-                                  ref
-                                      .read(passwordVisibilityProvider.notifier)
-                                      .state = !obscureText;
-                                },
+                            inFormLabelText: "Password",
+                            hintText: "Password",
+                            prefixIcon: Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Colors.black,
                               ),
-                              hintText: "Enter password",
-                              labelText: "Password",
-                              labelStyle: theme.textTheme.bodyLarge?.copyWith(
-                                color: Colors.grey,
-                              ),
-                              hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                                color: Colors.grey,
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 2.h,
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                              focusColor: theme.colorScheme.primaryContainer,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
+                              onPressed: () {
+                                ref
+                                    .read(passwordVisibilityProvider.notifier)
+                                    .state = !obscureText;
+                              },
                             ),
                           ),
                           Align(

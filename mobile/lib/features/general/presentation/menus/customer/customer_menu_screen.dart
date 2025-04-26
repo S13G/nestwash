@@ -40,13 +40,21 @@ class CustomerMenuScreen extends ConsumerWidget {
                   MenuItemWidget(
                     title: 'addresses',
                     iconName: 'addresses_icon',
+                    onTap:
+                        () => ref
+                            .read(routerProvider)
+                            .pushNamed("customer_addresses"),
                   ),
                   MenuItemWidget(
                     title: 'invite friends',
                     iconName: 'invite_icon',
                   ),
                   MenuSubtitleWidget(title: 'help center'),
-                  MenuItemWidget(title: 'support', iconName: 'support_icon'),
+                  MenuItemWidget(
+                    title: 'support',
+                    iconName: 'support_icon',
+                    onTap: () => ref.read(routerProvider).pushNamed("support"),
+                  ),
                   MenuItemWidget(
                     title: 'terms of service',
                     iconName: 'terms_icon',

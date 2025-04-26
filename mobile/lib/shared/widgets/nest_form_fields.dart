@@ -63,113 +63,112 @@ class NestForm extends StatelessWidget {
 }
 
 class NestFormField extends StatelessWidget {
+  final TextEditingController? controller;
   final String? label;
   final String? hintText;
-  final TextEditingController controller;
+  final String? inFormLabelText;
+  final bool? obscureText;
   final String? Function(String?)? validator;
-  final TextInputType keyboardType;
-  final bool obscureText;
-  final bool readOnly;
+  final TextInputType? keyboardType;
+  final bool enabled;
   final InputDecoration? decoration;
-  final Function(String)? onChanged;
-  final bool belowSpacing;
   final bool underlinedBorder;
+  final int? maxLines;
   final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool readOnly;
+  final bool belowSpacing;
+  final EdgeInsetsGeometry? contentPadding;
 
   const NestFormField({
     super.key,
+    this.controller,
     this.label,
-    required this.controller,
-    this.readOnly = false,
-    this.validator,
     this.hintText,
-    this.keyboardType = TextInputType.text,
-    this.obscureText = false,
+    this.inFormLabelText,
+    this.obscureText,
+    this.validator,
+    this.keyboardType,
+    this.enabled = true,
     this.decoration,
-    this.onChanged,
-    this.belowSpacing = true,
     this.underlinedBorder = false,
+    this.maxLines,
     this.prefixIcon,
+    this.suffixIcon,
+    this.readOnly = false,
+    this.belowSpacing = true,
+    this.contentPadding,
   });
+
+  InputBorder _buildBorder(BuildContext context) {
+    final theme = Theme.of(context);
+    if (underlinedBorder) {
+      return UnderlineInputBorder(
+        borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
+      );
+    } else {
+      return OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    EdgeInsetsGeometry finalContentPadding;
+
+    if (contentPadding != null) {
+      finalContentPadding = contentPadding!;
+    } else if (underlinedBorder) {
+      finalContentPadding = EdgeInsets.symmetric(
+        horizontal: 4.w,
+        vertical: 2.h,
+      );
+    } else {
+      finalContentPadding = EdgeInsets.symmetric(vertical: 2.h);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        label == null
-            ? SizedBox.shrink()
-            : Text(
-              label!,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-            ),
-        SizedBox(height: 1.h),
+        if (label != null) ...[
+          Text(
+            label!,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          SizedBox(height: 1.h),
+        ],
         TextFormField(
           controller: controller,
-          keyboardType: keyboardType,
-          obscureText: obscureText,
+          obscureText: obscureText ?? false,
           validator: validator,
+          keyboardType: keyboardType,
+          enabled: enabled,
+          maxLines: maxLines ?? 1,
           readOnly: readOnly,
-          onChanged: onChanged,
-          decoration: decoration ?? _buildInputDecoration(theme),
+          decoration:
+              decoration ??
+              InputDecoration(
+                errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+                hintText: hintText,
+                hintStyle: TextStyle(color: theme.colorScheme.primaryContainer),
+                labelText: inFormLabelText,
+                labelStyle: TextStyle(
+                  color: theme.colorScheme.primaryContainer,
+                ),
+                contentPadding: finalContentPadding,
+                prefixIcon: prefixIcon,
+                suffixIcon: suffixIcon,
+                enabledBorder: _buildBorder(context),
+                focusedBorder: _buildBorder(context),
+                border: _buildBorder(context),
+              ),
         ),
-        belowSpacing ? SizedBox(height: 2.h) : SizedBox.shrink(),
+        belowSpacing ? SizedBox(height: 2.h) : const SizedBox.shrink(),
       ],
     );
-  }
-
-  InputDecoration _buildInputDecoration(ThemeData theme) {
-    final baseDecoration = InputDecoration(
-      errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
-      hintText: hintText,
-      // <-- use class field, not passed hintText
-      prefixIcon: prefixIcon,
-      hintStyle: theme.textTheme.bodyLarge?.copyWith(
-        color: theme.colorScheme.primaryContainer,
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-    );
-
-    if (underlinedBorder) {
-      return baseDecoration.copyWith(
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
-        ),
-        errorBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.red),
-        ),
-      );
-    } else {
-      return baseDecoration.copyWith(
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.red),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
-        ),
-      );
-    }
   }
 }

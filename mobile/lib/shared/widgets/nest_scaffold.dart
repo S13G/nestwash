@@ -30,6 +30,7 @@ class NestScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: backgroundColor ?? theme.colorScheme.surface,
       appBar:
           appBar ??
