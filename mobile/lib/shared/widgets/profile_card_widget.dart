@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/providers/profile_card_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
+import 'package:nestcare/shared/widgets/profile_card_search_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ProfileCardWidget extends ConsumerWidget {
-  const ProfileCardWidget({
-    super.key,
-    required this.theme,
-    required this.formKey,
-    required this.searchController,
-    required this.searchFocusNode,
-  });
+  const ProfileCardWidget({super.key, required this.theme});
 
   final ThemeData theme;
-  final GlobalKey<FormState> formKey;
-  final TextEditingController searchController;
-  final FocusNode searchFocusNode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,33 +58,7 @@ class ProfileCardWidget extends ConsumerWidget {
             ],
           ),
           SizedBox(height: 2.h),
-          Row(
-            children: [
-              ImageWidget(imageName: 'search', width: 3.h, height: 3.h),
-              SizedBox(width: 2.w),
-              Expanded(
-                child: Form(
-                  key: formKey,
-                  child: TextFormField(
-                    controller: searchController,
-                    focusNode: searchFocusNode,
-                    onChanged: (value) {
-                      ref.read(searchTextProvider.notifier).state =
-                          value.trim();
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                      hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.primaryContainer,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          ProfileCardSearchWidget(theme: theme),
         ],
       ),
     );

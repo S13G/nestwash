@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/features/general/model/service_model.dart';
+import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/service_card_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -11,33 +11,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-
-    final allActiveOrders = [
-      ServiceModel(
-        serviceTitle: 'Wash & Iron',
-        itemCardImageName: 'wash_and_iron',
-        status: 'In Progress',
-        itemCardBackgroundColor: theme.colorScheme.onPrimary,
-        items: [
-          ServiceItemModel(item: '1. jeans'),
-          ServiceItemModel(item: '2. Shorts with really long name'),
-          ServiceItemModel(item: '3. wrappers'),
-          ServiceItemModel(item: '4. boxers'),
-        ],
-      ),
-      ServiceModel(
-        serviceTitle: 'Wash',
-        itemCardImageName: 'wash',
-        status: 'Ready',
-        itemCardBackgroundColor: theme.colorScheme.primary,
-        items: [
-          ServiceItemModel(item: '1. jeans'),
-          ServiceItemModel(item: '2. Shorts with really long name'),
-          ServiceItemModel(item: '3. wrappers'),
-          ServiceItemModel(item: '4. boxers'),
-        ],
-      ),
-    ];
+    final allActiveOrders = ref.watch(allActiveOrdersProvider);
 
     return SingleChildScrollView(
       child: Column(

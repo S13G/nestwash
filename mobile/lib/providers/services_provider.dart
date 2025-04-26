@@ -1,5 +1,7 @@
+import 'dart:ui';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/features/general/model/service_model.dart';
+import 'package:nestcare/features/general/services/model/service_model.dart';
 import 'package:nestcare/providers/profile_card_provider.dart';
 
 final allServicesProvider = StateProvider<List<ServiceModel>>((ref) {
@@ -24,6 +26,35 @@ final allServicesProvider = StateProvider<List<ServiceModel>>((ref) {
     ServiceModel(
       serviceTitle: 'Home Care',
       serviceTitleImageName: 'home_care_icon',
+    ),
+  ];
+});
+
+final allActiveOrdersProvider = StateProvider<List<ServiceModel>>((ref) {
+  return [
+    ServiceModel(
+      serviceTitle: 'Wash & Iron',
+      itemCardImageName: 'wash_and_iron',
+      status: 'In Progress',
+      itemCardBackgroundColor: Color(0xFF8FD7C7),
+      items: [
+        ServiceItemModel(item: '1. jeans'),
+        ServiceItemModel(item: '2. Shorts with really long name'),
+        ServiceItemModel(item: '3. wrappers'),
+        ServiceItemModel(item: '4. boxers'),
+      ],
+    ),
+    ServiceModel(
+      serviceTitle: 'Wash',
+      itemCardImageName: 'wash',
+      status: 'Ready',
+      itemCardBackgroundColor: Color(0xFF5597FF),
+      items: [
+        ServiceItemModel(item: '1. jeans'),
+        ServiceItemModel(item: '2. Shorts with really long name'),
+        ServiceItemModel(item: '3. wrappers'),
+        ServiceItemModel(item: '4. boxers'),
+      ],
     ),
   ];
 });

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nestcare/features/general/model/service_model.dart';
+import 'package:nestcare/features/general/services/model/service_model.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 

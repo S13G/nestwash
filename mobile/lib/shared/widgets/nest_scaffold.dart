@@ -9,6 +9,7 @@ class NestScaffold extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final EdgeInsetsGeometry? padding;
+  final Color? backgroundColor;
 
   const NestScaffold({
     super.key,
@@ -19,13 +20,14 @@ class NestScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.padding,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: backgroundColor ?? theme.colorScheme.surface,
       appBar:
           appBar ??
           (title != null
