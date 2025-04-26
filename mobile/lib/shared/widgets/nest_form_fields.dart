@@ -73,6 +73,8 @@ class NestFormField extends StatelessWidget {
   final InputDecoration? decoration;
   final Function(String)? onChanged;
   final bool belowSpacing;
+  final bool underlinedBorder;
+  final Widget? prefixIcon;
 
   const NestFormField({
     super.key,
@@ -86,10 +88,14 @@ class NestFormField extends StatelessWidget {
     this.decoration,
     this.onChanged,
     this.belowSpacing = true,
+    this.underlinedBorder = false,
+    this.prefixIcon,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -107,22 +113,63 @@ class NestFormField extends StatelessWidget {
           validator: validator,
           readOnly: readOnly,
           onChanged: onChanged,
-          decoration:
-              decoration ??
-              InputDecoration(
-                errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
-                hintText: hintText,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 4.w,
-                  vertical: 2.h,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+          decoration: decoration ?? _buildInputDecoration(theme),
         ),
         belowSpacing ? SizedBox(height: 2.h) : SizedBox.shrink(),
       ],
     );
+  }
+
+  InputDecoration _buildInputDecoration(ThemeData theme) {
+    final baseDecoration = InputDecoration(
+      errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+      hintText: hintText,
+      // <-- use class field, not passed hintText
+      prefixIcon: prefixIcon,
+      hintStyle: theme.textTheme.bodyLarge?.copyWith(
+        color: theme.colorScheme.primaryContainer,
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+    );
+
+    if (underlinedBorder) {
+      return baseDecoration.copyWith(
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
+        ),
+        errorBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.red),
+        ),
+      );
+    } else {
+      return baseDecoration.copyWith(
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.red),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
+        ),
+      );
+    }
   }
 }

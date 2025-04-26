@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
+import 'package:nestcare/shared/widgets/menu_options_widget.dart';
 import 'package:nestcare/shared/widgets/service_card_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -48,11 +50,7 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
                 SizedBox(width: 14.w),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: null,
-                  icon: Icon(Icons.more_vert, color: Colors.white, size: 5.h),
-                ),
+                MenuOptionsWidget(),
               ],
             ),
           ),
@@ -67,7 +65,11 @@ class HomeScreen extends ConsumerWidget {
                   children: [
                     Text('Offers/Discounts', style: theme.textTheme.bodyLarge),
                     TextButton(
-                      onPressed: null,
+                      onPressed:
+                          () =>
+                              ref
+                                  .read(bottomNavigationProvider.notifier)
+                                  .state = 3,
                       child: Text(
                         'See all',
                         style: theme.textTheme.bodyLarge?.copyWith(
@@ -140,7 +142,9 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Text('Active Orders', style: theme.textTheme.bodyLarge),
                 TextButton(
-                  onPressed: null,
+                  onPressed:
+                      () =>
+                          ref.read(bottomNavigationProvider.notifier).state = 1,
                   child: Text(
                     'See all',
                     style: theme.textTheme.bodyLarge?.copyWith(

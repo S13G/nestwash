@@ -16,7 +16,7 @@ class ProfileCardSearchWidget extends ConsumerWidget {
 
     return Row(
       children: [
-        ImageWidget(imageName: 'search', width: 3.h, height: 3.h),
+        IconImageWidget(iconName: 'search', width: 3.h, height: 3.h),
         SizedBox(width: 2.w),
         Expanded(
           child: TextFormField(

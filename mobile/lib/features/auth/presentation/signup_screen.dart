@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/providers/auth_provider.dart';
+import 'package:nestcare/providers/home_provider.dart';
+import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_form_fields.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
@@ -12,26 +15,28 @@ class SignupScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final pageController = PageController();
-    final currentPage = ref.watch(pageIndexProvider);
+    // Get the initial page from router extra or default to 0
+    final Object? extra = GoRouterState.of(context).extra;
+    final initialPage = extra is int ? extra : 0;
 
-    final TextEditingController emailController = TextEditingController(
-      text: ref.read(emailProvider),
-    );
-    final TextEditingController otpController = TextEditingController(
-      text: ref.read(otpProvider),
-    );
-    final TextEditingController passwordController = TextEditingController(
-      text: ref.read(passwordProvider),
-    );
-    final TextEditingController fullNameController = TextEditingController(
-      text: ref.read(fullNameProvider),
-    );
+    final pageController = PageController(initialPage: initialPage);
+    // Initialize the currentPage provider with initialPage
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(pageIndexProvider.notifier).state = initialPage;
+    });
+
+    final currentPage = ref.watch(pageIndexProvider);
 
     final GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
     final GlobalKey<FormState> otpFormKey = GlobalKey<FormState>();
     final GlobalKey<FormState> accountFormKey = GlobalKey<FormState>();
     final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+
+    final emailController = ref.watch(emailControllerProvider);
+    final fullNameController = ref.watch(fullNameControllerProvider);
+    final passwordController = ref.watch(passwordControllerProvider);
+    final accountType = ref.watch(accountTypeProvider);
+    final otpController = ref.watch(otpControllerProvider);
 
     // Get current loading state
     final isLoading = ref.watch(loadingProvider);
@@ -48,10 +53,9 @@ class SignupScreen extends ConsumerWidget {
     ) {
       if (!accountFormKey.currentState!.validate()) return;
       ref.read(loadingProvider.notifier).state = true;
-
-      ref.read(fullNameProvider.notifier).state = fullNameController.text;
-      ref.read(emailProvider.notifier).state = emailController.text;
-      ref.read(passwordProvider.notifier).state = passwordController.text;
+      ref
+          .read(userProvider.notifier)
+          .setUser(emailController.text, fullNameController.text, accountType);
       ref.read(loadingProvider.notifier).state = false;
 
       // Navigate to Login Screen
@@ -70,8 +74,9 @@ class SignupScreen extends ConsumerWidget {
     ) {
       if (!loginFormKey.currentState!.validate()) return;
       ref.read(loadingProvider.notifier).state = true;
-      ref.read(emailProvider.notifier).state = emailController.text;
-      ref.read(passwordProvider.notifier).state = passwordController.text;
+      ref
+          .read(userProvider.notifier)
+          .setUser(emailController.text, fullNameController.text, null);
       ref.read(loadingProvider.notifier).state = false;
 
       // Navigate to home screen
@@ -103,7 +108,6 @@ class SignupScreen extends ConsumerWidget {
     ) {
       if (!otpFormKey.currentState!.validate()) return;
       ref.read(loadingProvider.notifier).state = true;
-      ref.read(otpProvider.notifier).state = otpController.text;
       ref.read(loadingProvider.notifier).state = false;
 
       pageController.nextPage(
@@ -215,26 +219,8 @@ class SignupScreen extends ConsumerWidget {
                               }
                               return null;
                             },
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.email),
-                              hintText: "Enter your email address",
-                              hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                                color: Colors.grey,
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 2.h,
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                            ),
+                            underlinedBorder: true,
+                            prefixIcon: Icon(Icons.email),
                           ),
                         ],
                         onSubmit: () {
@@ -305,26 +291,8 @@ class SignupScreen extends ConsumerWidget {
                               }
                               return null;
                             },
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.lock),
-                              hintText: "Enter code",
-                              hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                                color: Colors.grey,
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 2.h,
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: theme.colorScheme.primaryContainer,
-                                ),
-                              ),
-                            ),
+                            prefixIcon: Icon(Icons.lock),
+                            underlinedBorder: true,
                           ),
                         ],
                         onSubmit: () {
@@ -360,10 +328,6 @@ class SignupScreen extends ConsumerWidget {
                                     return 'Please enter your full name';
                                   }
                                   return null;
-                                },
-                                onChanged: (value) {
-                                  ref.read(fullNameProvider.notifier).state =
-                                      value;
                                 },
                                 decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.person),
@@ -438,10 +402,6 @@ class SignupScreen extends ConsumerWidget {
                                     return 'Password should not be less than 6 characters';
                                   }
                                   return null;
-                                },
-                                onChanged: (value) {
-                                  ref.read(passwordProvider.notifier).state =
-                                      value;
                                 },
                                 decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.password),
@@ -675,9 +635,6 @@ class SignupScreen extends ConsumerWidget {
                                 return 'Please enter a password';
                               }
                               return null;
-                            },
-                            onChanged: (value) {
-                              ref.read(passwordProvider.notifier).state = value;
                             },
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.password),

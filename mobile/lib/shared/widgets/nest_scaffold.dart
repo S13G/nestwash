@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class NestScaffold extends StatelessWidget {
@@ -10,6 +11,7 @@ class NestScaffold extends StatelessWidget {
   final Widget? floatingActionButton;
   final EdgeInsetsGeometry? padding;
   final Color? backgroundColor;
+  final bool showBackButton;
 
   const NestScaffold({
     super.key,
@@ -21,6 +23,7 @@ class NestScaffold extends StatelessWidget {
     this.floatingActionButton,
     this.padding,
     this.backgroundColor,
+    this.showBackButton = false,
   });
 
   @override
@@ -31,7 +34,19 @@ class NestScaffold extends StatelessWidget {
       appBar:
           appBar ??
           (title != null
-              ? AppBar(title: Text(title!), actions: actions)
+              ? AppBar(
+                leading:
+                    showBackButton
+                        ? IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            GoRouter.of(context).pop();
+                          },
+                        )
+                        : null,
+                title: Text(title![0].toUpperCase() + title!.substring(1)),
+                actions: actions,
+              )
               : null),
       body:
           padding == EdgeInsets.zero

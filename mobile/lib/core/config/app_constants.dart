@@ -4,6 +4,6 @@ class AppConstant {
   }
 
   String getIconPath(String iconName) {
-    return "assets/icons/$iconName.svg";
+    return "assets/images/icons/$iconName.png";
   }
 }

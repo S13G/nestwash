@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
+import 'package:nestcare/shared/widgets/menu_options_widget.dart';
 import 'package:nestcare/shared/widgets/profile_card_search_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ProfileCardWidget extends ConsumerWidget {
-  const ProfileCardWidget({super.key, required this.theme});
+  const ProfileCardWidget({super.key, required this.theme, this.search = true});
 
   final ThemeData theme;
+  final bool search;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,15 +52,11 @@ class ProfileCardWidget extends ConsumerWidget {
                 ],
               ),
               SizedBox(width: 12.w),
-              IconButton(
-                padding: EdgeInsets.zero,
-                onPressed: null,
-                icon: Icon(Icons.more_vert, color: Colors.white, size: 4.h),
-              ),
+              MenuOptionsWidget(),
             ],
           ),
           SizedBox(height: 2.h),
-          ProfileCardSearchWidget(theme: theme),
+          search ? ProfileCardSearchWidget(theme: theme) : SizedBox.shrink(),
         ],
       ),
     );

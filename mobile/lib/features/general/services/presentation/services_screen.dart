@@ -53,8 +53,8 @@ class ServicesScreen extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ImageWidget(
-                        imageName: services[index].serviceTitleImageName!,
+                      IconImageWidget(
+                        iconName: services[index].serviceTitleImageName!,
                         height: 9.h,
                         width: 9.h,
                       ),

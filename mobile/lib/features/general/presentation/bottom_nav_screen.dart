@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/orders/presentation/orders_screen.dart';
+import 'package:nestcare/features/general/presentation/discounts_screen.dart';
 import 'package:nestcare/features/general/presentation/home_screen.dart';
 import 'package:nestcare/features/general/services/presentation/services_screen.dart';
 import 'package:nestcare/providers/home_provider.dart';
@@ -19,7 +20,7 @@ class BottomNavScreen extends ConsumerWidget {
       HomeScreen(),
       OrdersScreen(),
       ServicesScreen(),
-      const Center(child: Text('Discounts Screen')),
+      DiscountsScreen(),
     ];
 
     return NestScaffold(
@@ -59,7 +60,11 @@ class NestCareBottomNavBar extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ImageWidget(imageName: icons[index], width: 4.h, height: 4.h),
+                  IconImageWidget(
+                    iconName: icons[index],
+                    width: 4.h,
+                    height: 4.h,
+                  ),
                   SizedBox(height: 0.8.h),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
