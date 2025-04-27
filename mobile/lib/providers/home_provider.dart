@@ -7,6 +7,7 @@ import 'package:nestcare/providers/user_provider.dart';
 final bottomNavigationProvider = StateProvider<int>((ref) => 0);
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref).router);
+final selectedServiceTitleProvider = StateProvider<String?>((ref) => null);
 
 final clearAllProviders = Provider((ref) {
   return () {

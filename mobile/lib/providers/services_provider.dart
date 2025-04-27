@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/services/model/service_model.dart';
 import 'package:nestcare/providers/profile_card_provider.dart';
@@ -69,3 +68,69 @@ final filteredServiceProvider = StateProvider<List<ServiceModel>>((ref) {
     return service.serviceTitle!.toLowerCase().contains(search);
   }).toList();
 });
+
+final searchSpecificServiceProviderTextProvider = StateProvider<String>(
+  (ref) => '',
+);
+
+final searchSpecificServiceProviderControllerProvider =
+    Provider.autoDispose<TextEditingController>((ref) {
+      final controller = TextEditingController();
+
+      void listener() {
+        ref.read(searchSpecificServiceProviderTextProvider.notifier).state =
+            controller.text.trim();
+      }
+
+      controller.addListener(listener);
+
+      ref.onDispose(() {
+        controller.removeListener(listener);
+        controller.dispose();
+      });
+
+      return controller;
+    });
+
+final allSpecificCareServiceProviders =
+    StateProvider<List<Map<String, String>>>((ref) {
+      return [
+        {
+          "name": "Lily Wilson",
+          "profile_image": "lily_profile_pic",
+          "rating": "4.5",
+        },
+        {
+          "name": "Emily Johnson",
+          "profile_image": "lily_profile_pic",
+          "rating": "4.2",
+        },
+        {
+          "name": "David Brown",
+          "profile_image": "lily_profile_pic",
+          "rating": "4.8",
+        },
+        {
+          "name": "Sophia Davis",
+          "profile_image": "lily_profile_pic",
+          "rating": "4.6",
+        },
+        {
+          "name": "Oliver Wilson",
+          "profile_image": "lily_profile_pic",
+          "rating": "4.3",
+        },
+      ];
+    });
+
+final filteredSpecificCareServiceProviders =
+    StateProvider<List<Map<String, String>>>((ref) {
+      final search =
+          ref.watch(searchSpecificServiceProviderTextProvider).toLowerCase();
+      final allProviders = ref.watch(allSpecificCareServiceProviders);
+
+      if (search.isEmpty) return allProviders;
+      return allProviders.where((service) {
+        return service["name"]!.toLowerCase().contains(search);
+      }).toList();
+    });

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/general/widgets/address_card_widget.dart';
+import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/user_provider.dart';
-import 'package:nestcare/shared/widgets/address_card_widget.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -36,7 +37,9 @@ class CustomerAddressScreen extends ConsumerWidget {
               },
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                ref.read(routerProvider).pushNamed("edit_address");
+              },
               style: TextButton.styleFrom(padding: EdgeInsets.zero),
               child: Text(
                 "+ Add new address",

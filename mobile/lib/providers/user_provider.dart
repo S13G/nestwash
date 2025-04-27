@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/data/user_model.dart';
 
@@ -33,10 +34,18 @@ final dummyAddressDataProvider = StateProvider<List<Map<String, String>>>((
   ];
 });
 
-final addressProvider = StateNotifierProvider<AddressNotifier, List<String>>((
+final streetControllerProvider = Provider.autoDispose<TextEditingController>((
   ref,
 ) {
-  return AddressNotifier([]);
+  final controller = TextEditingController();
+  return controller;
+});
+
+final cityControllerProvider = Provider.autoDispose<TextEditingController>((
+  ref,
+) {
+  final controller = TextEditingController();
+  return controller;
 });
 
 class AddressNotifier extends StateNotifier<List<String>> {
@@ -52,3 +61,10 @@ class AddressNotifier extends StateNotifier<List<String>> {
     state = state.where((item) => item != address).toList();
   }
 }
+
+final addressControllerProvider = Provider.autoDispose<TextEditingController>((
+  ref,
+) {
+  final controller = TextEditingController();
+  return controller;
+});

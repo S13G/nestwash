@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/general/widgets/profile_card_widget.dart';
+import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
-import 'package:nestcare/shared/widgets/profile_card_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ServicesScreen extends ConsumerWidget {
@@ -11,7 +12,6 @@ class ServicesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     final services = ref.watch(filteredServiceProvider);
 
@@ -43,29 +43,36 @@ class ServicesScreen extends ConsumerWidget {
               ),
               itemCount: services.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  key: ValueKey(services.length),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: theme.colorScheme.onPrimary,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconImageWidget(
-                        iconName: services[index].serviceTitleImageName!,
-                        height: 9.h,
-                        width: 9.h,
-                      ),
-                      Text(
-                        services[index].serviceTitle!,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
+                return GestureDetector(
+                  onTap: () {
+                    ref.read(selectedServiceTitleProvider.notifier).state =
+                        services[index].serviceTitle!;
+                    ref.read(routerProvider).pushNamed("service_providers");
+                  },
+                  child: Container(
+                    key: ValueKey(services.length),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconImageWidget(
+                          iconName: services[index].serviceTitleImageName!,
+                          height: 9.h,
+                          width: 9.h,
                         ),
-                      ),
-                    ],
+                        Text(
+                          services[index].serviceTitle!,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

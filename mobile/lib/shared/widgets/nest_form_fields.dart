@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nestcare/shared/widgets/loader_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class NestForm extends StatelessWidget {
@@ -42,16 +43,12 @@ class NestForm extends StatelessWidget {
               ),
               child:
                   isLoading
-                      ? SizedBox(
-                        height: 2.h,
-                        width: 2.h,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      )
+                      ? LoaderWidget()
                       : Text(
                         submitText,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: Colors.white,
-                          fontSize: 24,
+                          fontSize: 22,
                         ),
                       ),
             ),

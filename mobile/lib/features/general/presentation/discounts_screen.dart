@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nestcare/shared/widgets/profile_card_widget.dart';
+import 'package:nestcare/features/general/widgets/profile_card_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class DiscountsScreen extends StatelessWidget {

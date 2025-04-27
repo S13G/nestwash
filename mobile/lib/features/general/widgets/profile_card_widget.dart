@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/general/widgets/menu_options_widget.dart';
+import 'package:nestcare/features/general/widgets/profile_card_search_widget.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
-import 'package:nestcare/shared/widgets/menu_options_widget.dart';
-import 'package:nestcare/shared/widgets/profile_card_search_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ProfileCardWidget extends ConsumerWidget {

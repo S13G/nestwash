@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/general/widgets/menu_subtitle_widget.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/shared/widgets/logout_button_widget.dart';
-import 'package:nestcare/shared/widgets/menu_subtitle_widget.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 
 class CustomerMenuScreen extends ConsumerWidget {
@@ -23,7 +23,11 @@ class CustomerMenuScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   MenuSubtitleWidget(title: 'communication'),
-                  MenuItemWidget(title: 'chat', iconName: 'chat_icon'),
+                  MenuItemWidget(
+                    title: 'chat',
+                    iconName: 'chat_icon',
+                    onTap: () => ref.read(routerProvider).pushNamed("chat"),
+                  ),
                   MenuSubtitleWidget(title: 'Account settings'),
                   MenuItemWidget(
                     title: 'personal details',
@@ -48,6 +52,7 @@ class CustomerMenuScreen extends ConsumerWidget {
                   MenuItemWidget(
                     title: 'invite friends',
                     iconName: 'invite_icon',
+                    onTap: () => ref.read(routerProvider).pushNamed("invites"),
                   ),
                   MenuSubtitleWidget(title: 'help center'),
                   MenuItemWidget(

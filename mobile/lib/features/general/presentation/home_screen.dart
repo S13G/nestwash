@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/general/widgets/menu_options_widget.dart';
+import 'package:nestcare/features/general/widgets/service_card_widget.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
-import 'package:nestcare/shared/widgets/menu_options_widget.dart';
-import 'package:nestcare/shared/widgets/service_card_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class HomeScreen extends ConsumerWidget {

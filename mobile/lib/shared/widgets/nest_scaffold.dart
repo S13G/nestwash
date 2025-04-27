@@ -55,7 +55,7 @@ class NestScaffold extends StatelessWidget {
               : Padding(
                 padding:
                     padding ??
-                    EdgeInsets.symmetric(horizontal: 4.h, vertical: 4.h),
+                    EdgeInsets.only(left: 4.h, right: 4.h, bottom: 8.h),
                 child: body,
               ),
       bottomNavigationBar: bottomNavigationBar,
