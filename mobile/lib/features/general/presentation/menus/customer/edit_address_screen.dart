@@ -29,7 +29,7 @@ class EditAddressScreen extends ConsumerWidget {
             NestForm(
               formKey: formKey,
               isLoading: isLoading,
-              spacing: 2,
+              spacing: 1,
               fields: [
                 NestFormField(
                   controller: addressController,

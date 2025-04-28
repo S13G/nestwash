@@ -9,6 +9,7 @@ import 'package:nestcare/features/general/presentation/menus/customer/customer_p
 import 'package:nestcare/features/general/presentation/menus/customer/edit_address_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/invites_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/support_screen.dart';
+import 'package:nestcare/features/general/services/presentation/service_provider_info_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_providers_screen.dart';
 
 class AppRouter {
@@ -42,6 +43,14 @@ final _generalRoutes = <GoRoute>[
         path: '/bottom_nav/services/service_providers',
         name: 'service_providers',
         builder: (context, state) => const ServiceProvidersScreen(),
+        routes: <GoRoute>[
+          GoRoute(
+            path:
+                '/bottom_nav/services/service_providers/service_provider_info',
+            name: 'service_provider_info',
+            builder: (context, state) => const ServiceProviderInfoScreen(),
+          ),
+        ],
       ),
     ],
   ),

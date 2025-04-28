@@ -27,7 +27,7 @@ class ServiceProvidersScreen extends ConsumerWidget {
             "Only available service providers are shown below.",
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.primary,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(height: 2.h),
@@ -56,25 +56,35 @@ class ServiceProvidersScreen extends ConsumerWidget {
                   key: ValueKey(serviceProvider["name"]),
                   padding: EdgeInsets.zero,
                   color: Colors.transparent,
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        child: ImageWidget(
-                          imageName: serviceProvider["profile_image"]!,
+                  child: GestureDetector(
+                    onTap: () {
+                      ref
+                          .read(selectedServiceProviderNameProvider.notifier)
+                          .state = serviceProvider["name"]!;
+                      ref
+                          .read(routerProvider)
+                          .pushNamed("service_provider_info");
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          child: ImageWidget(
+                            imageName: serviceProvider["profile_image"]!,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 3.h),
-                      Text(
-                        "${serviceProvider["name"]}",
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                        SizedBox(width: 3.h),
+                        Text(
+                          "${serviceProvider["name"]}",
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.primaryContainer,
+                          ),
                         ),
-                      ),
-                      Spacer(),
-                      Icon(Icons.star, color: Colors.yellow),
-                      Text(serviceProvider["rating"]!),
-                    ],
+                        Spacer(),
+                        Icon(Icons.star, color: Colors.yellow),
+                        Text(serviceProvider["rating"]!),
+                      ],
+                    ),
                   ),
                 ),
               );

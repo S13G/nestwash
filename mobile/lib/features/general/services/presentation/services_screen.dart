@@ -68,7 +68,7 @@ class ServicesScreen extends ConsumerWidget {
                           services[index].serviceTitle!,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: Colors.white,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],

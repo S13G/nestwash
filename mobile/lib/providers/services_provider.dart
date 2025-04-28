@@ -134,3 +134,9 @@ final filteredSpecificCareServiceProviders =
         return service["name"]!.toLowerCase().contains(search);
       }).toList();
     });
+
+final selectedServiceProviderNameProvider = StateProvider<String>((ref) => '');
+
+final serviceProviderExpandedDescriptionProvider = StateProvider<bool>(
+  (ref) => false,
+);

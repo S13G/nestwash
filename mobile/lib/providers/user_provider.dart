@@ -48,20 +48,6 @@ final cityControllerProvider = Provider.autoDispose<TextEditingController>((
   return controller;
 });
 
-class AddressNotifier extends StateNotifier<List<String>> {
-  AddressNotifier(super.state);
-
-  void addAddress(String address) {
-    state = [...state, address];
-  }
-
-  void updateAddress(String address, int index) {}
-
-  void removeAddress(String address) {
-    state = state.where((item) => item != address).toList();
-  }
-}
-
 final addressControllerProvider = Provider.autoDispose<TextEditingController>((
   ref,
 ) {

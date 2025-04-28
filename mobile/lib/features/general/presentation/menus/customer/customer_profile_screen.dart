@@ -57,7 +57,7 @@ class CustomerProfileScreen extends ConsumerWidget {
             NestForm(
               formKey: formKey,
               isLoading: isLoading,
-              spacing: 8,
+              spacing: 1,
               fields: [
                 NestFormField(
                   controller: fullNameController,

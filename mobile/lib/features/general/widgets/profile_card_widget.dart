@@ -46,7 +46,7 @@ class ProfileCardWidget extends ConsumerWidget {
                       color: Colors.white,
                       fontStyle: FontStyle.italic,
                       fontSize: 2.8.h,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],

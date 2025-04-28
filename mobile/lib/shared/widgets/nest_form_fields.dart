@@ -134,7 +134,9 @@ class NestFormField extends StatelessWidget {
         if (label != null) ...[
           Text(
             label!,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
           ),
           SizedBox(height: 1.h),
         ],

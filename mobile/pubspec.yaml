@@ -31,11 +31,20 @@ flutter:
     - assets/images/icons/
 
   fonts:
-    - family: DankMono
+    - family: Manrope
       fonts:
-        - asset: assets/fonts/DankMono-Regular.otf
-        - asset: assets/fonts/DankMono-Italic.otf
-          style: italic
-        - asset: assets/fonts/DankMono-Bold.otf
+        - asset: assets/fonts/manrope.thin.otf
+          weight: 100
+        - asset: assets/fonts/manrope.light.otf
+          weight: 300
+        - asset: assets/fonts/manrope.regular.otf
+          weight: 400
+        - asset: assets/fonts/manrope.medium.otf
+          weight: 500
+        - asset: assets/fonts/manrope.semibold.otf
+          weight: 600
+        - asset: assets/fonts/manrope.bold.otf
           weight: 700
+        - asset: assets/fonts/manrope.extrabold.otf
+          weight: 800
 

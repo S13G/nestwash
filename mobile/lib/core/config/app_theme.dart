@@ -11,7 +11,7 @@ class AppColors {
 
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
-    fontFamily: "DankMono",
+    fontFamily: "Manrope",
     brightness: Brightness.light,
     colorScheme: ColorScheme.light(
       primary: AppColors.primary,

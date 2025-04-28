@@ -10,6 +10,8 @@ class ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 1.h),
       child: Container(
@@ -23,8 +25,8 @@ class ServiceCard extends StatelessWidget {
               ),
               child: ImageWidget(
                 imageName: service.itemCardImageName!,
-                height: 15.3.h,
-                width: 15.h,
+                height: 14.7.h,
+                width: 14.7.h,
                 fit: BoxFit.fill,
               ),
             ),
@@ -48,7 +50,7 @@ class ServiceCard extends StatelessWidget {
                         alignment: Alignment.topRight,
                         child: Text(
                           service.status!,
-                          style: TextStyle(
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
                           ),
@@ -58,9 +60,8 @@ class ServiceCard extends StatelessWidget {
                     SizedBox(height: 1.h),
                     Text(
                       service.serviceTitle!,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
@@ -81,7 +82,9 @@ class ServiceCard extends StatelessWidget {
                                 item.item,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
-                                style: const TextStyle(color: Colors.white),
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white,
+                                ),
                               ),
                             );
                           }).toList(),
