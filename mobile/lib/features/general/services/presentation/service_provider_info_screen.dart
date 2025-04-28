@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/widgets/additional_info_card_widget.dart';
+import 'package:nestcare/providers/chat_provider.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
@@ -154,7 +155,14 @@ class ServiceProviderInfoScreen extends ConsumerWidget {
               ],
             ),
             SizedBox(height: 3.h),
-            NestButton(text: 'Continue'),
+            NestButton(
+              text: 'Continue',
+              onPressed: () {
+                ref.read(chattingPartnerNameProvider.notifier).state =
+                    serviceProviderName;
+                ref.read(routerProvider).pushNamed("make_order");
+              },
+            ),
           ],
         ),
       ),

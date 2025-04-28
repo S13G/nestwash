@@ -136,7 +136,8 @@ final filteredSpecificCareServiceProviders =
     });
 
 final selectedServiceProviderNameProvider = StateProvider<String>((ref) => '');
-
+final serviceProviderAvailabilityProvider = StateProvider<bool>((ref) => true);
+final ratingProvider = StateProvider<int>((ref) => 0);
 final serviceProviderExpandedDescriptionProvider = StateProvider<bool>(
   (ref) => false,
 );

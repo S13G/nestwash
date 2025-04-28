@@ -1,8 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/presentation/signup_screen.dart';
+import 'package:nestcare/features/general/orders/presentation/make_order_screen.dart';
 import 'package:nestcare/features/general/presentation/bottom_nav_screen.dart';
-import 'package:nestcare/features/general/presentation/menus/chat_screen.dart';
+import 'package:nestcare/features/general/presentation/chat_list_screen.dart';
+import 'package:nestcare/features/general/presentation/chat_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_address_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_menu_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_profile_screen.dart';
@@ -10,6 +12,7 @@ import 'package:nestcare/features/general/presentation/menus/customer/edit_addre
 import 'package:nestcare/features/general/presentation/menus/invites_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/support_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_info_screen.dart';
+import 'package:nestcare/features/general/services/presentation/service_provider_profile_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_providers_screen.dart';
 
 class AppRouter {
@@ -19,7 +22,12 @@ class AppRouter {
 
   GoRouter get router => GoRouter(
     initialLocation: '/signup',
-    routes: [..._authRoutes, ..._generalRoutes, ..._customerRoutes],
+    routes: [
+      ..._authRoutes,
+      ..._generalRoutes,
+      ..._customerRoutes,
+      ..._serviceProviderRoutes,
+    ],
   );
 }
 
@@ -49,6 +57,13 @@ final _generalRoutes = <GoRoute>[
                 '/bottom_nav/services/service_providers/service_provider_info',
             name: 'service_provider_info',
             builder: (context, state) => const ServiceProviderInfoScreen(),
+            routes: <GoRoute>[
+              GoRoute(
+                path: '/bottom_nav/services/service_providers/make_order',
+                name: 'make_order',
+                builder: (context, state) => const MakeOrderScreen(),
+              ),
+            ],
           ),
         ],
       ),
@@ -60,9 +75,16 @@ final _generalRoutes = <GoRoute>[
     builder: (context, state) => const SupportScreen(),
   ),
   GoRoute(
-    path: '/chat',
-    name: 'chat',
-    builder: (context, state) => ChatScreen(),
+    path: '/chat/list',
+    name: 'chat-list',
+    builder: (context, state) => ChatListScreen(),
+    routes: <GoRoute>[
+      GoRoute(
+        path: '/chat',
+        name: 'chat',
+        builder: (context, index) => ChatScreen(),
+      ),
+    ],
   ),
   GoRoute(
     path: '/invites',
@@ -96,5 +118,14 @@ final _customerRoutes = <GoRoute>[
         ],
       ),
     ],
+  ),
+];
+
+// ================= SERVICE PROVIDER ROUTES =================
+final _serviceProviderRoutes = <GoRoute>[
+  GoRoute(
+    path: '/service_provider/profile',
+    name: 'service_provider_profile',
+    builder: (context, state) => const ServiceProviderProfileScreen(),
   ),
 ];

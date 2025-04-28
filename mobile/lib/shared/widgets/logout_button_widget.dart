@@ -16,7 +16,6 @@ class LogoutButtonWidget extends ConsumerWidget {
           ref.read(clearAllProviders)();
           ref.read(routerProvider).goNamed("signup", extra: 3);
         },
-        style: TextButton.styleFrom(padding: EdgeInsets.only(bottom: 6.h)),
         child: Text(
           'Log out',
           style: theme.textTheme.bodyLarge?.copyWith(

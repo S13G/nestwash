@@ -67,10 +67,22 @@ class ServiceProvidersScreen extends ConsumerWidget {
                     },
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          radius: 30,
-                          child: ImageWidget(
-                            imageName: serviceProvider["profile_image"]!,
+                        GestureDetector(
+                          onTap: () {
+                            ref
+                                .read(
+                                  selectedServiceProviderNameProvider.notifier,
+                                )
+                                .state = serviceProvider["name"]!;
+                            ref
+                                .read(routerProvider)
+                                .pushNamed("service_provider_profile");
+                          },
+                          child: CircleAvatar(
+                            radius: 30,
+                            child: ImageWidget(
+                              imageName: serviceProvider["profile_image"]!,
+                            ),
                           ),
                         ),
                         SizedBox(width: 3.h),

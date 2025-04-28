@@ -9,10 +9,10 @@ class MainDiscountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4.h, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 3.h, vertical: 2.h),
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(35),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

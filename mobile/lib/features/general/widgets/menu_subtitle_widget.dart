@@ -40,7 +40,7 @@ class MenuItemWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 4.h),
+      padding: EdgeInsets.only(bottom: 5.h),
       child: GestureDetector(
         onTap: onTap,
         child: Row(

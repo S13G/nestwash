@@ -26,7 +26,8 @@ class CustomerMenuScreen extends ConsumerWidget {
                   MenuItemWidget(
                     title: 'chat',
                     iconName: 'chat_icon',
-                    onTap: () => ref.read(routerProvider).pushNamed("chat"),
+                    onTap:
+                        () => ref.read(routerProvider).pushNamed("chat-list"),
                   ),
                   MenuSubtitleWidget(title: 'Account settings'),
                   MenuItemWidget(
