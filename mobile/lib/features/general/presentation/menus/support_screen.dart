@@ -34,7 +34,7 @@ class SupportScreen extends StatelessWidget {
               children: [
                 TextSpan(
                   text:
-                      "Nestcare support center is available to assist you everyday between ",
+                      "Nestwash support center is available to assist you everyday between ",
                 ),
                 TextSpan(
                   text: "10:00am - 10:00pm",
@@ -61,8 +61,9 @@ class SupportScreen extends StatelessWidget {
           Center(
             child: ImageWidget(
               imageName: 'nestcare_logo',
+              color: theme.colorScheme.primary,
               width: 14.h,
-              height: 14.h,
+              height: 8.h,
             ),
           ),
         ],

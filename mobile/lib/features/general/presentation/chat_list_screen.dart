@@ -13,26 +13,17 @@ class ChatListScreen extends ConsumerWidget {
     return NestScaffold(
       showBackButton: true,
       title: 'all chats',
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Service Providers", style: theme.textTheme.titleLarge),
-          SizedBox(height: 2.h),
-          Expanded(
-            child: ListView.separated(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return ChatUserWidget(
-                  imageName: 'provider_pic',
-                  personName: 'Jenny Wilson',
-                  ref: ref,
-                );
-              },
-              separatorBuilder:
-                  (BuildContext context, int index) => SizedBox(height: 3.h),
-            ),
-          ),
-        ],
+      body: ListView.separated(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return ChatUserWidget(
+            imageName: 'provider_pic',
+            personName: 'Jenny Wilson',
+            ref: ref,
+          );
+        },
+        separatorBuilder:
+            (BuildContext context, int index) => SizedBox(height: 3.h),
       ),
     );
   }

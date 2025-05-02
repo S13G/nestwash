@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/providers/auth_provider.dart';
-import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_form_fields.dart';
@@ -17,14 +16,9 @@ class SignupScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     // Get the initial page from router extra or default to 0
     final Object? extra = GoRouterState.of(context).extra;
-    final initialPage = extra is int ? extra : 0;
+    final initialPage = extra ?? 0;
 
-    final pageController = PageController(initialPage: initialPage);
-    // Initialize the currentPage provider with initialPage
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(pageIndexProvider.notifier).state = initialPage;
-    });
-
+    final pageController = PageController(initialPage: initialPage as int);
     final currentPage = ref.watch(pageIndexProvider);
 
     final GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
@@ -80,7 +74,7 @@ class SignupScreen extends ConsumerWidget {
       ref.read(loadingProvider.notifier).state = false;
 
       // Navigate to home screen
-      ref.read(routerProvider).goNamed("bottom_nav");
+      context.goNamed("bottom_nav");
     }
 
     void handleSubmit(
@@ -382,16 +376,6 @@ class SignupScreen extends ConsumerWidget {
                               DropdownButtonFormField<String>(
                                 value: ref.watch(accountTypeProvider),
                                 items: [
-                                  DropdownMenuItem(
-                                    value: "driver",
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.drive_eta),
-                                        SizedBox(width: 2.w),
-                                        Text("Driver"),
-                                      ],
-                                    ),
-                                  ),
                                   DropdownMenuItem(
                                     value: "customer",
                                     child: Row(

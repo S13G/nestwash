@@ -20,6 +20,7 @@ class AppTheme {
       onPrimary: AppColors.onPrimary,
       onSecondary: Colors.black,
       primaryContainer: AppColors.primaryContainer,
+      onSurface: AppColors.text,
     ),
     textTheme: const TextTheme(bodyLarge: TextStyle(color: AppColors.text)),
   );

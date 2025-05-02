@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/providers/auth_provider.dart';
-import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/nest_form_fields.dart';
@@ -44,7 +44,7 @@ class CustomerProfileScreen extends ConsumerWidget {
           .setUser(emailController.text, fullNameController.text, null);
       ref.read(loadingProvider.notifier).state = false;
       ToastUtil.showSuccessToast(context, "Saved successfully");
-      ref.read(routerProvider).pop();
+      context.pop();
     }
 
     return NestScaffold(

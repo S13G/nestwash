@@ -1,7 +1,13 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/presentation/signup_screen.dart';
+import 'package:nestcare/features/general/orders/presentation/clothes_screen.dart';
 import 'package:nestcare/features/general/orders/presentation/make_order_screen.dart';
+import 'package:nestcare/features/general/orders/presentation/order_details_screen.dart';
+import 'package:nestcare/features/general/orders/presentation/schedule_drop_off_screen.dart';
+import 'package:nestcare/features/general/orders/presentation/schedule_pickup_screen.dart';
+import 'package:nestcare/features/general/orders/presentation/select_clothes_screen.dart';
+import 'package:nestcare/features/general/orders/presentation/track_order_screen.dart';
 import 'package:nestcare/features/general/presentation/bottom_nav_screen.dart';
 import 'package:nestcare/features/general/presentation/chat_list_screen.dart';
 import 'package:nestcare/features/general/presentation/chat_screen.dart';
@@ -27,6 +33,7 @@ class AppRouter {
       ..._generalRoutes,
       ..._customerRoutes,
       ..._serviceProviderRoutes,
+      ..._ordersRoutes,
     ],
   );
 }
@@ -48,20 +55,44 @@ final _generalRoutes = <GoRoute>[
     builder: (context, state) => const BottomNavScreen(),
     routes: <GoRoute>[
       GoRoute(
-        path: '/bottom_nav/services/service_providers',
+        path: '/services/service_providers',
         name: 'service_providers',
         builder: (context, state) => const ServiceProvidersScreen(),
         routes: <GoRoute>[
           GoRoute(
-            path:
-                '/bottom_nav/services/service_providers/service_provider_info',
+            path: '/service_provider_info',
             name: 'service_provider_info',
             builder: (context, state) => const ServiceProviderInfoScreen(),
             routes: <GoRoute>[
               GoRoute(
-                path: '/bottom_nav/services/service_providers/make_order',
+                path: '/make_order',
                 name: 'make_order',
                 builder: (context, state) => const MakeOrderScreen(),
+                routes: <GoRoute>[
+                  GoRoute(
+                    path: '/schedule_pickup',
+                    name: 'schedule_pickup',
+                    builder: (context, state) => const SchedulePickupScreen(),
+                  ),
+                  GoRoute(
+                    path: '/schedule_drop_off',
+                    name: 'schedule_drop_off',
+                    builder: (context, state) => const ScheduleDropOffScreen(),
+                  ),
+                  GoRoute(
+                    path: '/clothes',
+                    name: 'clothes',
+                    builder: (context, state) => const ClothesScreen(),
+                    routes: <GoRoute>[
+                      GoRoute(
+                        path: '/select_clothes',
+                        name: 'select_clothes',
+                        builder:
+                            (context, state) => const SelectClothesScreen(),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
@@ -101,17 +132,17 @@ final _customerRoutes = <GoRoute>[
     builder: (context, state) => const CustomerMenuScreen(),
     routes: <GoRoute>[
       GoRoute(
-        path: '/customer_menu/profile',
+        path: '/profile',
         name: 'customer_profile',
         builder: (context, state) => const CustomerProfileScreen(),
       ),
       GoRoute(
-        path: '/customer_menu/addresses',
+        path: '/addresses',
         name: 'customer_addresses',
         builder: (context, state) => const CustomerAddressScreen(),
         routes: <GoRoute>[
           GoRoute(
-            path: '/customer_menu/addresses/edit',
+            path: '/edit',
             name: 'edit_address',
             builder: (context, state) => const EditAddressScreen(),
           ),
@@ -127,5 +158,21 @@ final _serviceProviderRoutes = <GoRoute>[
     path: '/service_provider/profile',
     name: 'service_provider_profile',
     builder: (context, state) => const ServiceProviderProfileScreen(),
+  ),
+];
+
+// ================= ORDERS ROUTES =================
+final _ordersRoutes = <GoRoute>[
+  GoRoute(
+    path: '/order/details',
+    name: 'order_details',
+    builder: (context, state) => const OrderDetailsScreen(),
+    routes: <GoRoute>[
+      GoRoute(
+        path: '/track/status',
+        name: 'track_order',
+        builder: (context, state) => const OrderTrackingScreen(),
+      ),
+    ],
   ),
 ];

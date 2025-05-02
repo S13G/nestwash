@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/providers/home_provider.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 class LogoutButtonWidget extends ConsumerWidget {
   const LogoutButtonWidget({super.key});
@@ -14,7 +14,7 @@ class LogoutButtonWidget extends ConsumerWidget {
       child: TextButton(
         onPressed: () {
           ref.read(clearAllProviders)();
-          ref.read(routerProvider).goNamed("signup", extra: 3);
+          context.goNamed("signup", extra: 3);
         },
         child: Text(
           'Log out',

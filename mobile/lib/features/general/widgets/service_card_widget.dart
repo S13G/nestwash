@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nestcare/features/general/services/model/service_model.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -11,91 +12,115 @@ class ServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final borderRadius = BorderRadius.circular(30);
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 1.h),
-      child: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
+      child: GestureDetector(
+        onTap: () => context.pushNamed('order_details'),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-              child: ImageWidget(
-                imageName: service.itemCardImageName!,
-                height: 14.7.h,
-                width: 14.7.h,
-                fit: BoxFit.fill,
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  bottomLeft: Radius.circular(30),
+                ),
+                child: SizedBox(
+                  width: 15.h,
+                  height: 15.h,
+                  child: ImageWidget(
+                    imageName: service.itemCardImageName!,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
 
-            // Info Box
-            Expanded(
-              child: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  return Container(
-                    padding: EdgeInsets.all(1.06.h),
-                    decoration: BoxDecoration(
-                      color: service.itemCardBackgroundColor,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
-                      ),
+              // Info Box - Expanded to take remaining width
+              Expanded(
+                child: Container(
+                  // Use a minimum height constraint to match the image height
+                  constraints: BoxConstraints(minHeight: 15.h),
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: service.itemCardBackgroundColor,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 1.h),
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              service.status!,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Text(
-                          service.serviceTitle!,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Status text
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Text(
+                          service.status!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(height: 1.h),
+                      ),
+                      SizedBox(height: 8),
 
-                        // Items: 2 per row
-                        Wrap(
-                          spacing: 2.w,
-                          runSpacing: 1.h,
-                          children:
-                              service.items!.map((item) {
-                                return SizedBox(
-                                  width: (constraints.maxWidth - 6.w) / 3,
-                                  child: Text(
-                                    item.item,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
+                      // Title
+                      Text(
+                        service.serviceTitle!,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                      ],
-                    ),
-                  );
-                },
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 8),
+
+                      // Items in a grid - fixed number per row
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 3,
+                        children:
+                            service.items!.map((item) {
+                              // Calculate a fixed width for 2 items per row with spacing
+                              return SizedBox(
+                                width:
+                                    (MediaQuery.of(context).size.width -
+                                        15.h -
+                                        36) /
+                                    3.35,
+                                child: Text(
+                                  item.item,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                      ),
+                      // Add some bottom padding if needed
+                      SizedBox(height: 4),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/widgets/menu_subtitle_widget.dart';
 import 'package:nestcare/providers/home_provider.dart';
@@ -26,8 +27,7 @@ class CustomerMenuScreen extends ConsumerWidget {
                   MenuItemWidget(
                     title: 'chat',
                     iconName: 'chat_icon',
-                    onTap:
-                        () => ref.read(routerProvider).pushNamed("chat-list"),
+                    onTap: () => context.pushNamed("chat-list"),
                   ),
                   MenuSubtitleWidget(title: 'Account settings'),
                   MenuItemWidget(
@@ -53,13 +53,13 @@ class CustomerMenuScreen extends ConsumerWidget {
                   MenuItemWidget(
                     title: 'invite friends',
                     iconName: 'invite_icon',
-                    onTap: () => ref.read(routerProvider).pushNamed("invites"),
+                    onTap: () => context.pushNamed("invites"),
                   ),
                   MenuSubtitleWidget(title: 'help center'),
                   MenuItemWidget(
                     title: 'support',
                     iconName: 'support_icon',
-                    onTap: () => ref.read(routerProvider).pushNamed("support"),
+                    onTap: () => context.pushNamed("support"),
                   ),
                   MenuItemWidget(
                     title: 'terms of service',

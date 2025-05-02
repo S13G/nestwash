@@ -16,6 +16,8 @@ dependencies:
   go_router: ^14.8.1
   flutter_svg: ^2.0.17
   responsive_sizer: ^3.3.1
+  image_picker: ^1.1.2
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -48,3 +50,12 @@ flutter:
         - asset: assets/fonts/manrope.extrabold.otf
           weight: 800
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icons/nestwash_app_icon.png"
+  background_color: "#5597FF"
+  background_color_ios: "#5597FF"
+  adaptive_icon_background: "#5597FF"
+  adaptive_icon_foreground: "assets/images/icons/nestwash_app_icon.png"
+  adaptive_icon_foreground_dark: "assets/images/icons/nestwash_app_icon.png"

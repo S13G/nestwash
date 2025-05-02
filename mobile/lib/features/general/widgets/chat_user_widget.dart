@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/providers/chat_provider.dart';
-import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -23,7 +23,7 @@ class ChatUserWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         ref.read(chattingPartnerNameProvider.notifier).state = personName;
-        ref.read(routerProvider).pushNamed("chat");
+        context.pushNamed("chat");
       },
       child: Row(
         children: [
@@ -31,7 +31,7 @@ class ChatUserWidget extends StatelessWidget {
             onTap: () {
               ref.read(selectedServiceProviderNameProvider.notifier).state =
                   personName;
-              ref.read(routerProvider).pushNamed("service_provider_profile");
+              context.pushNamed("service_provider_profile");
             },
             child: CircleAvatar(
               radius: 30,

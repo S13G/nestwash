@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -35,7 +34,7 @@ class AddressCard extends ConsumerWidget {
               Spacer(),
               GestureDetector(
                 onTap: () {
-                  ref.read(routerProvider).pushNamed("edit_address");
+                  context.pushNamed("edit_address");
                 },
                 child: Icon(
                   Icons.edit_outlined,

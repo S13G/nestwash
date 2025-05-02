@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/widgets/address_card_widget.dart';
-import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -29,16 +29,21 @@ class CustomerAddressScreen extends ConsumerWidget {
               separatorBuilder: (context, index) => SizedBox(height: 2.h),
               itemBuilder: (context, index) {
                 final address = addresses[index];
-                return AddressCard(
-                  street: address["street"] ?? '',
-                  houseNumber: address["houseNumber"] ?? '',
-                  theme: theme,
+                return GestureDetector(
+                  onTap: () {
+                    context.pop(true);
+                  },
+                  child: AddressCard(
+                    street: address["street"] ?? '',
+                    houseNumber: address["houseNumber"] ?? '',
+                    theme: theme,
+                  ),
                 );
               },
             ),
             TextButton(
               onPressed: () {
-                ref.read(routerProvider).pushNamed("edit_address");
+                context.pushNamed("edit_address");
               },
               style: TextButton.styleFrom(padding: EdgeInsets.zero),
               child: Text(

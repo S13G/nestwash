@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/features/general/orders/model/order_step_model.dart';
 import 'package:nestcare/features/general/widgets/order_step_button_widget.dart';
-import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/nest_button.dart';
@@ -14,32 +13,17 @@ class MakeOrderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final progress = ref.watch(orderProgressProvider);
     final currentStep = ref.watch(currentStepProvider);
-    final theme = Theme.of(context);
+    final completedSteps = ref.watch(completedStepsProvider);
 
-    // Order steps
     final orderSteps = [
-      OrderStep(
-        icon: Icons.home,
-        title: 'Pickup address',
-        isCompleted: currentStep > 0,
-      ),
-      OrderStep(
-        icon: Icons.local_shipping,
-        title: 'Schedule pick up',
-        isCompleted: currentStep > 1,
-      ),
-      OrderStep(
-        icon: Icons.house,
-        title: 'Drop off address',
-        isCompleted: currentStep > 2,
-      ),
-      OrderStep(
-        icon: Icons.calendar_month,
-        title: 'Schedule drop off',
-        isCompleted: currentStep > 3,
-      ),
+      {'title': 'Pickup address', 'icon': Icons.home},
+      {'title': 'Schedule pick up', 'icon': Icons.local_shipping},
+      {'title': 'Drop off address', 'icon': Icons.house},
+      {'title': 'Schedule drop off', 'icon': Icons.calendar_month},
+      {'title': 'Clothes', 'icon': Icons.shopping_bag},
     ];
 
     return NestScaffold(
@@ -48,14 +32,14 @@ class MakeOrderScreen extends ConsumerWidget {
       padding: EdgeInsets.zero,
       body: Column(
         children: [
-          // Progress indicator section
+          // Progress Indicator
           Container(
             padding: EdgeInsets.symmetric(horizontal: 4.h, vertical: 2.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${(progress * 100).toInt()} % complete',
+                  '${(progress * 100).toInt()}% complete',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.primary,
                   ),
@@ -76,7 +60,7 @@ class MakeOrderScreen extends ConsumerWidget {
             ),
           ),
 
-          // Order steps
+          // Steps
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.h),
@@ -86,27 +70,27 @@ class MakeOrderScreen extends ConsumerWidget {
                     final index = entry.key;
                     final step = entry.value;
 
+                    final isEnabled = index == 0 || completedSteps[index - 1];
+                    final isCompleted = completedSteps[index];
+
                     return Padding(
                       padding: EdgeInsets.only(bottom: 2.h),
                       child: OrderStepButton(
-                        icon: step.icon,
-                        title: step.title,
-                        isCompleted: step.isCompleted,
-                        onTap: () {
-                          _handleStepTap(ref, index);
-                        },
+                        icon: step['icon'] as IconData,
+                        title: step['title'] as String,
+                        isCompleted: isCompleted,
+                        isEnabled: isEnabled,
+                        onTap: () => _navigateToStep(context, ref, index),
                       ),
                     );
                   }),
-                  Spacer(),
-                  // Continue button
+                  const Spacer(),
                   Padding(
                     padding: EdgeInsets.only(bottom: 4.h),
                     child: NestButton(
                       text: 'Continue',
-                      onPressed: () {
-                        _handleContinue(ref, context, currentStep);
-                      },
+                      onPressed:
+                          () => _handleContinue(ref, context, currentStep),
                     ),
                   ),
                 ],
@@ -118,32 +102,70 @@ class MakeOrderScreen extends ConsumerWidget {
     );
   }
 
-  void _handleStepTap(WidgetRef ref, int stepIndex) {
-    // Update current step and progress when step is tapped
+  void _navigateToStep(
+    BuildContext context,
+    WidgetRef ref,
+    int stepIndex,
+  ) async {
     ref.read(currentStepProvider.notifier).state = stepIndex;
 
-    // Calculate progress based on step
-    final newProgress = (stepIndex + 1) / 4;
-    ref.read(orderProgressProvider.notifier).state = newProgress;
+    // Pick the correct screen based on stepIndex
+    String namedRoute;
+    switch (stepIndex) {
+      case 0:
+        namedRoute = 'customer_addresses';
+        break;
+      case 1:
+        namedRoute = 'schedule_pickup';
+        break;
+      case 2:
+        namedRoute = 'customer_addresses';
+        break;
+      case 3:
+        namedRoute = 'schedule_drop_off';
+        break;
+      case 4:
+        namedRoute = 'clothes';
+      default:
+        return;
+    }
+
+    final result = await context.pushNamed(namedRoute);
+
+    if (result == true) {
+      ref.read(currentStepProvider.notifier).state = stepIndex;
+
+      completeStep(ref, stepIndex);
+    }
   }
 
   void _handleContinue(WidgetRef ref, BuildContext context, int currentStep) {
+    final completed = [...ref.read(completedStepsProvider)];
+
+    if (!completed[currentStep]) {
+      ToastUtil.showErrorToast(context, 'Please complete this step first.');
+      return;
+    }
+
     if (currentStep < 3) {
-      // Move to next step
-      final nextStep = currentStep + 1;
-      ref.read(currentStepProvider.notifier).state = nextStep;
-
-      // Update progress
-      final newProgress = (nextStep + 1) / 4;
-      ref.read(orderProgressProvider.notifier).state = newProgress;
+      ref.read(currentStepProvider.notifier).state = currentStep + 1;
     } else {
-      // Complete order process
-      ToastUtil.showSuccessToast(context, "Order placed successfully");
-
-      // Navigate back or to confirmation screen
-      Future.delayed(Duration(seconds: 1), () {
-        ref.read(routerProvider).pop();
+      ToastUtil.showSuccessToast(context, 'Order placed successfully');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (!context.mounted) return;
+        context.goNamed("order_details");
       });
     }
+  }
+
+  void completeStep(WidgetRef ref, int stepIndex) {
+    final completed = [...ref.read(completedStepsProvider)];
+    completed[stepIndex] = true;
+    ref.read(completedStepsProvider.notifier).state = completed;
+
+    // Update progress
+    final newProgress =
+        completed.where((step) => step).length / completed.length;
+    ref.read(orderProgressProvider.notifier).state = newProgress;
   }
 }

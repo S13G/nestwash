@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/widgets/profile_card_widget.dart';
 import 'package:nestcare/providers/home_provider.dart';
@@ -47,7 +48,7 @@ class ServicesScreen extends ConsumerWidget {
                   onTap: () {
                     ref.read(selectedServiceTitleProvider.notifier).state =
                         services[index].serviceTitle!;
-                    ref.read(routerProvider).pushNamed("service_providers");
+                    context.pushNamed("service_providers");
                   },
                   child: Container(
                     key: ValueKey(services.length),

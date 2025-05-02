@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/widgets/additional_info_card_widget.dart';
 import 'package:nestcare/providers/chat_provider.dart';
@@ -160,7 +161,7 @@ class ServiceProviderInfoScreen extends ConsumerWidget {
               onPressed: () {
                 ref.read(chattingPartnerNameProvider.notifier).state =
                     serviceProviderName;
-                ref.read(routerProvider).pushNamed("make_order");
+                context.pushNamed("make_order");
               },
             ),
           ],

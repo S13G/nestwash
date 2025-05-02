@@ -12,6 +12,7 @@ class NestScaffold extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final Color? backgroundColor;
   final bool showBackButton;
+  final VoidCallback? backButtonOnPressed;
 
   const NestScaffold({
     super.key,
@@ -24,6 +25,7 @@ class NestScaffold extends StatelessWidget {
     this.padding,
     this.backgroundColor,
     this.showBackButton = false,
+    this.backButtonOnPressed,
   });
 
   @override
@@ -40,9 +42,11 @@ class NestScaffold extends StatelessWidget {
                     showBackButton
                         ? IconButton(
                           icon: const Icon(Icons.arrow_back),
-                          onPressed: () {
-                            GoRouter.of(context).pop();
-                          },
+                          onPressed:
+                              backButtonOnPressed ??
+                              () {
+                                GoRouter.of(context).pop();
+                              },
                         )
                         : null,
                 title: Text(title![0].toUpperCase() + title!.substring(1)),
