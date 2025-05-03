@@ -8,8 +8,8 @@ class OrderTrackingScreen extends StatelessWidget {
 
   const OrderTrackingScreen({
     super.key,
-    this.currentStep = 8,
-    this.progressPercentage = 1, // 60% completion
+    this.currentStep = 6,
+    this.progressPercentage = 0.6,
   });
 
   @override
