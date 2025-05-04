@@ -3,8 +3,8 @@ import 'package:nestcare/features/general/widgets/main_discount_card.dart';
 import 'package:nestcare/features/general/widgets/profile_card_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class DiscountsScreen extends StatelessWidget {
-  const DiscountsScreen({super.key});
+class CustomerDiscountsScreen extends StatelessWidget {
+  const CustomerDiscountsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

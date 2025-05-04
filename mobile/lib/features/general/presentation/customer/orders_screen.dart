@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/widgets/profile_card_widget.dart';
 import 'package:nestcare/providers/orders_provider.dart';
+import 'package:nestcare/providers/services_provider.dart';
+import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/widgets/active_text_button.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -13,6 +15,8 @@ class OrdersScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final selectedTab = ref.watch(selectedOrderTabProvider);
+    final allActiveOrders = ref.watch(allActiveOrdersProvider);
+    final accountType = ref.read(userProvider)?.accountType;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -48,6 +52,18 @@ class OrdersScreen extends ConsumerWidget {
                     text: "Past",
                     selectedNumber: 1,
                   ),
+                  if (accountType == "service_provider") ...[
+                    SizedBox(width: 8.w),
+                    ActiveTextButton(
+                      theme: theme,
+                      selectedTab: selectedTab,
+                      onPressed: () {
+                        ref.read(selectedOrderTabProvider.notifier).state = 2;
+                      },
+                      text: "New",
+                      selectedNumber: 2,
+                    ),
+                  ],
                 ],
               ),
               Center(

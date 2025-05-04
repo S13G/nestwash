@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/services/model/service_model.dart';
+import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class ServiceCard extends StatelessWidget {
+class ServiceCard extends ConsumerWidget {
   const ServiceCard({super.key, required this.service});
 
   final ServiceModel service;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final borderRadius = BorderRadius.circular(30);
+    final accountType = ref.read(userProvider)?.accountType;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 1.h),
       child: GestureDetector(
-        onTap: () => context.pushNamed('order_details'),
+        onTap: () {
+          if (accountType == 'service_provider') {
+            context.pushNamed('service_provider_order_details');
+          } else {
+            context.pushNamed('order_details');
+          }
+        },
         child: Container(
           decoration: BoxDecoration(
             borderRadius: borderRadius,

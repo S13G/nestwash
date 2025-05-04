@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/features/general/orders/presentation/orders_screen.dart';
-import 'package:nestcare/features/general/presentation/discounts_screen.dart';
-import 'package:nestcare/features/general/presentation/home_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/customer_discounts_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/customer_home_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/orders_screen.dart';
+import 'package:nestcare/features/general/services/presentation/service_provider_chat_list_screen.dart';
+import 'package:nestcare/features/general/services/presentation/service_provider_discounts_screen.dart';
+import 'package:nestcare/features/general/services/presentation/service_provider_home_screen.dart';
 import 'package:nestcare/features/general/services/presentation/services_screen.dart';
 import 'package:nestcare/providers/home_provider.dart';
+import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -15,13 +19,24 @@ class BottomNavScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(bottomNavigationProvider);
+    final accountType = ref.read(userProvider)?.accountType;
 
-    final screens = [
-      HomeScreen(),
-      OrdersScreen(),
-      ServicesScreen(),
-      DiscountsScreen(),
-    ];
+    final List<Widget> screens;
+    if (accountType == "service_provider") {
+      screens = [
+        ServiceProviderHomeScreen(),
+        OrdersScreen(),
+        ServiceProviderChatListScreen(),
+        ServiceProviderDiscountsScreen(),
+      ];
+    } else {
+      screens = [
+        CustomerHomeScreen(),
+        OrdersScreen(),
+        ServicesScreen(),
+        CustomerDiscountsScreen(),
+      ];
+    }
 
     return NestScaffold(
       appBar: null,
@@ -39,6 +54,7 @@ class NestCareBottomNavBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final selectedIndex = ref.watch(bottomNavigationProvider);
+    final accountType = ref.read(userProvider)?.accountType;
 
     return Container(
       height: 7.h,
@@ -50,7 +66,10 @@ class NestCareBottomNavBar extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(4, (index) {
-          final icons = ['home', 'orders', 'services', 'discounts'];
+          final icons =
+              accountType == "service_provider"
+                  ? ['home', 'orders', 'chats', 'discounts']
+                  : ['home', 'orders', 'services', 'discounts'];
 
           return Expanded(
             child: GestureDetector(
@@ -64,6 +83,7 @@ class NestCareBottomNavBar extends ConsumerWidget {
                     iconName: icons[index],
                     width: 4.h,
                     height: 4.h,
+                    color: Colors.white,
                   ),
                   SizedBox(height: 0.8.h),
                   AnimatedContainer(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:nestcare/features/general/orders/model/order_model.dart';
+import 'package:nestcare/features/general/model/order_model.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
@@ -175,7 +175,7 @@ class OrderDetailsScreen extends ConsumerWidget {
             SizedBox(height: 3.h),
 
             // Order items section
-            _buildSectionTitle(theme, 'Delivery Items'),
+            _buildSectionTitle(theme, 'Order Items'),
             SizedBox(height: 1.h),
 
             // Item list
@@ -187,7 +187,7 @@ class OrderDetailsScreen extends ConsumerWidget {
             order.status != "Completed"
                 ? NestButton(
                   text: 'Confirm Completion',
-                  onPressed: () => _showCompletionDialog(context),
+                  onPressed: () => _showCompletionDialog(context, ref),
                   color: theme.colorScheme.onPrimary,
                 )
                 : Container(
@@ -402,7 +402,7 @@ class OrderDetailsScreen extends ConsumerWidget {
     }
   }
 
-  void _showCompletionDialog(BuildContext context) {
+  void _showCompletionDialog(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     showDialog(
@@ -424,11 +424,12 @@ class OrderDetailsScreen extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () {
                   // Update order status in state management
-                  context.pop();
                   ToastUtil.showSuccessToast(
                     context,
                     'Order marked as completed!',
                   );
+                  ref.read(bottomNavigationProvider.notifier).state = 1;
+                  context.goNamed("bottom_nav");
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.colorScheme.onPrimary,
@@ -465,11 +466,6 @@ class OrderDetailsScreen extends ConsumerWidget {
                 _buildHelpOption(context, Icons.message, 'Chat with support'),
                 _buildHelpOption(context, Icons.phone, 'Call customer service'),
                 _buildHelpOption(context, Icons.email, 'Email us'),
-                _buildHelpOption(
-                  context,
-                  Icons.cancel_outlined,
-                  'Request cancellation',
-                ),
               ],
             ),
           ),
@@ -478,7 +474,7 @@ class OrderDetailsScreen extends ConsumerWidget {
 
   Widget _buildHelpOption(BuildContext context, IconData icon, String text) {
     return ListTile(
-      leading: Icon(icon, color: Colors.blue),
+      leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
       title: Text(text),
       onTap: () {
         context.pop();

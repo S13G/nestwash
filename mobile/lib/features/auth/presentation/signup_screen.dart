@@ -70,7 +70,11 @@ class SignupScreen extends ConsumerWidget {
       ref.read(loadingProvider.notifier).state = true;
       ref
           .read(userProvider.notifier)
-          .setUser(emailController.text, fullNameController.text, null);
+          .setUser(
+            emailController.text,
+            fullNameController.text,
+            "service_provider",
+          );
       ref.read(loadingProvider.notifier).state = false;
 
       // Navigate to home screen

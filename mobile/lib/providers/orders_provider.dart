@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/features/general/orders/model/clothes_model.dart';
+import 'package:nestcare/features/general/model/clothes_model.dart';
 
 final selectedOrderTabProvider = StateProvider<int>((ref) => 0);
 final orderProgressProvider = StateProvider<double>((ref) => 0.0);

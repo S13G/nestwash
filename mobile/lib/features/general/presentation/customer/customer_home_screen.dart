@@ -8,8 +8,8 @@ import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class CustomerHomeScreen extends ConsumerWidget {
+  const CustomerHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

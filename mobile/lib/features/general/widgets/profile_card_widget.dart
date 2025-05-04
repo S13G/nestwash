@@ -30,7 +30,7 @@ class ProfileCardWidget extends ConsumerWidget {
                 radius: 3.h,
                 child: ImageWidget(imageName: 'user_pic'),
               ),
-              SizedBox(width: 1.w),
+              SizedBox(width: 3.w),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -41,7 +41,7 @@ class ProfileCardWidget extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    'Nancy',
+                    'William',
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: Colors.white,
                       fontStyle: FontStyle.italic,
@@ -51,7 +51,7 @@ class ProfileCardWidget extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(width: 12.w),
+              Spacer(),
               MenuOptionsWidget(),
             ],
           ),

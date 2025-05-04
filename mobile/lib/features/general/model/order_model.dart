@@ -2,10 +2,11 @@ class Order {
   final String id;
   final DateTime orderDate;
   final DateTime deliveryDate;
-  final String status;
+  String status;
   final List<OrderItem> items;
   final double total;
   final String address;
+  final String? deliveryDelayReason;
 
   Order({
     required this.id,
@@ -15,6 +16,7 @@ class Order {
     required this.items,
     required this.total,
     required this.address,
+    this.deliveryDelayReason,
   });
 
   // Sample order for preview
@@ -23,11 +25,12 @@ class Order {
       id: "ORD-2023-9876",
       orderDate: DateTime.now().subtract(const Duration(days: 2)),
       deliveryDate: DateTime.now().add(const Duration(days: 1)),
-      status: "In Progress",
+      deliveryDelayReason: "Delayed delivery",
+      status: "Ready for delivery",
       items: [
         OrderItem(name: "Outer wear", quantity: 2, price: 3.0, category: "Men"),
         OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
-        OrderItem(name: "Bottom", quantity: 1, price: 3.0, category: "Men"),
+        OrderItem(name: "Underwear", quantity: 1, price: 3.0, category: "Men"),
       ],
       total: 18.0,
       address: "123 Main Street, Apt 4B, New York, NY 10001",

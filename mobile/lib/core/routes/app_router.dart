@@ -1,16 +1,16 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/presentation/signup_screen.dart';
-import 'package:nestcare/features/general/orders/presentation/clothes_screen.dart';
-import 'package:nestcare/features/general/orders/presentation/make_order_screen.dart';
-import 'package:nestcare/features/general/orders/presentation/order_details_screen.dart';
-import 'package:nestcare/features/general/orders/presentation/schedule_drop_off_screen.dart';
-import 'package:nestcare/features/general/orders/presentation/schedule_pickup_screen.dart';
-import 'package:nestcare/features/general/orders/presentation/select_clothes_screen.dart';
-import 'package:nestcare/features/general/orders/presentation/track_order_screen.dart';
 import 'package:nestcare/features/general/presentation/bottom_nav_screen.dart';
 import 'package:nestcare/features/general/presentation/chat_list_screen.dart';
 import 'package:nestcare/features/general/presentation/chat_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/clothes_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/make_order_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/order_details_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/schedule_drop_off_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/schedule_pickup_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/select_clothes_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/track_order_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_address_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_menu_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_profile_screen.dart';
@@ -18,6 +18,7 @@ import 'package:nestcare/features/general/presentation/menus/customer/edit_addre
 import 'package:nestcare/features/general/presentation/menus/invites_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/support_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_info_screen.dart';
+import 'package:nestcare/features/general/services/presentation/service_provider_order_details_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_profile_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_providers_screen.dart';
 
@@ -33,7 +34,6 @@ class AppRouter {
       ..._generalRoutes,
       ..._customerRoutes,
       ..._serviceProviderRoutes,
-      ..._ordersRoutes,
     ],
   );
 }
@@ -150,19 +150,6 @@ final _customerRoutes = <GoRoute>[
       ),
     ],
   ),
-];
-
-// ================= SERVICE PROVIDER ROUTES =================
-final _serviceProviderRoutes = <GoRoute>[
-  GoRoute(
-    path: '/service_provider/profile',
-    name: 'service_provider_profile',
-    builder: (context, state) => const ServiceProviderProfileScreen(),
-  ),
-];
-
-// ================= ORDERS ROUTES =================
-final _ordersRoutes = <GoRoute>[
   GoRoute(
     path: '/order/details',
     name: 'order_details',
@@ -174,5 +161,19 @@ final _ordersRoutes = <GoRoute>[
         builder: (context, state) => const OrderTrackingScreen(),
       ),
     ],
+  ),
+];
+
+// ================= SERVICE PROVIDER ROUTES =================
+final _serviceProviderRoutes = <GoRoute>[
+  GoRoute(
+    path: '/service_provider/profile',
+    name: 'service_provider_profile',
+    builder: (context, state) => const ServiceProviderProfileScreen(),
+  ),
+  GoRoute(
+    path: '/service_provider/order_details',
+    name: 'service_provider_order_details',
+    builder: (context, state) => const ServiceProviderOrderDetailsScreen(),
   ),
 ];
