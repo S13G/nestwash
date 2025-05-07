@@ -10,20 +10,34 @@ class ProfileCardSearchWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchNotifier = ref.read(searchControllerNotifierProvider.notifier);
-    final searchText = ref.watch(searchControllerNotifierProvider);
     final theme = Theme.of(context);
 
     return Row(
       children: [
-        IconImageWidget(iconName: 'search', width: 3.h, height: 3.h),
+        IconImageWidget(iconName: 'search', width: 2.5.h, height: 2.5.h),
         SizedBox(width: 2.w),
         Expanded(
           child: TextFormField(
             controller: searchNotifier.controller,
             focusNode: searchNotifier.focusNode,
             decoration: InputDecoration(
+              filled: false,
               hintText: 'Search',
-              border: InputBorder.none,
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: theme.colorScheme.primaryContainer,
+                ),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: theme.colorScheme.primaryContainer,
+                ),
+              ),
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: theme.colorScheme.primaryContainer,
+                ),
+              ),
               contentPadding: EdgeInsets.zero,
               hintStyle: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.primaryContainer,

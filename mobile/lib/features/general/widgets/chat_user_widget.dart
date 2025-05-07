@@ -35,7 +35,7 @@ class ChatUserWidget extends StatelessWidget {
             },
             child: CircleAvatar(
               radius: 30,
-              child: ImageWidget(imageName: imageName),
+              child: ImageWidget(imageName: imageName, width: double.infinity),
             ),
           ),
           SizedBox(width: 4.w),

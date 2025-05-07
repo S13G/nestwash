@@ -23,26 +23,25 @@ class InvitesScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Refer Friends',
-                    style: theme.textTheme.headlineLarge?.copyWith(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.primaryContainer,
                     ),
                   ),
                   Text(
                     'Get 30% Discount',
-                    style: theme.textTheme.headlineLarge?.copyWith(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.primaryContainer,
                     ),
                   ),
                   Text(
                     'for 10 orders.',
-                    style: theme.textTheme.headlineLarge?.copyWith(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.primaryContainer,
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 2.h),
             Center(
               child: ImageWidget(
                 imageName: 'invites',
@@ -50,7 +49,6 @@ class InvitesScreen extends StatelessWidget {
                 height: 30.h,
               ),
             ),
-            SizedBox(height: 2.h),
             Container(
               padding: EdgeInsets.all(3.h),
               decoration: BoxDecoration(

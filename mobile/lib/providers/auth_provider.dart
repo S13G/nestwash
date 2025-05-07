@@ -8,7 +8,6 @@ final emailControllerProvider = Provider.autoDispose<TextEditingController>((
   ref.onDispose(() => controller.dispose());
   return controller;
 });
-final emailProvider = StateProvider<String>((ref) => '');
 
 final fullNameControllerProvider = Provider.autoDispose<TextEditingController>((
   ref,

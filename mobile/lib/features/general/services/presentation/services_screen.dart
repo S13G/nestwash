@@ -54,14 +54,14 @@ class ServicesScreen extends ConsumerWidget {
                     key: ValueKey(services.length),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      color: theme.colorScheme.onPrimary,
+                      color: theme.colorScheme.onSurface,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        IconImageWidget(
-                          iconName: services[index].serviceTitleImageName!,
+                        ImageWidget(
+                          imageName: services[index].serviceTitleImageName!,
                           height: 9.h,
                           width: 9.h,
                         ),

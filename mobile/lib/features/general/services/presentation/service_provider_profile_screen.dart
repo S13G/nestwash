@@ -37,32 +37,41 @@ class ServiceProviderProfileScreen extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  child: ImageWidget(imageName: "lily_profile_pic"),
+                  child: ImageWidget(
+                    imageName: "lily_profile_pic",
+                    width: double.infinity,
+                  ),
                 ),
                 SizedBox(width: 1.h),
                 Column(
                   children: [
                     Text(
                       serviceProviderName,
-                      style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+                      style: theme.textTheme.titleSmall,
                     ),
                     SizedBox(height: 0.4.h),
                     Text(
                       "Laundry Cleaner",
-                      style: theme.textTheme.bodySmall?.copyWith(
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.primaryContainer,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
                 Spacer(),
                 Icon(Icons.star, color: Colors.yellow),
-                Text("4.9"),
+                Text(
+                  "4.9",
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 2.h),
             Container(
-              width: isAvailable ? 34.w : 42.w,
+              width: isAvailable ? 36.w : 44.w,
               padding: EdgeInsets.symmetric(horizontal: 2.h, vertical: 1.h),
               decoration: BoxDecoration(
                 color:
@@ -89,6 +98,7 @@ class ServiceProviderProfileScreen extends ConsumerWidget {
                   Text(
                     isAvailable ? 'Available' : 'Not available',
                     style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
                       color:
                           isAvailable
                               ? Colors.white
@@ -99,21 +109,18 @@ class ServiceProviderProfileScreen extends ConsumerWidget {
               ),
             ),
             SizedBox(height: 3.h),
-            Text(
-              "Description",
-              style: theme.textTheme.bodyLarge?.copyWith(fontSize: 20),
-            ),
+            Text("Description", style: theme.textTheme.titleSmall),
             SizedBox(height: 1.h),
             RichText(
               text: TextSpan(
-                style: theme.textTheme.bodyMedium?.copyWith(
+                style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.primaryContainer,
                 ),
                 children: [
                   TextSpan(text: isExpanded ? fullText : "$shortText..."),
                   TextSpan(
                     text: isExpanded ? "Read less" : "Read more",
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.primary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -141,10 +148,7 @@ class ServiceProviderProfileScreen extends ConsumerWidget {
               ],
             ),
             SizedBox(height: 3.h),
-            Text(
-              "Service Offerings",
-              style: theme.textTheme.bodyLarge?.copyWith(fontSize: 20),
-            ),
+            Text("Service Offerings", style: theme.textTheme.titleSmall),
             SizedBox(height: 3.h),
             SizedBox(
               height: 13.h,
@@ -167,15 +171,17 @@ class ServiceProviderProfileScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconImageWidget(
-                          iconName: service.serviceTitleImageName!,
+                        ImageWidget(
+                          imageName: service.serviceTitleImageName!,
                           height: 5.h,
                           width: 5.h,
                         ),
                         Text(
                           service.serviceTitle!,
                           style: theme.textTheme.bodySmall?.copyWith(
+                            fontSize: 13.sp,
                             color: Colors.white,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
@@ -185,11 +191,8 @@ class ServiceProviderProfileScreen extends ConsumerWidget {
               ),
             ),
             SizedBox(height: 3.h),
-            Text(
-              "Rate the seller",
-              style: theme.textTheme.bodyLarge?.copyWith(fontSize: 20),
-            ),
-            SizedBox(height: 1.h),
+            Text("Rate the seller", style: theme.textTheme.titleSmall),
+            SizedBox(height: 2.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(5, (index) {

@@ -110,7 +110,7 @@ class _ChatInputField extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
       child: Row(
         children: [
           Expanded(

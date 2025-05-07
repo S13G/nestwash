@@ -19,6 +19,7 @@ class LoginController extends StateNotifier<LoginState> {
         data: LoginData(email: email, accountType: accountType),
       );
       _ref.read(loadingProvider.notifier).state = false;
+
       _ref.read(routerProvider).goNamed("bottom_nav");
     } catch (e) {
       _ref.read(loadingProvider.notifier).state = false;

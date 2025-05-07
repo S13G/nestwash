@@ -26,7 +26,7 @@ class CustomerAddressScreen extends ConsumerWidget {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemCount: addresses.length,
-              separatorBuilder: (context, index) => SizedBox(height: 2.h),
+              separatorBuilder: (context, index) => SizedBox(height: 3.h),
               itemBuilder: (context, index) {
                 final address = addresses[index];
                 return GestureDetector(
@@ -41,6 +41,7 @@ class CustomerAddressScreen extends ConsumerWidget {
                 );
               },
             ),
+            SizedBox(height: 1.h),
             TextButton(
               onPressed: () {
                 context.pushNamed("edit_address");
@@ -48,9 +49,11 @@ class CustomerAddressScreen extends ConsumerWidget {
               style: TextButton.styleFrom(padding: EdgeInsets.zero),
               child: Text(
                 "+ Add new address",
-                style: theme.textTheme.bodyMedium?.copyWith(
+                style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.primary,
                   decoration: TextDecoration.underline,
+                  decorationColor: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

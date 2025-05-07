@@ -27,8 +27,12 @@ class AdditionalInfoContainer extends StatelessWidget {
         children: [
           Text(
             title,
-            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
+          SizedBox(height: 0.5.h),
           title == 'Reviews'
               ? Row(
                 children: [

@@ -40,30 +40,25 @@ class ServiceProviderInfoScreen extends ConsumerWidget {
                 ),
                 child: ImageWidget(
                   imageName: 'wash_and_iron_image',
-                  width: 40.h,
+                  width: double.infinity,
                   height: 25.h,
                   fit: BoxFit.fill,
                 ),
               ),
             ),
             SizedBox(height: 2.h),
-            Text(
-              serviceProviderName,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Text(serviceProviderName, style: theme.textTheme.titleSmall),
             SizedBox(height: 2.h),
             RichText(
               text: TextSpan(
-                style: theme.textTheme.bodyMedium?.copyWith(
+                style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.primaryContainer,
                 ),
                 children: [
                   TextSpan(text: isExpanded ? fullText : "$shortText..."),
                   TextSpan(
                     text: isExpanded ? "Read less" : "Read more",
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.primary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -91,18 +86,18 @@ class ServiceProviderInfoScreen extends ConsumerWidget {
               ],
             ),
             SizedBox(height: 3.h),
-            Text("Cleaning Process", style: theme.textTheme.bodyLarge),
+            Text("Cleaning Process", style: theme.textTheme.titleSmall),
             SizedBox(height: 1.h),
             RichText(
               text: TextSpan(
-                style: theme.textTheme.bodyMedium?.copyWith(
+                style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.primaryContainer,
                 ),
                 children: [
                   TextSpan(text: "$serviceProviderName's "),
                   TextSpan(
                     text: "$serviceTitle ",
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.primary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -115,18 +110,18 @@ class ServiceProviderInfoScreen extends ConsumerWidget {
               ),
             ),
             SizedBox(height: 3.h),
-            Text("Pricing", style: theme.textTheme.bodyLarge),
+            Text("Pricing", style: theme.textTheme.titleSmall),
             SizedBox(height: 1.h),
             RichText(
               text: TextSpan(
-                style: theme.textTheme.bodyMedium?.copyWith(
+                style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.primaryContainer,
                 ),
                 children: [
                   TextSpan(text: "Each item is "),
                   TextSpan(
                     text: "charged separately.",
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.primary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -193,12 +188,15 @@ class ServiceItemCard extends StatelessWidget {
           itemName[0].toUpperCase() + itemName.substring(1),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.primaryContainer,
+            fontWeight: FontWeight.w600,
+            fontSize: 15.sp,
           ),
         ),
         Text(
           '\$ ${price.toStringAsFixed(2)}',
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.primary,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],

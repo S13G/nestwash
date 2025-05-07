@@ -21,10 +21,13 @@ class NestButton extends ConsumerWidget {
       onPressed: loading ? null : onPressed,
       style: TextButton.styleFrom(
         minimumSize: Size(double.infinity, 7.h),
-        backgroundColor: color ?? theme.colorScheme.primary,
+        backgroundColor:
+            loading
+                ? theme.colorScheme.secondaryContainer
+                : color ?? theme.colorScheme.primary,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(20),
           side: BorderSide.none,
         ),
       ),
@@ -33,7 +36,7 @@ class NestButton extends ConsumerWidget {
               ? const LoaderWidget()
               : Text(
                 text[0].toUpperCase() + text.substring(1).toLowerCase(),
-                style: theme.textTheme.titleMedium?.copyWith(
+                style: theme.textTheme.titleSmall?.copyWith(
                   color: Colors.white,
                 ),
               ),

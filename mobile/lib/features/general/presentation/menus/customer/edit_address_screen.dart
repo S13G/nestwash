@@ -13,11 +13,9 @@ class EditAddressScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final formKey = GlobalKey<FormState>();
     final addressController = ref.watch(addressControllerProvider);
     final cityController = ref.watch(cityControllerProvider);
-    final isLoading = ref.watch(loadingProvider);
 
     return NestScaffold(
       showBackButton: true,
@@ -28,13 +26,13 @@ class EditAddressScreen extends ConsumerWidget {
           children: [
             NestForm(
               formKey: formKey,
-              isLoading: isLoading,
               spacing: 1,
               fields: [
                 NestFormField(
                   controller: addressController,
                   hintText: "Enter address",
                   label: "Address",
+                  belowSpacing: false,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your full name';

@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/provider/auth_provider.dart';
-import 'package:nestcare/providers/auth_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_form_fields.dart';
@@ -20,112 +20,106 @@ class SignupScreen extends HookConsumerWidget {
     final emailController = useTextEditingController();
     final state = ref.watch(signupProvider);
     final controller = ref.read(signupProvider.notifier);
-    final isLoading = ref.watch(loadingProvider);
 
     useToastEffect(context, error: state.error, success: state.success);
 
     return NestScaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 3.h),
-                      Text(
-                        "Welcome to NestWash",
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.5,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        "Sign up to experience premium laundry services",
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 1.h),
-                      ImageWidget(
-                        imageName: "email_icon",
-                        width: double.infinity,
-                        height: 32.h,
-                        fit: BoxFit.contain,
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        "Enter your email to get started",
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 2.h),
-                      NestForm(
-                        formKey: formKey,
-                        spacing: 2,
-                        submitText: "Submit Code",
-                        isLoading: isLoading,
-                        fields: [
-                          NestFormField(
-                            controller: emailController,
-                            hintText: "Email Address",
-                            prefixIcon: Icon(Icons.email_outlined),
-                            belowSpacing: false,
-                            validator: (value) {
-                              if (value == null || !value.contains("@")) {
-                                return "Enter a valid email";
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
-                        onSubmit: () {
-                          if (!formKey.currentState!.validate()) return;
-                          controller.enterEmail(emailController.text);
-                        },
-                      ),
-                      SizedBox(height: 2.h),
-                    ],
-                  ),
-                ),
-              ),
-              // Footer section with login link
-              RichText(
-                text: TextSpan(
-                  text: "I have an account? ",
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: Colors.black,
-                    fontStyle: FontStyle.italic,
-                  ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TextSpan(
-                      text: "Log in",
-                      style: theme.textTheme.bodyLarge?.copyWith(
+                    Text(
+                      "Welcome to NestWash",
+                      style: theme.textTheme.titleLarge?.copyWith(
                         color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.5,
                       ),
-                      recognizer:
-                          TapGestureRecognizer()
-                            ..onTap = () {
-                              // Add navigation to login screen here
-                              // Example: Navigator.pushReplacementNamed(context, '/login');
-                            },
+                      textAlign: TextAlign.center,
                     ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      "Sign up to experience premium laundry services",
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 1.h),
+                    ImageWidget(
+                      imageName: "email_icon",
+                      width: double.infinity,
+                      height: 32.h,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      "Enter your email to get started",
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 2.h),
+                    NestForm(
+                      formKey: formKey,
+                      spacing: 2,
+                      submitText: "Submit Code",
+                      fields: [
+                        NestFormField(
+                          controller: emailController,
+                          hintText: "Email Address",
+                          prefixIcon: Icon(Icons.email_outlined),
+                          belowSpacing: false,
+                          validator: (value) {
+                            if (value == null || !value.contains("@")) {
+                              return "Enter a valid email";
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                      onSubmit: () {
+                        if (!formKey.currentState!.validate()) return;
+                        controller.enterEmail(emailController.text);
+                      },
+                    ),
+                    SizedBox(height: 2.h),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+            // Footer section with login link
+            RichText(
+              text: TextSpan(
+                text: "I have an account? ",
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: Colors.black,
+                  fontStyle: FontStyle.italic,
+                ),
+                children: [
+                  TextSpan(
+                    text: "Log in",
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                    recognizer:
+                        TapGestureRecognizer()
+                          ..onTap = () {
+                            context.goNamed("login");
+                          },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -17,7 +17,7 @@ class ProfileCardWidget extends ConsumerWidget {
       padding: EdgeInsets.symmetric(horizontal: 2.h, vertical: 2.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
-        color: theme.colorScheme.onPrimary,
+        color: theme.colorScheme.onSurface,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

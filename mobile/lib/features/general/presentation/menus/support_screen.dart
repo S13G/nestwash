@@ -24,7 +24,7 @@ class SupportScreen extends StatelessWidget {
                 height: 5.h,
               ),
               SizedBox(width: 3.w),
-              Text('Support Service', style: theme.textTheme.titleLarge),
+              Text('Support Service', style: theme.textTheme.titleMedium),
             ],
           ),
           SizedBox(height: 2.h),

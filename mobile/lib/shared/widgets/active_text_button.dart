@@ -23,14 +23,14 @@ class ActiveTextButton extends StatelessWidget {
       style: TextButton.styleFrom(
         backgroundColor:
             selectedTab == selectedNumber
-                ? theme.colorScheme.onPrimary
+                ? theme.colorScheme.onSurface
                 : Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
             color:
                 selectedTab == selectedNumber
-                    ? theme.colorScheme.onPrimary
+                    ? theme.colorScheme.onSurface
                     : theme.colorScheme.primaryContainer,
           ),
         ),

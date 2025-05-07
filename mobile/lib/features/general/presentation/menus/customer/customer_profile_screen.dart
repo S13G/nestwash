@@ -15,7 +15,6 @@ class CustomerProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = GlobalKey<FormState>();
     final fullNameController = ref.watch(fullNameControllerProvider);
-    final isLoading = ref.watch(loadingProvider);
 
     final user = ref.watch(userProvider);
     final emailController = ref.watch(emailControllerProvider);
@@ -56,10 +55,10 @@ class CustomerProfileScreen extends ConsumerWidget {
           children: [
             NestForm(
               formKey: formKey,
-              isLoading: isLoading,
               spacing: 1,
               fields: [
                 NestFormField(
+                  belowSpacing: false,
                   controller: fullNameController,
                   hintText: "Enter full name",
                   label: "Name",

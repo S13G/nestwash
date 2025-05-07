@@ -8,12 +8,13 @@ class MenuOptionsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return IconButton(
       padding: EdgeInsets.zero,
       onPressed: () {
         context.pushNamed("customer_menu");
       },
-      icon: Icon(Icons.more_vert, color: Colors.white, size: 5.h),
+      icon: Icon(Icons.more_vert, color: theme.colorScheme.primary, size: 5.h),
     );
   }
 }

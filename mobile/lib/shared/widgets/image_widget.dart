@@ -52,9 +52,15 @@ class IconImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final appConstant = AppConstant();
 
     final iconPath = appConstant.getIconPath(iconName);
-    return Image.asset(iconPath, width: width, height: height, color: color);
+    return Image.asset(
+      iconPath,
+      width: width,
+      height: height,
+      color: color ?? theme.colorScheme.primary,
+    );
   }
 }

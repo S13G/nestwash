@@ -81,6 +81,7 @@ class ServiceProvidersScreen extends ConsumerWidget {
                             radius: 30,
                             child: ImageWidget(
                               imageName: serviceProvider["profile_image"]!,
+                              width: double.infinity,
                             ),
                           ),
                         ),
@@ -88,7 +89,7 @@ class ServiceProvidersScreen extends ConsumerWidget {
                         Text(
                           "${serviceProvider["name"]}",
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.primaryContainer,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         Spacer(),

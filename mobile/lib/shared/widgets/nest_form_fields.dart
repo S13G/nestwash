@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/providers/auth_provider.dart';
 import 'package:nestcare/shared/widgets/loader_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class NestForm extends StatelessWidget {
+class NestForm extends HookConsumerWidget {
   final GlobalKey<FormState> formKey;
   final List<Widget> fields;
   final VoidCallback onSubmit;
   final String submitText;
   final int? spacing;
-  final bool isLoading;
 
   const NestForm({
     super.key,
@@ -17,12 +18,12 @@ class NestForm extends StatelessWidget {
     required this.onSubmit,
     this.submitText = "Submit",
     this.spacing = 3,
-    this.isLoading = false,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final isLoading = ref.watch(loadingProvider);
 
     return Form(
       key: formKey,
@@ -34,12 +35,13 @@ class NestForm extends StatelessWidget {
             width: double.infinity,
             height: 7.h,
             child: ElevatedButton(
-              onPressed: onSubmit,
+              onPressed: isLoading ? null : onSubmit,
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 backgroundColor: theme.colorScheme.primary,
+                disabledBackgroundColor: theme.colorScheme.secondaryContainer,
               ),
               child:
                   isLoading

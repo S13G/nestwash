@@ -80,11 +80,12 @@ class AddressCard extends ConsumerWidget {
   }
 
   Future<bool> showDeleteConfirmationDialog(BuildContext context) async {
+    final theme = Theme.of(context);
     final result = await showDialog<bool>(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Confirm Deletion'),
+            title: Text('Confirm Deletion', style: theme.textTheme.titleMedium),
             content: const Text(
               'Are you sure you want to delete this address?',
             ),
@@ -99,9 +100,12 @@ class AddressCard extends ConsumerWidget {
                   backgroundColor: Colors.red,
                   elevation: 1,
                 ),
-                child: const Text(
+                child: Text(
                   'Delete',
-                  style: TextStyle(color: Colors.white),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],

@@ -57,8 +57,8 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/images/icons/nestwash_app_icon.png"
-  background_color: "#5597FF"
-  background_color_ios: "#5597FF"
-  adaptive_icon_background: "#5597FF"
+  background_color: "#6C63FF"
+  background_color_ios: "#6C63FF"
+  adaptive_icon_background: "#6C63FF"
   adaptive_icon_foreground: "assets/images/icons/nestwash_app_icon.png"
   adaptive_icon_foreground_dark: "assets/images/icons/nestwash_app_icon.png"

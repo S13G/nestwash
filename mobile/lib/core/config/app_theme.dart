@@ -5,12 +5,13 @@ class AppColors {
   static const primary = Color(0xFF6C63FF);
   static const secondary = Color(0xFF3F3D56);
   static const onPrimary = Color(0xFF8FD7C7);
-  static const background = Color(0xFFF9F9F9);
+  static const background = Color(0xFFF1F7FF);
   static const surface = Color(0xFFFFFFFF);
   static const text = Color(0xFF121212);
   static const hint = Color(0xFF737373);
   static const accent = Color(0xFF8EB8FF);
   static const primaryContainer = Color(0xFF797777);
+  static const secondaryContainer = Color(0xFF7E7BAF);
 }
 
 class AppTheme {
@@ -20,11 +21,13 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
+      secondaryContainer: AppColors.secondaryContainer,
       surface: AppColors.background,
+      onSurface: AppColors.accent,
       onPrimary: AppColors.onPrimary,
-      onSecondary: Colors.black,
+      onSecondary: AppColors.text,
       primaryContainer: AppColors.primaryContainer,
-      onSurface: AppColors.text,
+      onPrimaryContainer: AppColors.hint,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

@@ -70,7 +70,7 @@ class OrderTrackingScreen extends StatelessWidget {
                     child: Container(
                       height: 2.5.h,
                       decoration: BoxDecoration(
-                        color: Color(0xFF6495ED), // Royal blue color
+                        color: theme.colorScheme.primary, // Royal blue color
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
@@ -174,7 +174,7 @@ class CustomStepper extends StatelessWidget {
             decoration: BoxDecoration(
               color:
                   isCompleted || isCurrentStep
-                      ? Color(0xFF6495ED)
+                      ? theme.colorScheme.primary
                       : theme.colorScheme.primaryContainer.withValues(
                         alpha: 0.6,
                       ),

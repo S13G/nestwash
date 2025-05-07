@@ -42,7 +42,7 @@ class ServiceProviderHomeScreen extends ConsumerWidget {
                     Text(
                       'William',
                       style: theme.textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
+                        color: theme.colorScheme.primary,
                         fontStyle: FontStyle.italic,
                         fontSize: 4.h,
                         fontWeight: FontWeight.bold,

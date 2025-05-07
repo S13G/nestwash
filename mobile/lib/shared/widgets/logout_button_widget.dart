@@ -21,6 +21,9 @@ class LogoutButtonWidget extends ConsumerWidget {
           style: theme.textTheme.bodyLarge?.copyWith(
             color: theme.colorScheme.primary,
             decoration: TextDecoration.underline,
+            decorationColor: theme.colorScheme.primary,
+            decorationThickness: 2,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

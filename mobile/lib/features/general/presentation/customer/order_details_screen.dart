@@ -58,7 +58,7 @@ class OrderDetailsScreen extends ConsumerWidget {
                     children: [
                       Text(
                         'Order #${order.id}',
-                        style: theme.textTheme.titleMedium?.copyWith(
+                        style: theme.textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -137,7 +137,7 @@ class OrderDetailsScreen extends ConsumerWidget {
                         DateFormat(
                           'EEEE, MMM d, yyyy',
                         ).format(order.deliveryDate),
-                        style: theme.textTheme.titleMedium?.copyWith(
+                        style: theme.textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -229,7 +229,7 @@ class OrderDetailsScreen extends ConsumerWidget {
   Widget _buildSectionTitle(ThemeData theme, String title) {
     return Text(
       title,
-      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
     );
   }
 
@@ -410,7 +410,7 @@ class OrderDetailsScreen extends ConsumerWidget {
       builder:
           (context) => AlertDialog(
             title: Text('Confirm Order Completion'),
-            titleTextStyle: theme.textTheme.titleLarge?.copyWith(
+            titleTextStyle: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
             content: Text(
@@ -438,6 +438,7 @@ class OrderDetailsScreen extends ConsumerWidget {
                   'Confirm',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: Colors.white,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -460,7 +461,7 @@ class OrderDetailsScreen extends ConsumerWidget {
               children: [
                 Text(
                   'How can we help?',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 SizedBox(height: 20),
                 _buildHelpOption(context, Icons.message, 'Chat with support'),
@@ -475,7 +476,7 @@ class OrderDetailsScreen extends ConsumerWidget {
   Widget _buildHelpOption(BuildContext context, IconData icon, String text) {
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
-      title: Text(text),
+      title: Text(text, style: Theme.of(context).textTheme.bodyLarge),
       onTap: () {
         context.pop();
       },

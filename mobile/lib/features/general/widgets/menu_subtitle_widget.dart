@@ -15,7 +15,7 @@ class MenuSubtitleWidget extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 3.h),
       child: Text(
         title[0].toUpperCase() + title.substring(1),
-        style: theme.textTheme.titleLarge?.copyWith(
+        style: theme.textTheme.titleMedium?.copyWith(
           color: theme.colorScheme.primaryContainer,
         ),
       ),

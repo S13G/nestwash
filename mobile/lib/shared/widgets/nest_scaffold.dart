@@ -41,26 +41,32 @@ class NestScaffold extends StatelessWidget {
                 leading:
                     showBackButton
                         ? IconButton(
-                          icon: const Icon(Icons.arrow_back),
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: theme.colorScheme.secondary,
+                          ),
                           onPressed:
                               backButtonOnPressed ??
                               () {
-                                GoRouter.of(context).pop();
+                                context.pop();
                               },
                         )
                         : null,
-                title: Text(title![0].toUpperCase() + title!.substring(1)),
+                title: Text(
+                  title![0].toUpperCase() + title!.substring(1),
+                  style: theme.textTheme.titleMedium,
+                ),
                 actions: actions,
               )
               : null),
       body:
           padding == EdgeInsets.zero
-              ? body
+              ? SafeArea(child: body)
               : Padding(
                 padding:
                     padding ??
-                    EdgeInsets.only(left: 4.h, right: 4.h, bottom: 4.h),
-                child: body,
+                    EdgeInsets.only(left: 4.h, right: 4.h, bottom: 6.h),
+                child: SafeArea(child: body),
               ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
