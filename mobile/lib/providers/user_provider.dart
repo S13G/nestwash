@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/features/auth/data/user_model.dart';
+import 'package:nestcare/features/auth/model/user_state.dart';
 
-final userProvider = StateNotifierProvider<UserNotifier, UserModel?>((ref) {
+final userProvider = StateNotifierProvider<UserNotifier, UserState?>((ref) {
   return UserNotifier(null);
 });
 
-class UserNotifier extends StateNotifier<UserModel?> {
+class UserNotifier extends StateNotifier<UserState?> {
   UserNotifier(super.state);
 
   // Update user details
   void setUser(String email, String fullName, String? accountType) {
-    state = UserModel(
+    state = UserState(
       email: email,
       fullName: fullName,
       accountType: accountType,

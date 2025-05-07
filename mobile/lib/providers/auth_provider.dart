@@ -18,26 +18,6 @@ final fullNameControllerProvider = Provider.autoDispose<TextEditingController>((
   return controller;
 });
 
-final passwordControllerProvider = Provider.autoDispose<TextEditingController>((
-  ref,
-) {
-  final controller = TextEditingController();
-  ref.onDispose(() => controller.dispose());
-  return controller;
-});
-
-final otpControllerProvider = Provider.autoDispose<TextEditingController>((
-  ref,
-) {
-  final controller = TextEditingController();
-  ref.onDispose(() => controller.dispose());
-  return controller;
-});
-
 final loadingProvider = StateProvider<bool>((ref) => false);
 
-final pageIndexProvider = StateProvider<int>((ref) => 0);
-
 final passwordVisibilityProvider = StateProvider<bool>((ref) => false);
-
-final accountTypeProvider = StateProvider<String?>((ref) => null);

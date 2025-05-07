@@ -33,11 +33,11 @@ class NestForm extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             height: 7.h,
-            child: TextButton(
+            child: ElevatedButton(
               onPressed: onSubmit,
-              style: TextButton.styleFrom(
+              style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 backgroundColor: theme.colorScheme.primary,
               ),
@@ -46,9 +46,8 @@ class NestForm extends StatelessWidget {
                       ? LoaderWidget()
                       : Text(
                         submitText,
-                        style: theme.textTheme.bodyLarge?.copyWith(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
-                          fontSize: 22,
                         ),
                       ),
             ),
@@ -68,14 +67,11 @@ class NestFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final bool enabled;
-  final InputDecoration? decoration;
-  final bool underlinedBorder;
   final int? maxLines;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool readOnly;
   final bool belowSpacing;
-  final EdgeInsetsGeometry? contentPadding;
 
   const NestFormField({
     super.key,
@@ -87,46 +83,16 @@ class NestFormField extends StatelessWidget {
     this.validator,
     this.keyboardType,
     this.enabled = true,
-    this.decoration,
-    this.underlinedBorder = false,
     this.maxLines,
     this.prefixIcon,
     this.suffixIcon,
     this.readOnly = false,
     this.belowSpacing = true,
-    this.contentPadding,
   });
-
-  InputBorder _buildBorder(BuildContext context) {
-    final theme = Theme.of(context);
-    if (underlinedBorder) {
-      return UnderlineInputBorder(
-        borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
-      );
-    } else {
-      return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: theme.colorScheme.primaryContainer),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    EdgeInsetsGeometry finalContentPadding;
-
-    if (contentPadding != null) {
-      finalContentPadding = contentPadding!;
-    } else if (underlinedBorder) {
-      finalContentPadding = EdgeInsets.symmetric(
-        horizontal: 4.w,
-        vertical: 2.h,
-      );
-    } else {
-      finalContentPadding = EdgeInsets.symmetric(vertical: 2.h);
-    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,23 +114,12 @@ class NestFormField extends StatelessWidget {
           enabled: enabled,
           maxLines: maxLines ?? 1,
           readOnly: readOnly,
-          decoration:
-              decoration ??
-              InputDecoration(
-                errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
-                hintText: hintText,
-                hintStyle: TextStyle(color: theme.colorScheme.primaryContainer),
-                labelText: inFormLabelText,
-                labelStyle: TextStyle(
-                  color: theme.colorScheme.primaryContainer,
-                ),
-                contentPadding: finalContentPadding,
-                prefixIcon: prefixIcon,
-                suffixIcon: suffixIcon,
-                enabledBorder: _buildBorder(context),
-                focusedBorder: _buildBorder(context),
-                border: _buildBorder(context),
-              ),
+          decoration: InputDecoration(
+            hintText: hintText,
+            labelText: inFormLabelText,
+            prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
+          ),
         ),
         belowSpacing ? SizedBox(height: 2.h) : const SizedBox.shrink(),
       ],

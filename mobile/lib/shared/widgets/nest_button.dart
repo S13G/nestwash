@@ -18,9 +18,9 @@ class NestButton extends ConsumerWidget {
     final loading = ref.watch(loadingProvider);
 
     return TextButton(
-      onPressed: onPressed,
+      onPressed: loading ? null : onPressed,
       style: TextButton.styleFrom(
-        minimumSize: Size(double.infinity, 6.h),
+        minimumSize: Size(double.infinity, 7.h),
         backgroundColor: color ?? theme.colorScheme.primary,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
@@ -33,7 +33,7 @@ class NestButton extends ConsumerWidget {
               ? const LoaderWidget()
               : Text(
                 text[0].toUpperCase() + text.substring(1).toLowerCase(),
-                style: theme.textTheme.titleLarge?.copyWith(
+                style: theme.textTheme.titleMedium?.copyWith(
                   color: Colors.white,
                 ),
               ),

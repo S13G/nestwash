@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:nestcare/core/config/app_constants.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ImageWidget extends StatelessWidget {
   final String imageName;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final BoxFit fit;
   final Color? color;
 
-  const ImageWidget({
+  ImageWidget({
     super.key,
     required this.imageName,
-    this.width = double.infinity,
-    this.height = double.infinity,
+    this.width,
+    this.height,
     this.fit = BoxFit.cover,
     this.color,
   });
@@ -22,10 +23,13 @@ class ImageWidget extends StatelessWidget {
     final appConstant = AppConstant();
 
     final imagePath = appConstant.getImagePath(imageName);
+    final double displayWidth = width ?? 10.w;
+    final double displayHeight = height ?? 10.h;
+
     return Image.asset(
       imagePath,
-      width: width,
-      height: height,
+      width: displayWidth,
+      height: displayHeight,
       fit: fit,
       color: color,
     );

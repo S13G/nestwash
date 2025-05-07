@@ -5,14 +5,13 @@ import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ProfileCardSearchWidget extends ConsumerWidget {
-  const ProfileCardSearchWidget({super.key, required this.theme});
-
-  final ThemeData theme;
+  const ProfileCardSearchWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchController = ref.watch(searchControllerProvider);
-    final searchFocusNode = ref.watch(searchFocusNodeProvider);
+    final searchNotifier = ref.read(searchControllerNotifierProvider.notifier);
+    final searchText = ref.watch(searchControllerNotifierProvider);
+    final theme = Theme.of(context);
 
     return Row(
       children: [
@@ -20,8 +19,8 @@ class ProfileCardSearchWidget extends ConsumerWidget {
         SizedBox(width: 2.w),
         Expanded(
           child: TextFormField(
-            controller: searchController,
-            focusNode: searchFocusNode,
+            controller: searchNotifier.controller,
+            focusNode: searchNotifier.focusNode,
             decoration: InputDecoration(
               hintText: 'Search',
               border: InputBorder.none,

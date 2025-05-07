@@ -37,7 +37,6 @@ class ServiceProvidersScreen extends ConsumerWidget {
             ),
             hintText: "Search service providers...",
             prefixIcon: Icon(Icons.search),
-            underlinedBorder: false,
           ),
           SizedBox(height: 2.h),
           ListView.separated(

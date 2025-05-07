@@ -56,7 +56,7 @@ class ProfileCardWidget extends ConsumerWidget {
             ],
           ),
           SizedBox(height: 2.h),
-          search ? ProfileCardSearchWidget(theme: theme) : SizedBox.shrink(),
+          search ? ProfileCardSearchWidget() : SizedBox.shrink(),
         ],
       ),
     );

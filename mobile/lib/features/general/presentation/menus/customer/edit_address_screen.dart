@@ -34,9 +34,7 @@ class EditAddressScreen extends ConsumerWidget {
                 NestFormField(
                   controller: addressController,
                   hintText: "Enter address",
-                  underlinedBorder: true,
                   label: "Address",
-                  contentPadding: EdgeInsets.zero,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your full name';
@@ -48,9 +46,7 @@ class EditAddressScreen extends ConsumerWidget {
                 NestFormField(
                   controller: cityController,
                   hintText: "Enter city",
-                  underlinedBorder: true,
                   label: "City",
-                  contentPadding: EdgeInsets.zero,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a city';

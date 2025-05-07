@@ -3,42 +3,39 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final searchTextProvider = StateProvider<String>((ref) => '');
+final searchControllerNotifierProvider =
+    StateNotifierProvider<SearchControllerNotifier, String>(
+      (ref) => SearchControllerNotifier(),
+    );
 
-final searchFocusNodeProvider = Provider<FocusNode>((ref) {
-  final focusNode = FocusNode();
-  ref.onDispose(() => focusNode.dispose());
-  return focusNode;
-});
+class SearchControllerNotifier extends StateNotifier<String> {
+  final FocusNode focusNode = FocusNode();
+  final TextEditingController controller = TextEditingController();
 
-final searchControllerProvider = Provider.autoDispose<TextEditingController>((
-  ref,
-) {
-  final controller = TextEditingController();
-  Timer? debounceTimer;
+  Timer? _debounce;
 
-  void listener() {
-    ref.read(searchTextProvider.notifier).state = controller.text.trim();
+  SearchControllerNotifier() : super('') {
+    controller.addListener(_onSearchChanged);
+  }
 
-    // Reset and start the timer
-    debounceTimer?.cancel();
-    debounceTimer = Timer(const Duration(seconds: 4), () {
-      // Clear text and remove focus after 3 seconds of inactivity
+  void _onSearchChanged() {
+    final trimmedText = controller.text.trim();
+    state = trimmedText;
+
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(seconds: 4), () {
       controller.clear();
-      ref.read(searchTextProvider.notifier).state = '';
-      ref.read(searchFocusNodeProvider).unfocus();
+      state = '';
+      focusNode.unfocus();
     });
   }
 
-  // Add the listener to the controller
-  controller.addListener(listener);
-
-  // Clean up on dispose
-  ref.onDispose(() {
-    controller.removeListener(listener);
-    debounceTimer?.cancel();
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    controller.removeListener(_onSearchChanged);
     controller.dispose();
-  });
-
-  return controller;
-});
+    focusNode.dispose();
+    super.dispose();
+  }
+}

@@ -62,9 +62,7 @@ class CustomerProfileScreen extends ConsumerWidget {
                 NestFormField(
                   controller: fullNameController,
                   hintText: "Enter full name",
-                  underlinedBorder: true,
                   label: "Name",
-                  contentPadding: EdgeInsets.zero,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your full name';
@@ -75,10 +73,8 @@ class CustomerProfileScreen extends ConsumerWidget {
                 SizedBox(height: 4.h),
                 NestFormField(
                   controller: emailController,
-                  underlinedBorder: true,
                   readOnly: true,
                   label: "Email address",
-                  contentPadding: EdgeInsets.zero,
                 ),
               ],
               onSubmit:

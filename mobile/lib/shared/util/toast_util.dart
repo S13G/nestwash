@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ToastUtil {
@@ -74,4 +75,18 @@ class ToastUtil {
       Duration(milliseconds: 1500),
     ).then((value) => overlayEntry.remove());
   }
+}
+
+void useToastEffect(BuildContext context, {String? error, String? success}) {
+  useEffect(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (error != null) {
+        ToastUtil.showErrorToast(context, error);
+      }
+      if (success != null) {
+        ToastUtil.showSuccessToast(context, success);
+      }
+    });
+    return null;
+  }, [error, success]);
 }

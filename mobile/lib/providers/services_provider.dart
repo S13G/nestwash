@@ -59,7 +59,7 @@ final allActiveOrdersProvider = StateProvider<List<ServiceModel>>((ref) {
 });
 
 final filteredServiceProvider = StateProvider<List<ServiceModel>>((ref) {
-  final search = ref.watch(searchTextProvider).toLowerCase();
+  final search = ref.watch(searchControllerNotifierProvider).toLowerCase();
   final allServices = ref.watch(allServicesProvider);
 
   if (search.isEmpty) return allServices;

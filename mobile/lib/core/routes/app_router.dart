@@ -1,5 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/auth/presentation/login_screen.dart';
+import 'package:nestcare/features/auth/presentation/otp_screen.dart';
+import 'package:nestcare/features/auth/presentation/registration_screen.dart';
 import 'package:nestcare/features/auth/presentation/signup_screen.dart';
 import 'package:nestcare/features/general/presentation/bottom_nav_screen.dart';
 import 'package:nestcare/features/general/presentation/chat_list_screen.dart';
@@ -44,6 +47,27 @@ final _authRoutes = <GoRoute>[
     path: '/signup',
     name: 'signup',
     builder: (context, state) => const SignupScreen(),
+    routes: <GoRoute>[
+      GoRoute(
+        path: '/email/verify',
+        name: 'verify_email',
+        builder: (context, state) => const OtpScreen(),
+        routes: <GoRoute>[
+          GoRoute(
+            path: '/register',
+            name: 'register',
+            builder: (context, state) => const RegistrationScreen(),
+            routes: <GoRoute>[
+              GoRoute(
+                path: '/login',
+                name: 'login',
+                builder: (context, state) => const LoginScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
   ),
 ];
 
