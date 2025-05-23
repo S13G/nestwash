@@ -41,27 +41,28 @@ class ServiceCard extends ConsumerWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  bottomLeft: Radius.circular(30),
-                ),
-                child: SizedBox(
-                  width: 15.h,
-                  height: 15.h,
-                  child: ImageWidget(
-                    imageName: service.itemCardImageName!,
-                    fit: BoxFit.cover,
+              Container(
+                width: 25.w,
+                height: 13.9.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
                   ),
+                  color: service.itemCardBackgroundColor?.withValues(
+                    alpha: 0.15,
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(2.h),
+                  child: IconImageWidget(iconName: service.itemCardImageName!),
                 ),
               ),
 
               // Info Box - Expanded to take remaining width
               Expanded(
                 child: Container(
-                  // Use a minimum height constraint to match the image height
-                  constraints: BoxConstraints(minHeight: 15.h),
-                  padding: EdgeInsets.all(12),
+                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.w),
                   decoration: BoxDecoration(
                     color: service.itemCardBackgroundColor,
                     borderRadius: BorderRadius.only(
@@ -71,7 +72,7 @@ class ServiceCard extends ConsumerWidget {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Status text
                       Align(
@@ -80,7 +81,7 @@ class ServiceCard extends ConsumerWidget {
                           service.status!,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),

@@ -12,6 +12,8 @@ class AppColors {
   static const accent = Color(0xFF8EB8FF);
   static const primaryContainer = Color(0xFF797777);
   static const secondaryContainer = Color(0xFF7E7BAF);
+  static const tertiary = Color(0xFF1F2937);
+  static const onTertiary = Color(0xFF6366F1);
 }
 
 class AppTheme {
@@ -28,6 +30,8 @@ class AppTheme {
       onSecondary: AppColors.text,
       primaryContainer: AppColors.primaryContainer,
       onPrimaryContainer: AppColors.hint,
+      tertiary: AppColors.tertiary,
+      onTertiary: AppColors.onTertiary,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

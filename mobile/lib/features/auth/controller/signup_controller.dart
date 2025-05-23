@@ -8,7 +8,7 @@ class SignUpController extends StateNotifier<SignUpState> {
 
   SignUpController(this._ref) : super(SignUpState());
 
-  Future<void> enterEmail(String email) async {
+  Future<void> enterEmail(String email, {bool forgotPassword = false}) async {
     _ref.read(loadingProvider.notifier).state = true;
 
     try {
@@ -18,14 +18,19 @@ class SignUpController extends StateNotifier<SignUpState> {
         success: "OTP sent successfully",
       );
       _ref.read(loadingProvider.notifier).state = false;
-      _ref.read(routerProvider).goNamed('verify_email');
+
+      forgotPassword
+          ? _ref
+              .read(routerProvider)
+              .goNamed('verify_email', extra: forgotPassword)
+          : _ref.read(routerProvider).goNamed('verify_email');
     } catch (e) {
       _ref.read(loadingProvider.notifier).state = false;
       state = state.copyWith(error: e.toString());
     }
   }
 
-  Future<void> verifyOtp(int otp) async {
+  Future<void> verifyOtp(int otp, {bool forgotPassword = false}) async {
     _ref.read(loadingProvider.notifier).state = true;
 
     try {
@@ -35,7 +40,10 @@ class SignUpController extends StateNotifier<SignUpState> {
         success: "OTP verified",
       );
       _ref.read(loadingProvider.notifier).state = false;
-      _ref.read(routerProvider).goNamed("register");
+
+      forgotPassword
+          ? _ref.read(routerProvider).goNamed("login")
+          : _ref.read(routerProvider).goNamed("register");
     } catch (e) {
       _ref.read(loadingProvider.notifier).state = false;
       state = state.copyWith(error: e.toString());

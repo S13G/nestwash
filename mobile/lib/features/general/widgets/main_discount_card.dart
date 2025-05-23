@@ -9,14 +9,14 @@ class MainDiscountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 3.h, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(35),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFFF9966), Color(0xFFFF5E62)],
+          colors: [Color(0xFF8B5CF6), Color(0xFF6366F1)],
         ),
         boxShadow: [
           BoxShadow(
@@ -31,7 +31,7 @@ class MainDiscountCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '50%',
+            '-50%',
             style: theme.textTheme.bodyLarge?.copyWith(
               fontSize: 4.h,
               fontWeight: FontWeight.bold,

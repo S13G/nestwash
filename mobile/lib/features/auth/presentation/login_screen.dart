@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/provider/auth_provider.dart';
+import 'package:nestcare/providers/auth_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_form_fields.dart';
@@ -17,15 +18,20 @@ class LoginScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final formKey = useMemoized(() => GlobalKey<FormState>());
+
+    // Get the signup state once and memoize the initial values
     final signupState = ref.read(signupProvider);
+    final initialEmail = useMemoized(() => signupState.data?.email ?? '', []);
+    final initialPassword = useMemoized(
+      () => signupState.data?.password ?? '',
+      [],
+    );
+
     final state = ref.watch(loginProvider);
-    final emailController = useTextEditingController(
-      text: signupState.data?.email ?? '',
-    );
-    final passwordController = useTextEditingController(
-      text: signupState.data?.password ?? '',
-    );
+    final emailController = useTextEditingController(text: initialEmail);
+    final passwordController = useTextEditingController(text: initialPassword);
     final controller = ref.read(loginProvider.notifier);
+    final obscureText = ref.watch(passwordVisibilityProvider);
 
     useToastEffect(context, error: state.error, success: state.success);
 
@@ -66,7 +72,7 @@ class LoginScreen extends HookConsumerWidget {
                 NestFormField(
                   controller: passwordController,
                   keyboardType: TextInputType.text,
-                  belowSpacing: false,
+                  obscureText: obscureText,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a password';
@@ -76,12 +82,21 @@ class LoginScreen extends HookConsumerWidget {
                   inFormLabelText: "Password",
                   hintText: "Password",
                   prefixIcon: Icon(Icons.password),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      ref.read(passwordVisibilityProvider.notifier).state =
+                          !obscureText;
+                    },
+                  ),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      context.goNamed("signup");
+                      context.goNamed("forgot_password");
                     },
                     child: Text(
                       "Forgot password?",
@@ -103,7 +118,10 @@ class LoginScreen extends HookConsumerWidget {
 
                 final email = emailController.text;
                 final password = passwordController.text;
-                final accountType = signupState.data?.accountType ?? 'customer';
+                // Read the signup state again when submitting to get current account type
+                final currentSignupState = ref.read(signupProvider);
+                final accountType =
+                    currentSignupState.data?.accountType ?? 'customer';
 
                 controller.login(email, password, accountType);
               },

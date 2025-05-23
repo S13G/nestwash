@@ -38,15 +38,15 @@ class ImageWidget extends StatelessWidget {
 
 class IconImageWidget extends StatelessWidget {
   final String iconName;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final Color? color;
 
   const IconImageWidget({
     super.key,
     required this.iconName,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
     this.color,
   });
 
@@ -58,8 +58,8 @@ class IconImageWidget extends StatelessWidget {
     final iconPath = appConstant.getIconPath(iconName);
     return Image.asset(
       iconPath,
-      width: width,
-      height: height,
+      width: width ?? 50.w,
+      height: height ?? 50.w,
       color: color ?? theme.colorScheme.primary,
     );
   }

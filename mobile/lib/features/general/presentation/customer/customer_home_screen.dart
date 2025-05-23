@@ -27,7 +27,13 @@ class CustomerHomeScreen extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   radius: 4.h,
-                  child: ImageWidget(imageName: 'user_pic'),
+                  child: ClipOval(
+                    child: ImageWidget(
+                      imageName: 'user_pic',
+                      width: 12.h,
+                      height: 12.h,
+                    ),
+                  ),
                 ),
                 SizedBox(width: 4.w),
                 Column(
@@ -42,7 +48,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                     Text(
                       'Nancy',
                       style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.primary,
+                        color: theme.colorScheme.onTertiary,
                         fontStyle: FontStyle.italic,
                         fontSize: 4.h,
                         fontWeight: FontWeight.bold,
@@ -64,19 +70,34 @@ class CustomerHomeScreen extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Offers/Discounts', style: theme.textTheme.bodyLarge),
-                    TextButton(
-                      onPressed:
-                          () =>
-                              ref
-                                  .read(bottomNavigationProvider.notifier)
-                                  .state = 3,
-                      child: Text(
-                        'See all',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.primary,
-                        ),
+                    Text(
+                      'Offers/Discounts',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.tertiary,
                       ),
+                    ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed:
+                              () =>
+                                  ref
+                                      .read(bottomNavigationProvider.notifier)
+                                      .state = 3,
+                          child: Text(
+                            'See all',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: theme.colorScheme.onTertiary,
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: theme.colorScheme.primary,
+                          size: 2.h,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -91,17 +112,34 @@ class CustomerHomeScreen extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Active Orders', style: theme.textTheme.bodyLarge),
-                TextButton(
-                  onPressed:
-                      () =>
-                          ref.read(bottomNavigationProvider.notifier).state = 1,
-                  child: Text(
-                    'See all',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
+                Text(
+                  'Active Orders',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.tertiary,
                   ),
+                ),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed:
+                          () =>
+                              ref
+                                  .read(bottomNavigationProvider.notifier)
+                                  .state = 1,
+                      child: Text(
+                        'See all',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.onTertiary,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: theme.colorScheme.primary,
+                      size: 2.h,
+                    ),
+                  ],
                 ),
               ],
             ),

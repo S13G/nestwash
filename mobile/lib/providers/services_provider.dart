@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/core/config/app_theme.dart';
 import 'package:nestcare/features/general/services/model/service_model.dart';
 import 'package:nestcare/providers/profile_card_provider.dart';
 
@@ -35,7 +36,7 @@ final allActiveOrdersProvider = StateProvider<List<ServiceModel>>((ref) {
       serviceTitle: 'Wash & Iron',
       itemCardImageName: 'wash_and_iron',
       status: 'In Progress',
-      itemCardBackgroundColor: Color(0xFF8FD7C7),
+      itemCardBackgroundColor: AppColors.primary,
       items: [
         ServiceItemModel(item: '1. jeans'),
         ServiceItemModel(item: '2. Shorts with really long name'),
@@ -47,7 +48,19 @@ final allActiveOrdersProvider = StateProvider<List<ServiceModel>>((ref) {
       serviceTitle: 'Wash',
       itemCardImageName: 'wash',
       status: 'Ready',
-      itemCardBackgroundColor: Color(0xFF5597FF),
+      itemCardBackgroundColor: AppColors.secondaryContainer,
+      items: [
+        ServiceItemModel(item: '1. jeans'),
+        ServiceItemModel(item: '2. Shorts with really long name'),
+        ServiceItemModel(item: '3. wrappers'),
+        ServiceItemModel(item: '4. boxers'),
+      ],
+    ),
+    ServiceModel(
+      serviceTitle: 'Wash',
+      itemCardImageName: 'wash',
+      status: 'Ready',
+      itemCardBackgroundColor: AppColors.secondaryContainer,
       items: [
         ServiceItemModel(item: '1. jeans'),
         ServiceItemModel(item: '2. Shorts with really long name'),

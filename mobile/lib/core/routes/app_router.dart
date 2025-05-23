@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/auth/presentation/forgot_password_screen.dart';
 import 'package:nestcare/features/auth/presentation/login_screen.dart';
 import 'package:nestcare/features/auth/presentation/otp_screen.dart';
 import 'package:nestcare/features/auth/presentation/registration_screen.dart';
@@ -51,19 +52,24 @@ final _authRoutes = <GoRoute>[
       GoRoute(
         path: '/email/verify',
         name: 'verify_email',
-        builder: (context, state) => const OtpScreen(),
+        builder: (context, state) => OtpScreen(),
         routes: <GoRoute>[
           GoRoute(
             path: '/register',
             name: 'register',
             builder: (context, state) => const RegistrationScreen(),
-            routes: <GoRoute>[
-              GoRoute(
-                path: '/login',
-                name: 'login',
-                builder: (context, state) => const LoginScreen(),
-              ),
-            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/login',
+        name: 'login',
+        builder: (context, state) => const LoginScreen(),
+        routes: <GoRoute>[
+          GoRoute(
+            path: '/forgot_password',
+            name: 'forgot_password',
+            builder: (context, state) => const ForgotPasswordScreen(),
           ),
         ],
       ),

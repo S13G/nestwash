@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/provider/auth_provider.dart';
 import 'package:nestcare/providers/auth_provider.dart';
@@ -11,7 +12,9 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OtpScreen extends HookConsumerWidget {
-  const OtpScreen({super.key});
+  final bool? forgotPassword;
+
+  const OtpScreen({super.key, this.forgotPassword});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,6 +25,7 @@ class OtpScreen extends HookConsumerWidget {
     final hasError = useState(false);
     final currentText = useState("");
     final isLoading = ref.watch(loadingProvider);
+    final forgotPassword = (GoRouterState.of(context).extra as bool?) ?? false;
 
     useToastEffect(context, error: state.error, success: state.success);
 
@@ -94,7 +98,10 @@ class OtpScreen extends HookConsumerWidget {
                     controller: otpController,
                     onCompleted: (value) {
                       // Code completed, submit automatically
-                      controller.verifyOtp(int.parse(value));
+                      controller.verifyOtp(
+                        int.parse(value),
+                        forgotPassword: forgotPassword,
+                      );
                     },
                     onChanged: (value) {
                       currentText.value = value;
@@ -119,7 +126,10 @@ class OtpScreen extends HookConsumerWidget {
                           "Please enter all 6 digits",
                         );
                       } else {
-                        controller.verifyOtp(int.parse(currentText.value));
+                        controller.verifyOtp(
+                          int.parse(currentText.value),
+                          forgotPassword: forgotPassword,
+                        );
                       }
                     },
                     text: 'Verify Code',
