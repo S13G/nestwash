@@ -27,6 +27,7 @@ class ToastUtil {
     required Color backgroundColor,
     required IconData icon,
   }) {
+    final theme = Theme.of(context);
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
       builder:
@@ -42,11 +43,7 @@ class ToastUtil {
                   color: backgroundColor,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
+                    BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
                   ],
                 ),
                 child: Row(
@@ -57,7 +54,7 @@ class ToastUtil {
                     Expanded(
                       child: Text(
                         message,
-                        style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                        style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
                       ),
                     ),
                   ],
@@ -71,9 +68,7 @@ class ToastUtil {
     overlay.insert(overlayEntry);
 
     // Remove it after some seconds
-    Future.delayed(
-      Duration(milliseconds: 1500),
-    ).then((value) => overlayEntry.remove());
+    Future.delayed(Duration(milliseconds: 1500)).then((value) => overlayEntry.remove());
   }
 }
 
