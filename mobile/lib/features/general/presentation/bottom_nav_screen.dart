@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/presentation/customer/customer_discounts_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/customer_home_screen.dart';
-import 'package:nestcare/features/general/presentation/customer/orders_screen.dart';
+import 'package:nestcare/features/general/services/presentation/laundry_services_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_chat_list_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_discounts_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_home_screen.dart';
-import 'package:nestcare/features/general/services/presentation/services_screen.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+
+import 'customer/laundry_orders_screen.dart' show LaundryOrdersScreen;
 
 class BottomNavScreen extends ConsumerWidget {
   const BottomNavScreen({super.key});
@@ -25,15 +26,15 @@ class BottomNavScreen extends ConsumerWidget {
     if (accountType == "service_provider") {
       screens = [
         ServiceProviderHomeScreen(),
-        OrdersScreen(),
+        LaundryOrdersScreen(),
         ServiceProviderChatListScreen(),
         ServiceProviderDiscountsScreen(),
       ];
     } else {
       screens = [
         CustomerHomeScreen(),
-        OrdersScreen(),
-        ServicesScreen(),
+        LaundryOrdersScreen(),
+        LaundryServicesScreen(),
         CustomerDiscountsScreen(),
       ];
     }
@@ -73,9 +74,7 @@ class NestCareBottomNavBar extends ConsumerWidget {
 
           return Expanded(
             child: GestureDetector(
-              onTap:
-                  () =>
-                      ref.read(bottomNavigationProvider.notifier).state = index,
+              onTap: () => ref.read(bottomNavigationProvider.notifier).state = index,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -91,10 +90,7 @@ class NestCareBottomNavBar extends ConsumerWidget {
                     height: 0.4.h,
                     width: 4.h,
                     decoration: BoxDecoration(
-                      color:
-                          selectedIndex == index
-                              ? Colors.white
-                              : Colors.transparent,
+                      color: selectedIndex == index ? Colors.white : Colors.transparent,
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),

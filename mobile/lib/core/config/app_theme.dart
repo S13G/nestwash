@@ -32,6 +32,7 @@ class AppTheme {
       onPrimaryContainer: AppColors.hint,
       tertiary: AppColors.tertiary,
       onTertiary: AppColors.onTertiary,
+      onTertiaryContainer: AppColors.surface,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

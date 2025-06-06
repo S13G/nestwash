@@ -17,14 +17,16 @@ class LoginScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final formKey = useMemoized(() => GlobalKey<FormState>());
+    final formKey = useRef(GlobalKey<FormState>()).value;
 
     // Get the signup state once and memoize the initial values
     final signupState = ref.read(signupProvider);
-    final initialEmail = useMemoized(() => signupState.data?.email ?? '', []);
+    final initialEmail = useMemoized(() => signupState.data?.email ?? '', [
+      signupState,
+    ]);
     final initialPassword = useMemoized(
       () => signupState.data?.password ?? '',
-      [],
+      [signupState],
     );
 
     final state = ref.watch(loginProvider);
