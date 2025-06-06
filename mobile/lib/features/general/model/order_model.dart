@@ -1,12 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:nestcare/core/config/app_theme.dart';
+
+enum FilterType { all, active, past }
+
+enum OrderStatus { active, completed, cancelled, pending, readyForDelivery }
+
+Color getOrderStatusColor(OrderStatus status) {
+  switch (status) {
+    case OrderStatus.active:
+      return AppColors.onPrimary;
+    case OrderStatus.completed:
+      return Colors.green;
+    case OrderStatus.cancelled:
+      return Colors.red;
+    case OrderStatus.pending:
+      return AppColors.accent;
+    case OrderStatus.readyForDelivery:
+      return Colors.orange;
+  }
+}
+
+String getOrderStatusText(OrderStatus status) {
+  switch (status) {
+    case OrderStatus.active:
+      return 'In Progress';
+    case OrderStatus.completed:
+      return 'Completed';
+    case OrderStatus.cancelled:
+      return 'Cancelled';
+    case OrderStatus.pending:
+      return 'Pending';
+    case OrderStatus.readyForDelivery:
+      return 'Ready for delivery';
+  }
+}
+
+double getOrderStatusProgressBarValue(OrderStatus status) {
+  switch (status) {
+    case OrderStatus.active:
+      return 0.5;
+    case OrderStatus.completed:
+      return 1.0;
+    case OrderStatus.cancelled:
+      return 0.0;
+    case OrderStatus.pending:
+      return 0.25;
+    case OrderStatus.readyForDelivery:
+      return 0.75;
+  }
+}
+
 class Order {
   final String id;
   final DateTime orderDate;
   final DateTime deliveryDate;
-  String status;
+  OrderStatus status;
   final List<OrderItem> items;
-  final double total;
+  final double totalPrice;
   final String address;
   final String? deliveryDelayReason;
+  final String serviceType;
 
   Order({
     required this.id,
@@ -14,27 +67,66 @@ class Order {
     required this.deliveryDate,
     required this.status,
     required this.items,
-    required this.total,
+    required this.totalPrice,
     required this.address,
+    required this.serviceType,
     this.deliveryDelayReason,
   });
 
   // Sample order for preview
-  static Order sampleOrder() {
-    return Order(
-      id: "ORD-2023-9876",
-      orderDate: DateTime.now().subtract(const Duration(days: 2)),
-      deliveryDate: DateTime.now().add(const Duration(days: 1)),
-      deliveryDelayReason: "Delayed delivery",
-      status: "Ready for delivery",
-      items: [
-        OrderItem(name: "Outer wear", quantity: 2, price: 3.0, category: "Men"),
-        OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
-        OrderItem(name: "Underwear", quantity: 1, price: 3.0, category: "Men"),
-      ],
-      total: 18.0,
-      address: "123 Main Street, Apt 4B, New York, NY 10001",
-    );
+  static List<Order> sampleOrder() {
+    return [
+      Order(
+        id: "ORD-2023-9876",
+        orderDate: DateTime.now().subtract(const Duration(days: 2)),
+        deliveryDate: DateTime.now().add(const Duration(days: 1)),
+        deliveryDelayReason: "Delayed delivery",
+        status: OrderStatus.readyForDelivery,
+        items: [
+          OrderItem(
+            name: "Outer wear",
+            quantity: 2,
+            price: 3.0,
+            category: "Men",
+          ),
+          OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
+          OrderItem(
+            name: "Underwear",
+            quantity: 1,
+            price: 3.0,
+            category: "Men",
+          ),
+        ],
+        totalPrice: 18.0,
+        address: "123 Main Street, Apt 4B, New York, NY 10001",
+        serviceType: 'Wash & Fold',
+      ),
+      Order(
+        id: "ORD-2023-9877",
+        orderDate: DateTime.now().subtract(const Duration(days: 4)),
+        deliveryDate: DateTime.now().add(const Duration(days: 1)),
+        deliveryDelayReason: "Delayed delivery",
+        status: OrderStatus.pending,
+        items: [
+          OrderItem(
+            name: "Outer wear",
+            quantity: 2,
+            price: 3.0,
+            category: "Men",
+          ),
+          OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
+          OrderItem(
+            name: "Underwear",
+            quantity: 1,
+            price: 3.0,
+            category: "Men",
+          ),
+        ],
+        totalPrice: 18.0,
+        address: "123 Main Street, Apt 4B, New York, NY 10001",
+        serviceType: 'Dry clean',
+      ),
+    ];
   }
 }
 

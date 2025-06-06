@@ -1,20 +1,26 @@
-import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 
-class ServiceModel {
-  final String? serviceTitle;
-  final String? serviceTitleImageName;
-  final String? itemCardImageName;
-  final List<ServiceItemModel>? items;
-  final String? status;
-  final Color? itemCardBackgroundColor;
+class LaundryServiceModel {
+  final String id;
+  final String name;
+  final String description;
+  final String duration;
+  final IconData icon;
+  final List<String> features;
+  final Color color;
+  final String imageUrl;
+  final bool isPopular;
 
-  ServiceModel({
-    this.serviceTitle,
-    this.serviceTitleImageName,
-    this.itemCardImageName,
-    this.items,
-    this.status,
-    this.itemCardBackgroundColor,
+  LaundryServiceModel({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.duration,
+    required this.icon,
+    required this.features,
+    required this.color,
+    required this.imageUrl,
+    this.isPopular = false,
   });
 }
 
