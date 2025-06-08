@@ -431,44 +431,32 @@ class CustomerDiscountScreen extends HookConsumerWidget {
         children: [
           // You'll need this illustration image
           Container(
-            width: 60.w,
-            height: 40.h,
+            width: 40.w,
+            height: 40.w,
             decoration: BoxDecoration(
-              color: theme.colorScheme.onPrimaryContainer,
-              borderRadius: BorderRadius.circular(5.w),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 20,
-                  offset: const Offset(0, 5),
-                ),
-              ],
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(20.w),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.local_offer_outlined,
-                  size: 20.w,
-                  color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.5),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  'No Discounts Available',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onPrimaryContainer,
-                  ),
-                ),
-              ],
+            child: Icon(
+              Icons.local_offer_outlined,
+              size: 20.w,
+              color: theme.colorScheme.primary.withValues(alpha: 0.5),
+            ),
+          ),
+          SizedBox(height: 2.h),
+          Text(
+            'No Discounts Available',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onPrimaryContainer,
             ),
           ),
           SizedBox(height: 3.h),
           Text(
             'No active discounts found\nfor the selected category',
             textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.5),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onPrimaryContainer,
               height: 1.5,
             ),
           ),
@@ -496,7 +484,7 @@ class CustomerDiscountScreen extends HookConsumerWidget {
               ),
               child: Text(
                 'View All Discounts',
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
