@@ -3,11 +3,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ToastUtil {
-  static void showSuccessToast(BuildContext context, String message) {
+  static void showSuccessToast(BuildContext context, String message, {Color? color}) {
     _showCustomToast(
       context,
       message,
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: color ?? Theme.of(context).colorScheme.primary,
       icon: Icons.check_circle,
     );
   }
