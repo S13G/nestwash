@@ -64,75 +64,78 @@ class NestCareBottomNavBar extends ConsumerWidget {
     final unreadNotifications = ref.watch(allUnreadNotificationsProvider);
     final hasUnreadNotifications = unreadNotifications.isNotEmpty;
 
-    return Container(
-      height: 7.h,
-      margin: EdgeInsets.all(4.h),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(5, (index) {
-          final icons =
-              accountType == "service_provider"
-                  ? ['home', 'orders', 'chats', 'discounts', 'notifications']
-                  : ['home', 'orders', 'services', 'discounts', 'notifications'];
+    return SafeArea(
+      child: Container(
+        height: 6.h,
+        margin: EdgeInsets.only(top: 1.5.h, left: 4.h, right: 4.h),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primary,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(5, (index) {
+            final icons =
+                accountType == "service_provider"
+                    ? ['home', 'orders', 'chats', 'discounts', 'notifications']
+                    : ['home', 'orders', 'services', 'discounts', 'notifications'];
 
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => ref.read(bottomNavigationProvider.notifier).state = index,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (index == 4)
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        IconImageWidget(
-                          iconName: icons[index],
-                          width: 4.h,
-                          height: 4.h,
-                          color: Colors.white,
-                        ),
-                        // Conditionally show the dot based on hasUnreadNotifications
-                        if (hasUnreadNotifications)
-                          Positioned(
-                            top: 4,
-                            right: 7,
-                            child: Container(
-                              width: 10,
-                              height: 10,
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => ref.read(bottomNavigationProvider.notifier).state = index,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (index == 4) ...[
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          IconImageWidget(
+                            iconName: icons[index],
+                            width: 4.h,
+                            height: 4.h,
+                            color: Colors.white,
+                          ),
+                          // Conditionally show the dot based on hasUnreadNotifications
+                          if (hasUnreadNotifications)
+                            Positioned(
+                              top: 4,
+                              right: 7,
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
                             ),
-                          ),
-                      ],
-                    )
-                  else
-                    IconImageWidget(
-                      iconName: icons[index],
+                        ],
+                      ),
+                    ] else ...[
+                      IconImageWidget(
+                        iconName: icons[index],
+                        width: 3.h,
+                        height: 3.h,
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: 0.6.h),
+                    ],
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      height: 0.4.h,
                       width: 4.h,
-                      height: 4.h,
-                      color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: selectedIndex == index ? Colors.white : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                  SizedBox(height: 0.8.h),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    height: 0.4.h,
-                    width: 4.h,
-                    decoration: BoxDecoration(
-                      color: selectedIndex == index ? Colors.white : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }

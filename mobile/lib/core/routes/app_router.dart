@@ -33,12 +33,7 @@ class AppRouter {
 
   GoRouter get router => GoRouter(
     initialLocation: '/signup',
-    routes: [
-      ..._authRoutes,
-      ..._generalRoutes,
-      ..._customerRoutes,
-      ..._serviceProviderRoutes,
-    ],
+    routes: [..._authRoutes, ..._generalRoutes, ..._customerRoutes, ..._serviceProviderRoutes],
   );
 }
 
@@ -117,8 +112,7 @@ final _generalRoutes = <GoRoute>[
                       GoRoute(
                         path: '/select_clothes',
                         name: 'select_clothes',
-                        builder:
-                            (context, state) => const SelectClothesScreen(),
+                        builder: (context, state) => const SelectClothesScreen(),
                       ),
                     ],
                   ),
@@ -130,28 +124,16 @@ final _generalRoutes = <GoRoute>[
       ),
     ],
   ),
-  GoRoute(
-    path: '/support',
-    name: 'support',
-    builder: (context, state) => const SupportScreen(),
-  ),
+  GoRoute(path: '/support', name: 'support', builder: (context, state) => const SupportScreen()),
   GoRoute(
     path: '/chat/list',
     name: 'chat-list',
     builder: (context, state) => ChatListScreen(),
     routes: <GoRoute>[
-      GoRoute(
-        path: '/chat',
-        name: 'chat',
-        builder: (context, index) => ChatScreen(),
-      ),
+      GoRoute(path: '/chat', name: 'chat', builder: (context, index) => ChatScreen()),
     ],
   ),
-  GoRoute(
-    path: '/invites',
-    name: 'invites',
-    builder: (context, state) => InvitesScreen(),
-  ),
+  GoRoute(path: '/invites', name: 'invites', builder: (context, state) => InvitesScreen()),
 ];
 
 // ================= CUSTOMER ROUTES =================
