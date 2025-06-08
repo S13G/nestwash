@@ -1,62 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nestcare/features/general/widgets/menu_options_widget.dart';
-import 'package:nestcare/features/general/widgets/profile_card_search_widget.dart';
-import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class ProfileCardWidget extends ConsumerWidget {
-  const ProfileCardWidget({super.key, required this.theme, this.search = true});
-
-  final ThemeData theme;
-  final bool search;
+class ProfileCardWidget extends HookConsumerWidget {
+  const ProfileCardWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 2.h, vertical: 2.h),
+      width: double.infinity,
+      padding: EdgeInsets.all(5.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
-        color: theme.colorScheme.onSurface,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CircleAvatar(
-                radius: 3.h,
-                child: ImageWidget(imageName: 'user_pic'),
-              ),
-              SizedBox(width: 3.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Good morning!',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.primaryContainer,
-                    ),
-                  ),
-                  Text(
-                    'William',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 2.8.h,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              Spacer(),
-              MenuOptionsWidget(),
-            ],
+        gradient: LinearGradient(
+          colors: [theme.colorScheme.primary, theme.colorScheme.onSurface],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(5.w),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
-          SizedBox(height: 2.h),
-          search ? ProfileCardSearchWidget() : SizedBox.shrink(),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 15.w,
+            height: 15.w,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(7.5.w),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
+            ),
+            child: Icon(Icons.person, color: Colors.white, size: 7.w),
+          ),
+          SizedBox(width: 4.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('John Doe', style: theme.textTheme.titleSmall?.copyWith(color: Colors.white)),
+                SizedBox(height: 0.5.h),
+                Text(
+                  'john.doe@email.com',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.8),
+                  ),
+                ),
+                SizedBox(height: 1.h),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(4.w),
+                  ),
+                  child: Text(
+                    'Premium Member',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () => context.goNamed("customer_profile"),
+            child: Icon(Icons.edit, color: Colors.white.withValues(alpha: 0.8), size: 5.w),
+          ),
         ],
       ),
     );

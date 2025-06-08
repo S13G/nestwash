@@ -13,7 +13,7 @@ final allServicesProvider = StateProvider<List<LaundryServiceModel>>((ref) {
       duration: '2-3 days',
       icon: Icons.local_laundry_service_rounded,
       color: AppColors.primary,
-      imageUrl: 'wash_fold_illustrationvg',
+      imageUrl: 'wash_fold_illustration.svg',
       features: ['Professional washing', 'Machine drying', 'Neat folding', 'Fabric softener'],
       isPopular: true,
     ),
