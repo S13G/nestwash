@@ -16,7 +16,8 @@ class SignupScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final formKey = useMemoized(() => GlobalKey<FormState>());
+    final formKey = useRef(GlobalKey<FormState>()).value;
+
     final emailController = useTextEditingController();
     final state = ref.watch(signupProvider);
     final controller = ref.read(signupProvider.notifier);
@@ -107,9 +108,7 @@ class SignupScreen extends HookConsumerWidget {
                 children: [
                   TextSpan(
                     text: "Log in",
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
+                    style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary),
                     recognizer:
                         TapGestureRecognizer()
                           ..onTap = () {

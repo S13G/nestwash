@@ -21,13 +21,8 @@ class LoginScreen extends HookConsumerWidget {
 
     // Get the signup state once and memoize the initial values
     final signupState = ref.read(signupProvider);
-    final initialEmail = useMemoized(() => signupState.data?.email ?? '', [
-      signupState,
-    ]);
-    final initialPassword = useMemoized(
-      () => signupState.data?.password ?? '',
-      [signupState],
-    );
+    final initialEmail = useMemoized(() => signupState.data?.email ?? '', [signupState]);
+    final initialPassword = useMemoized(() => signupState.data?.password ?? '', [signupState]);
 
     final state = ref.watch(loginProvider);
     final emailController = useTextEditingController(text: initialEmail);
@@ -85,12 +80,9 @@ class LoginScreen extends HookConsumerWidget {
                   hintText: "Password",
                   prefixIcon: Icon(Icons.password),
                   suffixIcon: IconButton(
-                    icon: Icon(
-                      obscureText ? Icons.visibility_off : Icons.visibility,
-                    ),
+                    icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
                     onPressed: () {
-                      ref.read(passwordVisibilityProvider.notifier).state =
-                          !obscureText;
+                      ref.read(passwordVisibilityProvider.notifier).state = !obscureText;
                     },
                   ),
                 ),
@@ -103,27 +95,21 @@ class LoginScreen extends HookConsumerWidget {
                     child: Text(
                       "Forgot password?",
                       textAlign: TextAlign.end,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.primary,
-                      ),
+                      style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary),
                     ),
                   ),
                 ),
-                ImageWidget(
-                  imageName: "login_account_image",
-                  width: double.infinity,
-                  height: 40.h,
-                ),
+                ImageWidget(imageName: "login_account_image", width: double.infinity, height: 40.h),
               ],
               onSubmit: () {
                 if (!formKey.currentState!.validate()) return;
 
                 final email = emailController.text;
                 final password = passwordController.text;
+
                 // Read the signup state again when submitting to get current account type
                 final currentSignupState = ref.read(signupProvider);
-                final accountType =
-                    currentSignupState.data?.accountType ?? 'customer';
+                final accountType = currentSignupState.data?.accountType ?? 'customer';
 
                 controller.login(email, password, accountType);
               },
@@ -139,9 +125,7 @@ class LoginScreen extends HookConsumerWidget {
                 children: [
                   TextSpan(
                     text: "Register",
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
+                    style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary),
                     recognizer:
                         TapGestureRecognizer()
                           ..onTap = () {
