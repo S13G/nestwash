@@ -67,7 +67,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
 
   Widget _buildHeader(ThemeData theme) {
     return Container(
-      padding: EdgeInsets.all(5.w),
+      padding: EdgeInsets.only(left: 5.w, right: 5.w, bottom: 5.w),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(5.w),
