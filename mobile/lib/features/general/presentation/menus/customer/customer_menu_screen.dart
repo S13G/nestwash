@@ -178,7 +178,7 @@ class CustomerMenuScreen extends HookConsumerWidget {
             Icons.person_outline,
             AppColors.secondary,
             theme,
-            () => context.goNamed('customer_profile'),
+            () => context.pushNamed('customer_profile'),
           ),
           _buildDivider(),
           _buildMenuItem(

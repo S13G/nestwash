@@ -72,7 +72,7 @@ class ProfileCardWidget extends HookConsumerWidget {
             ),
           ),
           GestureDetector(
-            onTap: () => context.goNamed("customer_profile"),
+            onTap: () => context.pushNamed("customer_profile"),
             child: Icon(Icons.edit, color: Colors.white.withValues(alpha: 0.8), size: 5.w),
           ),
         ],
