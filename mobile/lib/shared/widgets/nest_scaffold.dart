@@ -41,10 +41,7 @@ class NestScaffold extends StatelessWidget {
                 leading:
                     showBackButton
                         ? IconButton(
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: theme.colorScheme.secondary,
-                          ),
+                          icon: Icon(Icons.arrow_back, color: theme.colorScheme.secondary),
                           onPressed:
                               backButtonOnPressed ??
                               () {
@@ -63,9 +60,7 @@ class NestScaffold extends StatelessWidget {
           padding == EdgeInsets.zero
               ? SafeArea(child: body)
               : Padding(
-                padding:
-                    padding ??
-                    EdgeInsets.only(left: 4.h, right: 4.h, bottom: 6.h),
+                padding: padding ?? EdgeInsets.only(left: 4.h, right: 4.h, bottom: 6.h),
                 child: SafeArea(child: body),
               ),
       bottomNavigationBar: bottomNavigationBar,
