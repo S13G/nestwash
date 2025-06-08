@@ -189,6 +189,7 @@ class CustomerProfileScreen extends HookConsumerWidget {
         child: Column(
           children: [
             NestFormField(
+              enabled: isEditing,
               readOnly: !isEditing,
               belowSpacing: false,
               label: 'Full Name',
@@ -210,6 +211,7 @@ class CustomerProfileScreen extends HookConsumerWidget {
             ),
             SizedBox(height: 3.h),
             NestFormField(
+              enabled: isEditing,
               readOnly: !isEditing,
               label: 'Phone Number',
               controller: phoneController,
