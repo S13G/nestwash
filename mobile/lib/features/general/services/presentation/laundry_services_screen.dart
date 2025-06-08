@@ -133,6 +133,7 @@ class LaundryServicesScreen extends HookConsumerWidget {
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
+          // image: DecorationImage(image: AssetImage('assets/images/icons/home.png')),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

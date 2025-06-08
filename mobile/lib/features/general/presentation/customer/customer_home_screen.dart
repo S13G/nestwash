@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/features/general/widgets/menu_options_widget.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -13,11 +14,13 @@ class CustomerHomeScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final animations = useLaundryAnimations(null);
 
     return NestScaffold(
       padding: EdgeInsets.zero,
       backgroundColor: theme.colorScheme.surface,
-      body: SafeArea(
+      body: FadeTransition(
+        opacity: animations.fadeAnimation,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
@@ -84,10 +87,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [
-                  theme.colorScheme.primary,
-                  theme.colorScheme.onTertiary,
-                ],
+                colors: [theme.colorScheme.primary, theme.colorScheme.onTertiary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -99,11 +99,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
                 ),
               ],
             ),
-            child: const Icon(
-              LucideIcons.personStanding,
-              color: Colors.white,
-              size: 30,
-            ),
+            child: const Icon(LucideIcons.personStanding, color: Colors.white, size: 30),
           ),
           SizedBox(width: 3.w),
           Expanded(
@@ -112,9 +108,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
               children: [
                 Text(
                   'Good day, Sarah! 👋',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 0.5.h),
                 Text(
@@ -160,10 +154,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
           padding: EdgeInsets.all(4.5.w),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                theme.colorScheme.onSurface,
-                theme.colorScheme.onTertiary,
-              ],
+              colors: [theme.colorScheme.onSurface, theme.colorScheme.onTertiary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -183,10 +174,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 3.w,
-                        vertical: 0.5.h,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
@@ -210,9 +198,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
                     ),
                     Text(
                       'Get premium cleaning at\ndiscounted rates',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white70,
-                      ),
+                      style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
                     ),
                   ],
                 ),
@@ -224,11 +210,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
                   color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Icon(
-                  LucideIcons.washingMachine,
-                  color: Colors.white,
-                  size: 40,
-                ),
+                child: const Icon(LucideIcons.washingMachine, color: Colors.white, size: 40),
               ),
             ],
           ),
@@ -243,10 +225,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: theme.colorScheme.onPrimary.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: theme.colorScheme.onPrimary.withValues(alpha: 0.3), width: 1),
         boxShadow: [
           BoxShadow(
             color: theme.colorScheme.primary.withValues(alpha: 0.08),
@@ -263,9 +242,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
             children: [
               Text(
                 'Order #LN2024001',
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
@@ -294,9 +271,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
             ),
             child: Text(
               'Wash and Fold',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.primary,
-              ),
+              style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
             ),
           ),
           SizedBox(height: 1.5.h),
@@ -313,17 +288,9 @@ class CustomerHomeScreen extends HookConsumerWidget {
             children: [
               _buildItemChip('👖 2 Jeans', theme.colorScheme.primary, theme),
               const SizedBox(width: 10),
-              _buildItemChip(
-                '👔 3 Shirts',
-                theme.colorScheme.onTertiary,
-                theme,
-              ),
+              _buildItemChip('👔 3 Shirts', theme.colorScheme.onTertiary, theme),
               const SizedBox(width: 10),
-              _buildItemChip(
-                '👖 1 Trouser',
-                theme.colorScheme.onSurface,
-                theme,
-              ),
+              _buildItemChip('👖 1 Trouser', theme.colorScheme.onSurface, theme),
             ],
           ),
           const SizedBox(height: 15),
@@ -355,9 +322,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
           LinearProgressIndicator(
             value: 0.7,
             backgroundColor: theme.colorScheme.surface,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              theme.colorScheme.onPrimary,
-            ),
+            valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary),
             borderRadius: BorderRadius.circular(10),
           ),
         ],
@@ -373,10 +338,7 @@ class CustomerHomeScreen extends HookConsumerWidget {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
-      child: Text(
-        label,
-        style: theme.textTheme.bodySmall?.copyWith(color: color),
-      ),
+      child: Text(label, style: theme.textTheme.bodySmall?.copyWith(color: color)),
     );
   }
 }
