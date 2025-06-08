@@ -40,13 +40,15 @@ class NestScaffold extends StatelessWidget {
               ? AppBar(
                 leading:
                     showBackButton
-                        ? IconButton(
-                          icon: Icon(Icons.arrow_back, color: theme.colorScheme.secondary),
-                          onPressed:
-                              backButtonOnPressed ??
-                              () {
-                                context.pop();
-                              },
+                        ? GestureDetector(
+                          onTap: () {
+                            context.pop();
+                          },
+                          child: Icon(
+                            Icons.arrow_back_ios_new,
+                            color: theme.colorScheme.secondary,
+                            size: 5.w,
+                          ),
                         )
                         : null,
                 title: Text(
@@ -60,7 +62,7 @@ class NestScaffold extends StatelessWidget {
           padding == EdgeInsets.zero
               ? SafeArea(child: body)
               : Padding(
-                padding: padding ?? EdgeInsets.only(left: 4.h, right: 4.h, bottom: 6.h),
+                padding: padding ?? EdgeInsets.only(left: 4.h, right: 4.h),
                 child: SafeArea(child: body),
               ),
       bottomNavigationBar: bottomNavigationBar,

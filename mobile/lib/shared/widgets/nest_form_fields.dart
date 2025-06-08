@@ -10,6 +10,7 @@ class NestForm extends HookConsumerWidget {
   final VoidCallback onSubmit;
   final String submitText;
   final int? spacing;
+  final bool? showSubmitButton;
 
   const NestForm({
     super.key,
@@ -18,6 +19,7 @@ class NestForm extends HookConsumerWidget {
     required this.onSubmit,
     this.submitText = "Submit",
     this.spacing = 3,
+    this.showSubmitButton = true,
   });
 
   @override
@@ -34,25 +36,24 @@ class NestForm extends HookConsumerWidget {
           SizedBox(
             width: double.infinity,
             height: 7.h,
-            child: ElevatedButton(
-              onPressed: isLoading ? null : onSubmit,
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                backgroundColor: theme.colorScheme.primary,
-                disabledBackgroundColor: theme.colorScheme.secondaryContainer,
-              ),
-              child:
-                  isLoading
-                      ? LoaderWidget()
-                      : Text(
-                        submitText,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
-                        ),
+            child:
+                showSubmitButton == true
+                    ? ElevatedButton(
+                      onPressed: isLoading ? null : onSubmit,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        backgroundColor: theme.colorScheme.primary,
+                        disabledBackgroundColor: theme.colorScheme.secondaryContainer,
                       ),
-            ),
+                      child:
+                          isLoading
+                              ? LoaderWidget()
+                              : Text(
+                                submitText,
+                                style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
+                              ),
+                    )
+                    : const SizedBox.shrink(),
           ),
         ],
       ),
@@ -100,12 +101,7 @@ class NestFormField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          Text(
-            label!,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          Text(label!, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
           SizedBox(height: 1.h),
         ],
         TextFormField(
