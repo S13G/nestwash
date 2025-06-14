@@ -1,4 +1,4 @@
-enum ChatMessageFilterType { all, unread }
+enum ChatMessageFilterType { all, unread, favorites }
 
 class ChatMessage {
   final String id;
