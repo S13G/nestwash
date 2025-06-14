@@ -6,45 +6,40 @@ class LaundryAnimations {
   final Animation<Offset> slideAnimation;
   final Animation<Offset> bottomSheetSlideAnimation;
   final Animation<double> bottomSheetFadeAnimation;
+  final ScrollController scrollAnimationController;
+  final AnimationController bottomSheetAnimationController;
 
   const LaundryAnimations({
     required this.fadeAnimation,
     required this.slideAnimation,
     required this.bottomSheetSlideAnimation,
     required this.bottomSheetFadeAnimation,
+    required this.scrollAnimationController,
+    required this.bottomSheetAnimationController,
   });
 }
 
 LaundryAnimations useLaundryAnimations(String? selectedServiceId) {
   // Animation Controllers
-  final fadeAnimationController = useAnimationController(
-    duration: const Duration(milliseconds: 1000),
-  );
-  final slideAnimationController = useAnimationController(
-    duration: const Duration(milliseconds: 1000),
-  );
-  final bottomSheetAnimationController = useAnimationController(
-    duration: const Duration(milliseconds: 1000),
-  );
+  final fadeAnimationController = useAnimationController(duration: const Duration(milliseconds: 1000));
+  final slideAnimationController = useAnimationController(duration: const Duration(milliseconds: 1000));
+  final bottomSheetAnimationController = useAnimationController(duration: const Duration(milliseconds: 1000));
+  final scrollAnimationController = useScrollController();
 
   // Create animations
   final fadeAnimation = useMemoized(
-    () => Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: fadeAnimationController,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
-      ),
-    ),
+    () => Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: fadeAnimationController, curve: const Interval(0.0, 0.6, curve: Curves.easeOut))),
     [fadeAnimationController],
   );
 
   final slideAnimation = useMemoized(
-    () => Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
-      CurvedAnimation(
-        parent: slideAnimationController,
-        curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
-      ),
-    ),
+    () => Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: slideAnimationController, curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic))),
     [slideAnimationController],
   );
 
@@ -57,12 +52,10 @@ LaundryAnimations useLaundryAnimations(String? selectedServiceId) {
   );
 
   final bottomSheetFadeAnimation = useMemoized(
-    () => Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: bottomSheetAnimationController,
-        curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
-      ),
-    ),
+    () => Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: bottomSheetAnimationController, curve: const Interval(0.0, 0.8, curve: Curves.easeOut))),
     [bottomSheetAnimationController],
   );
 
@@ -88,5 +81,7 @@ LaundryAnimations useLaundryAnimations(String? selectedServiceId) {
     slideAnimation: slideAnimation,
     bottomSheetSlideAnimation: bottomSheetSlideAnimation,
     bottomSheetFadeAnimation: bottomSheetFadeAnimation,
+    scrollAnimationController: scrollAnimationController,
+    bottomSheetAnimationController: bottomSheetAnimationController,
   );
 }
