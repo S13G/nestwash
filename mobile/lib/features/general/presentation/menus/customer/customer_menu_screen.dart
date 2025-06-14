@@ -77,13 +77,7 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: Column(
         children: [
@@ -93,19 +87,12 @@ class CustomerMenuScreen extends HookConsumerWidget {
             Icons.chat_bubble_outline,
             theme.colorScheme.primary,
             theme,
-            () {},
+            () => context.pushNamed('chat-list'),
             showBadge: true,
             badgeCount: '3',
           ),
           _buildDivider(),
-          _buildMenuItem(
-            'Notifications',
-            'Manage your notifications',
-            Icons.notifications_outlined,
-            theme.colorScheme.onSurface,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Notifications', 'Manage your notifications', Icons.notifications_outlined, theme.colorScheme.onSurface, theme, () {}),
         ],
       ),
     );
@@ -116,42 +103,15 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            'My Orders',
-            'View all your orders',
-            Icons.receipt_long_outlined,
-            AppColors.onTertiary,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('My Orders', 'View all your orders', Icons.receipt_long_outlined, AppColors.onTertiary, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Favorite Providers',
-            'Your trusted service providers',
-            Icons.favorite_outline,
-            Colors.red.shade400,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Favorite Providers', 'Your trusted service providers', Icons.favorite_outline, Colors.red.shade400, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Service Schedule',
-            'Manage recurring pickups',
-            Icons.schedule_outlined,
-            AppColors.onPrimary,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Service Schedule', 'Manage recurring pickups', Icons.schedule_outlined, AppColors.onPrimary, theme, () {}),
         ],
       ),
     );
@@ -162,13 +122,7 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: Column(
         children: [
@@ -181,41 +135,13 @@ class CustomerMenuScreen extends HookConsumerWidget {
             () => context.pushNamed('customer_profile'),
           ),
           _buildDivider(),
-          _buildMenuItem(
-            'Payment Methods',
-            'Manage cards and payment options',
-            Icons.payment_outlined,
-            AppColors.primary,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Payment Methods', 'Manage cards and payment options', Icons.payment_outlined, AppColors.primary, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Transaction History',
-            'View payment history',
-            Icons.history_outlined,
-            AppColors.accent,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Transaction History', 'View payment history', Icons.history_outlined, AppColors.accent, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Delivery Addresses',
-            'Manage pickup and delivery locations',
-            Icons.location_on_outlined,
-            AppColors.onPrimary,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Delivery Addresses', 'Manage pickup and delivery locations', Icons.location_on_outlined, AppColors.onPrimary, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Invite Friends',
-            'Share and earn rewards',
-            Icons.share_outlined,
-            Colors.orange.shade400,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Invite Friends', 'Share and earn rewards', Icons.share_outlined, Colors.orange.shade400, theme, () {}),
         ],
       ),
     );
@@ -226,43 +152,15 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            'Laundry Preferences',
-            'Set washing and drying preferences',
-            Icons.tune_outlined,
-            AppColors.onTertiary,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Laundry Preferences', 'Set washing and drying preferences', Icons.tune_outlined, AppColors.onTertiary, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Language & Region',
-            'Change app language and location',
-            Icons.language_outlined,
-            AppColors.primaryContainer,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Language & Region', 'Change app language and location', Icons.language_outlined, AppColors.primaryContainer, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Dark Mode',
-            'Toggle dark/light theme',
-            Icons.dark_mode_outlined,
-            AppColors.tertiary,
-            theme,
-            () {},
-            hasSwitch: true,
-          ),
+          _buildMenuItem('Dark Mode', 'Toggle dark/light theme', Icons.dark_mode_outlined, AppColors.tertiary, theme, () {}, hasSwitch: true),
         ],
       ),
     );
@@ -273,60 +171,19 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            'Help Center',
-            'Get help and support',
-            Icons.help_outline,
-            AppColors.primary,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Help Center', 'Get help and support', Icons.help_outline, AppColors.primary, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Contact Support',
-            '24/7 customer support',
-            Icons.support_agent_outlined,
-            AppColors.accent,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Contact Support', '24/7 customer support', Icons.support_agent_outlined, AppColors.accent, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Terms of Service',
-            'Read our terms and conditions',
-            Icons.description_outlined,
-            AppColors.hint,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Terms of Service', 'Read our terms and conditions', Icons.description_outlined, AppColors.hint, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Privacy Policy',
-            'Learn about data protection',
-            Icons.privacy_tip_outlined,
-            AppColors.secondaryContainer,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Privacy Policy', 'Learn about data protection', Icons.privacy_tip_outlined, AppColors.secondaryContainer, theme, () {}),
           _buildDivider(),
-          _buildMenuItem(
-            'Rate Our App',
-            'Share your feedback',
-            Icons.star_outline,
-            Colors.amber.shade600,
-            theme,
-            () {},
-          ),
+          _buildMenuItem('Rate Our App', 'Share your feedback', Icons.star_outline, Colors.amber.shade600, theme, () {}),
         ],
       ),
     );
@@ -351,10 +208,7 @@ class CustomerMenuScreen extends HookConsumerWidget {
           Container(
             width: 12.w,
             height: 12.w,
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(3.w),
-            ),
+            decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(3.w)),
             child: Icon(icon, color: iconColor, size: 6.w),
           ),
           if (showBadge)
@@ -363,17 +217,11 @@ class CustomerMenuScreen extends HookConsumerWidget {
               top: 0,
               child: Container(
                 padding: EdgeInsets.all(0.5.w),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(2.w),
-                ),
+                decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(2.w)),
                 constraints: BoxConstraints(minWidth: 4.w, minHeight: 4.w),
                 child: Text(
                   badgeCount,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -381,10 +229,7 @@ class CustomerMenuScreen extends HookConsumerWidget {
         ],
       ),
       title: Text(title, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
-      subtitle: Text(
-        subtitle,
-        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onPrimaryContainer),
-      ),
+      subtitle: Text(subtitle, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
       trailing:
           hasSwitch
               ? Switch(
@@ -394,22 +239,12 @@ class CustomerMenuScreen extends HookConsumerWidget {
                 },
                 activeColor: theme.colorScheme.primary,
               )
-              : Icon(
-                Icons.arrow_forward_ios,
-                color: theme.colorScheme.onPrimaryContainer,
-                size: 4.w,
-              ),
+              : Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onPrimaryContainer, size: 4.w),
     );
   }
 
   Widget _buildDivider() {
-    return Divider(
-      height: 1,
-      thickness: 1,
-      color: AppColors.background,
-      indent: 4.w,
-      endIndent: 4.w,
-    );
+    return Divider(height: 1, thickness: 1, color: AppColors.background, indent: 4.w, endIndent: 4.w);
   }
 
   Widget _buildLogoutButton(ThemeData theme, BuildContext context) {
@@ -431,14 +266,7 @@ class CustomerMenuScreen extends HookConsumerWidget {
           children: [
             Icon(Icons.logout_outlined, color: Colors.red.shade600, size: 6.w),
             SizedBox(width: 3.w),
-            Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.red.shade600,
-              ),
-            ),
+            Text('Logout', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.red.shade600)),
           ],
         ),
       ),

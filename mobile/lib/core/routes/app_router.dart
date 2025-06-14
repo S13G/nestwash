@@ -6,7 +6,6 @@ import 'package:nestcare/features/auth/presentation/otp_screen.dart';
 import 'package:nestcare/features/auth/presentation/registration_screen.dart';
 import 'package:nestcare/features/auth/presentation/signup_screen.dart';
 import 'package:nestcare/features/general/presentation/bottom_nav_screen.dart';
-import 'package:nestcare/features/general/presentation/chat_list_screen.dart';
 import 'package:nestcare/features/general/presentation/chat_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/clothes_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/make_order_screen.dart';
@@ -21,6 +20,8 @@ import 'package:nestcare/features/general/presentation/menus/customer/customer_p
 import 'package:nestcare/features/general/presentation/menus/customer/edit_address_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/invites_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/support_screen.dart';
+import 'package:nestcare/features/general/presentation/message_screen.dart';
+import 'package:nestcare/features/general/presentation/messages_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_info_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_order_details_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_profile_screen.dart';
@@ -31,10 +32,8 @@ class AppRouter {
 
   AppRouter(this.ref);
 
-  GoRouter get router => GoRouter(
-    initialLocation: '/signup',
-    routes: [..._authRoutes, ..._generalRoutes, ..._customerRoutes, ..._serviceProviderRoutes],
-  );
+  GoRouter get router =>
+      GoRouter(initialLocation: '/signup', routes: [..._authRoutes, ..._generalRoutes, ..._customerRoutes, ..._serviceProviderRoutes]);
 }
 
 // ================= AUTH ROUTES =================
@@ -48,25 +47,13 @@ final _authRoutes = <GoRoute>[
         path: '/email/verify',
         name: 'verify_email',
         builder: (context, state) => OtpScreen(),
-        routes: <GoRoute>[
-          GoRoute(
-            path: '/register',
-            name: 'register',
-            builder: (context, state) => const RegistrationScreen(),
-          ),
-        ],
+        routes: <GoRoute>[GoRoute(path: '/register', name: 'register', builder: (context, state) => const RegistrationScreen())],
       ),
       GoRoute(
         path: '/login',
         name: 'login',
         builder: (context, state) => const LoginScreen(),
-        routes: <GoRoute>[
-          GoRoute(
-            path: '/forgot_password',
-            name: 'forgot_password',
-            builder: (context, state) => const ForgotPasswordScreen(),
-          ),
-        ],
+        routes: <GoRoute>[GoRoute(path: '/forgot_password', name: 'forgot_password', builder: (context, state) => const ForgotPasswordScreen())],
       ),
     ],
   ),
@@ -94,26 +81,14 @@ final _generalRoutes = <GoRoute>[
                 name: 'make_order',
                 builder: (context, state) => const MakeOrderScreen(),
                 routes: <GoRoute>[
-                  GoRoute(
-                    path: '/schedule_pickup',
-                    name: 'schedule_pickup',
-                    builder: (context, state) => const SchedulePickupScreen(),
-                  ),
-                  GoRoute(
-                    path: '/schedule_drop_off',
-                    name: 'schedule_drop_off',
-                    builder: (context, state) => const ScheduleDropOffScreen(),
-                  ),
+                  GoRoute(path: '/schedule_pickup', name: 'schedule_pickup', builder: (context, state) => const SchedulePickupScreen()),
+                  GoRoute(path: '/schedule_drop_off', name: 'schedule_drop_off', builder: (context, state) => const ScheduleDropOffScreen()),
                   GoRoute(
                     path: '/clothes',
                     name: 'clothes',
                     builder: (context, state) => const ClothesScreen(),
                     routes: <GoRoute>[
-                      GoRoute(
-                        path: '/select_clothes',
-                        name: 'select_clothes',
-                        builder: (context, state) => const SelectClothesScreen(),
-                      ),
+                      GoRoute(path: '/select_clothes', name: 'select_clothes', builder: (context, state) => const SelectClothesScreen()),
                     ],
                   ),
                 ],
@@ -128,8 +103,13 @@ final _generalRoutes = <GoRoute>[
   GoRoute(
     path: '/chat/list',
     name: 'chat-list',
-    builder: (context, state) => ChatListScreen(),
+    builder: (context, state) => MessagesScreen(),
     routes: <GoRoute>[
+      GoRoute(
+        path: "/message",
+        name: "message",
+        builder: (context, state) => MessageScreen(providerName: 'Ayomide', providerImage: 'bana', isOnline: true),
+      ),
       GoRoute(path: '/chat', name: 'chat', builder: (context, index) => ChatScreen()),
     ],
   ),
@@ -143,22 +123,12 @@ final _customerRoutes = <GoRoute>[
     name: 'customer_menu',
     builder: (context, state) => const CustomerMenuScreen(),
     routes: <GoRoute>[
-      GoRoute(
-        path: '/profile',
-        name: 'customer_profile',
-        builder: (context, state) => const CustomerProfileScreen(),
-      ),
+      GoRoute(path: '/profile', name: 'customer_profile', builder: (context, state) => const CustomerProfileScreen()),
       GoRoute(
         path: '/addresses',
         name: 'customer_addresses',
         builder: (context, state) => const CustomerAddressScreen(),
-        routes: <GoRoute>[
-          GoRoute(
-            path: '/edit',
-            name: 'edit_address',
-            builder: (context, state) => const EditAddressScreen(),
-          ),
-        ],
+        routes: <GoRoute>[GoRoute(path: '/edit', name: 'edit_address', builder: (context, state) => const EditAddressScreen())],
       ),
     ],
   ),
@@ -166,23 +136,13 @@ final _customerRoutes = <GoRoute>[
     path: '/order/details',
     name: 'order_details',
     builder: (context, state) => const OrderDetailsScreen(),
-    routes: <GoRoute>[
-      GoRoute(
-        path: '/track/status',
-        name: 'track_order',
-        builder: (context, state) => const OrderTrackingScreen(),
-      ),
-    ],
+    routes: <GoRoute>[GoRoute(path: '/track/status', name: 'track_order', builder: (context, state) => const OrderTrackingScreen())],
   ),
 ];
 
 // ================= SERVICE PROVIDER ROUTES =================
 final _serviceProviderRoutes = <GoRoute>[
-  GoRoute(
-    path: '/service_provider/profile',
-    name: 'service_provider_profile',
-    builder: (context, state) => const ServiceProviderProfileScreen(),
-  ),
+  GoRoute(path: '/service_provider/profile', name: 'service_provider_profile', builder: (context, state) => const ServiceProviderProfileScreen()),
   GoRoute(
     path: '/service_provider/order_details',
     name: 'service_provider_order_details',
