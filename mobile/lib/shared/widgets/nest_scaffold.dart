@@ -44,27 +44,17 @@ class NestScaffold extends StatelessWidget {
                           onTap: () {
                             context.pop();
                           },
-                          child: Icon(
-                            Icons.arrow_back_ios_new,
-                            color: theme.colorScheme.secondary,
-                            size: 5.w,
-                          ),
+                          child: Icon(Icons.arrow_back_ios_new, color: theme.colorScheme.secondary, size: 5.w),
                         )
                         : null,
-                title: Text(
-                  title![0].toUpperCase() + title!.substring(1),
-                  style: theme.textTheme.titleMedium,
-                ),
+                title: Text(title!.split(' ').map((word) => word[0].toUpperCase() + word.substring(1)).join(' '), style: theme.textTheme.titleMedium),
                 actions: actions,
               )
               : null),
       body:
           padding == EdgeInsets.zero
               ? SafeArea(child: body)
-              : Padding(
-                padding: padding ?? EdgeInsets.only(left: 4.h, right: 4.h),
-                child: SafeArea(child: body),
-              ),
+              : Padding(padding: padding ?? EdgeInsets.only(left: 4.h, right: 4.h), child: SafeArea(child: body)),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
     );

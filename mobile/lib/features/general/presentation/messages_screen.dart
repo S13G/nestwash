@@ -20,7 +20,6 @@ class MessagesScreen extends HookConsumerWidget {
     final selectedFilter = ref.watch(selectedChatsCategoriesProvider);
     final filteredChats = ref.watch(filteredChatsProvider(searchText));
     final totalUnreadCount = ref.watch(totalUnreadCountProvider);
-    final totalChats = ref.watch(totalChatsCountProvider);
     final animations = useLaundryAnimations(null);
 
     return NestScaffold(
@@ -39,7 +38,7 @@ class MessagesScreen extends HookConsumerWidget {
             SizedBox(height: 2.h),
 
             // Filter Tabs
-            _buildFilterTabs(theme, ref, totalChats: totalChats, totalUnreadCount: totalUnreadCount, selectedFilter: selectedFilter),
+            _buildFilterTabs(theme, ref, filteredChats: filteredChats.length, totalUnreadCount: totalUnreadCount, selectedFilter: selectedFilter),
             SizedBox(height: 2.h),
 
             // Chat List
@@ -66,15 +65,17 @@ class MessagesScreen extends HookConsumerWidget {
   Widget _buildFilterTabs(
     ThemeData theme,
     WidgetRef ref, {
-    required int totalChats,
+    required int filteredChats,
     required int totalUnreadCount,
     required ChatMessageFilterType selectedFilter,
   }) {
     return Row(
       children: [
-        _buildFilterTab(ChatMessageFilterType.all, totalChats, theme, ref, selectedFilter: selectedFilter),
-        SizedBox(width: 3.w),
+        _buildFilterTab(ChatMessageFilterType.all, filteredChats, theme, ref, selectedFilter: selectedFilter),
+        SizedBox(width: 2.w),
         _buildFilterTab(ChatMessageFilterType.unread, totalUnreadCount, theme, ref, selectedFilter: selectedFilter),
+        SizedBox(width: 2.w),
+        _buildFilterTab(ChatMessageFilterType.favorites, filteredChats, theme, ref, selectedFilter: selectedFilter),
       ],
     );
   }
@@ -102,10 +103,13 @@ class MessagesScreen extends HookConsumerWidget {
             children: [
               Text(
                 '${title.name[0].toUpperCase()}${title.name.substring(1)}',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: isSelected ? Colors.white : theme.colorScheme.onSecondary),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: isSelected ? Colors.white : theme.colorScheme.onSecondary,
+                ),
               ),
               if (count > 0) ...[
-                SizedBox(width: 2.w),
+                SizedBox(width: 1.w),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
                   decoration: BoxDecoration(
@@ -151,7 +155,7 @@ class MessagesScreen extends HookConsumerWidget {
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: ListTile(
-        onTap: () => context.pushNamed('message'),
+        onTap: () => context.pushNamed('chat'),
         contentPadding: EdgeInsets.all(4.w),
         leading: Stack(
           children: [

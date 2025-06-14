@@ -1,277 +1,402 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/general/model/messages_model.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
+import 'package:nestcare/providers/messages_provider.dart';
+import 'package:nestcare/shared/util/toast_util.dart';
+import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class AppColors {
-  static const primary = Color(0xFF6C63FF);
-  static const secondary = Color(0xFF3F3D56);
-  static const onPrimary = Color(0xFF8FD7C7);
-  static const background = Color(0xFFF1F7FF);
-  static const surface = Color(0xFFFFFFFF);
-  static const text = Color(0xFF121212);
-  static const hint = Color(0xFF737373);
-  static const accent = Color(0xFF8EB8FF);
-  static const primaryContainer = Color(0xFF797777);
-  static const secondaryContainer = Color(0xFF7E7BAF);
-  static const tertiary = Color(0xFF1F2937);
-  static const onTertiary = Color(0xFF6366F1);
-}
-
-class Message {
-  final String id;
-  final String text;
-  final bool isMe;
-  final DateTime timestamp;
-  final bool isRead;
-  final String? attachmentName;
-  final String? attachmentType;
-
-  Message({
-    required this.id,
-    required this.text,
-    required this.isMe,
-    required this.timestamp,
-    this.isRead = false,
-    this.attachmentName,
-    this.attachmentType,
-  });
-}
-
-class MessageScreen extends StatefulWidget {
-  final String providerName;
-  final String providerImage;
-  final bool isOnline;
-
-  const MessageScreen({super.key, required this.providerName, required this.providerImage, required this.isOnline});
+class MessageScreen extends HookConsumerWidget {
+  const MessageScreen({super.key});
 
   @override
-  State<MessageScreen> createState() => _MessageScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
 
-class _MessageScreenState extends State<MessageScreen> {
-  final TextEditingController _messageController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final FocusNode _focusNode = FocusNode();
+    final messageController = useTextEditingController();
+    final messages = ref.watch(messageListNotifierProvider);
+    final providerName = ref.watch(messageProviderName);
+    final isOnline = ref.watch(messageIsOnline);
+    final focusNode = useFocusNode();
+    final messageNotifier = ref.watch(messageListNotifierProvider.notifier);
 
-  List<Message> messages = [
-    Message(
-      id: '1',
-      text: 'Hello! I\'ve received your laundry pickup request. I\'ll be there in 30 minutes.',
-      isMe: false,
-      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
-      isRead: true,
-    ),
-    Message(
-      id: '2',
-      text: 'Perfect! I\'ll have everything ready. Should I separate the delicates?',
-      isMe: true,
-      timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 5)),
-      isRead: true,
-    ),
-    Message(
-      id: '3',
-      text: 'Yes, please separate them. Also, the white shirt needs special attention - there\'s a small stain on the collar.',
-      isMe: false,
-      timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 45)),
-      isRead: true,
-    ),
-    Message(
-      id: '4',
-      text: 'Noted! I\'ll take extra care of that shirt. Do you have any fabric softener preference?',
-      isMe: true,
-      timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 30)),
-      isRead: true,
-    ),
-    Message(
-      id: '5',
-      text: 'I\'ve picked up your laundry. Everything is now being processed. I\'ll send you updates!',
-      isMe: false,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
-      isRead: true,
-    ),
-    Message(
-      id: '6',
-      text: 'receipt_march_2024.pdf',
-      isMe: false,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 25)),
-      isRead: true,
-      attachmentName: 'receipt_march_2024.pdf',
-      attachmentType: 'pdf',
-    ),
-    Message(
-      id: '7',
-      text: 'Great! Thank you for the receipt.',
-      isMe: true,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 20)),
-      isRead: true,
-    ),
-  ];
+    final animations = useLaundryAnimations(null);
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
-  }
-
-  void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+    // Automatically scroll down to show the latest message.
+    void scrollToBottom(ScrollController controller) {
+      if (controller.hasClients) {
+        controller.animateTo(controller.position.maxScrollExtent, duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+      }
     }
-  }
 
-  void _sendMessage() {
-    if (_messageController.text.trim().isNotEmpty) {
-      setState(() {
-        messages.add(
-          Message(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            text: _messageController.text.trim(),
-            isMe: true,
-            timestamp: DateTime.now(),
-            isRead: false,
-          ),
-        );
+    // Scrolling to bottom of chat
+    // Scrolling to bottom of chat - FIXED VERSION
+    useEffect(() {
+      // Initial scroll to bottom
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollToBottom(animations.scrollAnimationController);
       });
-      _messageController.clear();
-      _scrollToBottom();
+
+      return null;
+    }, []);
+
+    void sendMessage() {
+      if (messageController.text.trim().isNotEmpty) {
+        final newMessage = MessagesModel(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          text: messageController.text.trim(),
+          isMe: true,
+          timestamp: DateTime.now(),
+          isRead: false,
+        );
+        messageNotifier.addMessage(newMessage);
+        messageController.clear();
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Future.delayed(const Duration(milliseconds: 150), () {
+            if (animations.scrollAnimationController.hasClients) {
+              animations.scrollAnimationController.animateTo(
+                animations.scrollAnimationController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            }
+          });
+        });
+      }
     }
-  }
 
-  void _showAttachmentOptions() {
-    showModalBottomSheet(context: context, backgroundColor: Colors.transparent, builder: (context) => _buildAttachmentBottomSheet());
-  }
+    void showAttachmentOptions() {
+      animations.bottomSheetAnimationController.forward(from: 0.0);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(child: Column(children: [_buildHeader(), Expanded(child: _buildMessagesList()), _buildMessageInput()])),
-    );
-  }
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder:
+            (context) => FadeTransition(
+              opacity: animations.bottomSheetFadeAnimation,
+              child: SlideTransition(position: animations.bottomSheetSlideAnimation, child: buildAttachmentBottomSheet(context, theme)),
+            ),
+      ).whenComplete(() => animations.bottomSheetAnimationController.reverse(from: 1.0));
+    }
 
-  Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.all(4.w),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
-      ),
-      child: Row(
+    void showMoreOptions() {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context) => buildMoreOptionsBottomSheet(context, theme, providerName),
+      );
+    }
+
+    return NestScaffold(
+      padding: EdgeInsets.zero,
+      body: Column(
         children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-              width: 10.w,
-              height: 10.w,
-              decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(2.5.w)),
-              child: Icon(Icons.arrow_back_ios_new, color: AppColors.secondary, size: 5.w),
-            ),
-          ),
-          SizedBox(width: 3.w),
-
-          // Provider Avatar
-          Stack(
-            children: [
-              Container(
-                width: 12.w,
-                height: 12.w,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [AppColors.primary, AppColors.accent], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                  borderRadius: BorderRadius.circular(6.w),
-                ),
-                child: Icon(Icons.person, color: Colors.white, size: 6.w),
-              ),
-              if (widget.isOnline)
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 3.5.w,
-                    height: 3.5.w,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(1.75.w),
-                      border: Border.all(color: AppColors.surface, width: 2),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          SizedBox(width: 3.w),
-
-          // Provider Info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(widget.providerName, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.text)),
-                SizedBox(height: 0.5.h),
-                Text(
-                  widget.isOnline ? 'Online' : 'Last seen 2 hours ago',
-                  style: TextStyle(fontSize: 12.sp, color: widget.isOnline ? Colors.green : AppColors.hint),
-                ),
-              ],
-            ),
-          ),
-
-          // Action Buttons
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  // Make a call
-                },
-                child: Container(
-                  width: 10.w,
-                  height: 10.w,
-                  decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(2.5.w)),
-                  child: Icon(Icons.call_outlined, color: AppColors.primary, size: 5.w),
-                ),
-              ),
-              SizedBox(width: 2.w),
-              GestureDetector(
-                onTap: () {
-                  // More options
-                },
-                child: Container(
-                  width: 10.w,
-                  height: 10.w,
-                  decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(2.5.w)),
-                  child: Icon(Icons.more_vert, color: AppColors.secondary, size: 5.w),
-                ),
-              ),
-            ],
-          ),
+          buildHeader(animations, theme, context, providerName: providerName, isOnline: isOnline, showMoreOptions: showMoreOptions),
+          Expanded(child: buildMessagesList(theme, animations, messages)),
+          buildMessageInput(animations, theme, sendMessage, showAttachmentOptions, messageController, focusNode),
         ],
       ),
     );
   }
 
-  Widget _buildMessagesList() {
+  Widget buildHeader(
+    LaundryAnimations animations,
+    ThemeData theme,
+    BuildContext context, {
+    required String providerName,
+    required bool isOnline,
+    required GestureTapCallback showMoreOptions,
+  }) {
+    return FadeTransition(
+      opacity: animations.fadeAnimation,
+      child: SlideTransition(
+        position: animations.slideAnimation,
+        child: Container(
+          padding: EdgeInsets.all(4.w),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.onTertiaryContainer,
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
+          ),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  context.pop();
+                },
+                child: Container(
+                  width: 10.w,
+                  height: 10.w,
+                  decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(2.5.w)),
+                  child: Icon(Icons.arrow_back_ios_new, color: theme.colorScheme.secondary, size: 5.w),
+                ),
+              ),
+              SizedBox(width: 3.w),
+              Stack(
+                children: [
+                  Container(
+                    width: 12.w,
+                    height: 12.w,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [theme.colorScheme.primary, theme.colorScheme.onSurface],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(6.w),
+                    ),
+                    child: Icon(Icons.person, color: Colors.white, size: 6.w),
+                  ),
+                  if (isOnline)
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 3.5.w,
+                        height: 3.5.w,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(1.75.w),
+                          border: Border.all(color: theme.colorScheme.onTertiaryContainer, width: 2),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              SizedBox(width: 3.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(providerName, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 0.5.h),
+                    Text(
+                      isOnline ? 'Online' : 'Last seen 2 hours ago',
+                      style: theme.textTheme.bodySmall?.copyWith(color: isOnline ? Colors.green : theme.colorScheme.onPrimaryContainer),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      // Make a call
+                    },
+                    child: Container(
+                      width: 10.w,
+                      height: 10.w,
+                      decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(2.5.w)),
+                      child: Icon(Icons.call_outlined, color: theme.colorScheme.primary, size: 5.w),
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  GestureDetector(
+                    onTap: () => showMoreOptions(),
+                    child: Container(
+                      width: 10.w,
+                      height: 10.w,
+                      decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(2.5.w)),
+                      child: Icon(Icons.more_vert, color: theme.colorScheme.secondary, size: 5.w),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildMoreOptionsBottomSheet(BuildContext context, ThemeData theme, String providerName) {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(6.w),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(6.w), topRight: Radius.circular(6.w)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 15.w,
+              height: 1.h,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(0.5.h),
+              ),
+            ),
+            SizedBox(height: 2.h),
+
+            Text('More Options', style: theme.textTheme.titleSmall),
+            SizedBox(height: 2.h),
+
+            // More options list
+            buildMoreOptionItem(theme, 'View Profile', Icons.person_outline, () {
+              context.pop();
+            }),
+            SizedBox(height: 2.h),
+
+            buildMoreOptionItem(theme, 'Add to favorites', Icons.favorite_outline, () {
+              context.pop();
+              ToastUtil.showSuccessToast(context, 'Added to favorites');
+            }),
+            SizedBox(height: 2.h),
+
+            buildMoreOptionItem(theme, 'Report User', Icons.report_outlined, () {
+              // Show report dialog
+              Future.delayed(const Duration(milliseconds: 300), () {
+                if (!context.mounted) return;
+                context.pop();
+                showDialog(context: context, builder: (context) => buildReportDialog(context, theme, providerName));
+              });
+            }, isDestructive: true),
+            SizedBox(height: 4.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildMoreOptionItem(ThemeData theme, String title, IconData icon, VoidCallback onTap, {bool isDestructive = false}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 4.w),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(3.w),
+          border: Border.all(color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.1)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: isDestructive ? Colors.red : theme.colorScheme.secondary, size: 6.w),
+            SizedBox(width: 4.w),
+            Expanded(
+              child: Text(
+                title,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: isDestructive ? Colors.red : theme.colorScheme.secondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onPrimaryContainer, size: 4.w),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildReportDialog(BuildContext context, ThemeData theme, String providerName) {
+    final reportReasons = ['Inappropriate behavior', 'Harassment', 'Spam', 'Fake profile', 'Inappropriate content', 'Fake or bad services', 'Other'];
+
+    return Dialog(
+      backgroundColor: theme.colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.w)),
+      child: Padding(
+        padding: EdgeInsets.all(6.w),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.report_outlined, color: Colors.red, size: 6.w),
+                  SizedBox(width: 3.w),
+                  Expanded(child: Text('Report $providerName', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold))),
+                  GestureDetector(onTap: () => context.pop(), child: Icon(Icons.close, color: theme.colorScheme.onPrimaryContainer, size: 6.w)),
+                ],
+              ),
+              SizedBox(height: 3.h),
+
+              Text('Why are you reporting this user?', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+              SizedBox(height: 2.h),
+
+              // Report reasons
+              ...reportReasons.map(
+                (reason) => GestureDetector(
+                  onTap: () {
+                    context.pop();
+                    _handleReport(context, theme, providerName, reason);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
+                    margin: EdgeInsets.only(bottom: 2.h),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.onTertiaryContainer,
+                      borderRadius: BorderRadius.circular(3.w),
+                      border: Border.all(color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.1)),
+                    ),
+                    child: Text(reason, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.secondary)),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 2.h),
+
+              // Cancel button
+              GestureDetector(
+                onTap: () => context.pop(),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(3.w),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Cancel',
+                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleReport(BuildContext context, ThemeData theme, String providerName, String reason) {
+    // Show confirmation
+    ToastUtil.showSuccessToast(context, 'Report submitted. Thank you for helping keep our community safe.');
+  }
+
+  Widget buildMessagesList(ThemeData theme, LaundryAnimations animations, List<MessagesModel> messages) {
     return ListView.builder(
-      controller: _scrollController,
+      controller: animations.scrollAnimationController,
       padding: EdgeInsets.all(4.w),
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final message = messages[index];
         final showTimestamp = index == 0 || messages[index - 1].timestamp.difference(message.timestamp).inMinutes.abs() > 30;
 
-        return Column(children: [if (showTimestamp) _buildTimestamp(message.timestamp), _buildMessageBubble(message), SizedBox(height: 2.h)]);
+        return Column(children: [if (showTimestamp) buildTimestamp(message, theme), buildMessageBubble(message, theme), SizedBox(height: 2.h)]);
       },
     );
   }
 
-  Widget _buildTimestamp(DateTime timestamp) {
+  Widget buildTimestamp(MessagesModel message, ThemeData theme) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 2.h),
-      child: Text(_formatTimestamp(timestamp), style: TextStyle(fontSize: 11.sp, color: AppColors.hint, fontWeight: FontWeight.w500)),
+      child: Text(
+        MessagesModel.formatTimestamp(message.timestamp),
+        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.w500),
+      ),
     );
   }
 
-  Widget _buildMessageBubble(Message message) {
+  Widget buildMessageBubble(MessagesModel message, ThemeData theme) {
     return Row(
       mainAxisAlignment: message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -281,7 +406,11 @@ class _MessageScreenState extends State<MessageScreen> {
             width: 8.w,
             height: 8.w,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [AppColors.primary, AppColors.accent], begin: Alignment.topLeft, end: Alignment.bottomRight),
+              gradient: LinearGradient(
+                colors: [theme.colorScheme.primary, theme.colorScheme.onSurface],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(4.w),
             ),
             child: Icon(Icons.person, color: Colors.white, size: 4.w),
@@ -294,35 +423,40 @@ class _MessageScreenState extends State<MessageScreen> {
             constraints: BoxConstraints(maxWidth: 75.w),
             padding: EdgeInsets.all(3.w),
             decoration: BoxDecoration(
-              color: message.isMe ? AppColors.primary : AppColors.surface,
+              color: message.isMe ? theme.colorScheme.primary : theme.colorScheme.onTertiaryContainer,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(4.w),
                 topRight: Radius.circular(4.w),
                 bottomLeft: Radius.circular(message.isMe ? 4.w : 1.w),
                 bottomRight: Radius.circular(message.isMe ? 1.w : 4.w),
               ),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (message.attachmentName != null) _buildAttachment(message),
+                if (message.attachmentName != null) buildAttachment(message, theme),
                 if (message.text.isNotEmpty)
-                  Text(message.text, style: TextStyle(fontSize: 14.sp, color: message.isMe ? Colors.white : AppColors.text, height: 1.4)),
+                  Text(
+                    message.text,
+                    style: TextStyle(fontSize: 14.sp, color: message.isMe ? Colors.white : theme.colorScheme.secondary, height: 1.4),
+                  ),
                 SizedBox(height: 1.h),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      _formatMessageTime(message.timestamp),
-                      style: TextStyle(fontSize: 10.sp, color: message.isMe ? Colors.white.withOpacity(0.7) : AppColors.hint),
+                      MessagesModel.formatMessageTime(message.timestamp),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: message.isMe ? Colors.white.withValues(alpha: 0.7) : theme.colorScheme.onPrimaryContainer,
+                      ),
                     ),
                     if (message.isMe) ...[
                       SizedBox(width: 1.w),
                       Icon(
                         message.isRead ? Icons.done_all : Icons.done,
                         size: 3.w,
-                        color: message.isRead ? AppColors.onPrimary : Colors.white.withOpacity(0.7),
+                        color: message.isRead ? theme.colorScheme.onPrimary : Colors.white.withValues(alpha: 0.7),
                       ),
                     ],
                   ],
@@ -337,7 +471,7 @@ class _MessageScreenState extends State<MessageScreen> {
           Container(
             width: 8.w,
             height: 8.w,
-            decoration: BoxDecoration(color: AppColors.secondary, borderRadius: BorderRadius.circular(4.w)),
+            decoration: BoxDecoration(color: theme.colorScheme.secondary, borderRadius: BorderRadius.circular(4.w)),
             child: Icon(Icons.person, color: Colors.white, size: 4.w),
           ),
         ],
@@ -345,7 +479,7 @@ class _MessageScreenState extends State<MessageScreen> {
     );
   }
 
-  Widget _buildAttachment(Message message) {
+  Widget buildAttachment(MessagesModel message, ThemeData theme) {
     IconData icon;
     Color color;
 
@@ -356,107 +490,126 @@ class _MessageScreenState extends State<MessageScreen> {
         break;
       case 'image':
         icon = Icons.image;
-        color = AppColors.primary;
+        color = theme.colorScheme.primary;
         break;
       case 'document':
         icon = Icons.description;
-        color = AppColors.accent;
+        color = theme.colorScheme.onSurface;
         break;
       default:
         icon = Icons.attach_file;
-        color = AppColors.hint;
+        color = theme.colorScheme.onPrimaryContainer;
     }
 
     return Container(
       margin: EdgeInsets.only(bottom: 2.h),
       padding: EdgeInsets.all(3.w),
-      decoration: BoxDecoration(color: message.isMe ? Colors.white.withOpacity(0.2) : AppColors.background, borderRadius: BorderRadius.circular(3.w)),
+      decoration: BoxDecoration(
+        color: message.isMe ? Colors.white.withValues(alpha: 0.2) : theme.colorScheme.onTertiaryContainer,
+        borderRadius: BorderRadius.circular(3.w),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             padding: EdgeInsets.all(2.w),
-            decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(2.w)),
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(2.w)),
             child: Icon(icon, color: color, size: 5.w),
           ),
           SizedBox(width: 3.w),
           Expanded(
             child: Text(
               message.attachmentName!,
-              style: TextStyle(fontSize: 12.sp, color: message.isMe ? Colors.white : AppColors.text, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 12.sp, color: message.isMe ? Colors.white : theme.colorScheme.secondary, fontWeight: FontWeight.w500),
             ),
           ),
-          Icon(Icons.download_outlined, color: message.isMe ? Colors.white.withOpacity(0.7) : AppColors.hint, size: 4.w),
+          Icon(Icons.download_outlined, color: message.isMe ? Colors.white.withValues(alpha: 0.7) : theme.colorScheme.onPrimaryContainer, size: 4.w),
         ],
       ),
     );
   }
 
-  Widget _buildMessageInput() {
-    return Container(
-      padding: EdgeInsets.all(4.w),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -2))],
-      ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: _showAttachmentOptions,
-            child: Container(
-              width: 12.w,
-              height: 12.w,
-              decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(6.w)),
-              child: Icon(Icons.attach_file, color: AppColors.primary, size: 6.w),
+  Widget buildMessageInput(
+    LaundryAnimations animations,
+    ThemeData theme,
+    GestureTapCallback sendMessage,
+    GestureTapCallback showAttachmentOptions,
+    TextEditingController messageController,
+    FocusNode focusNode,
+  ) {
+    return FadeTransition(
+      opacity: animations.fadeAnimation,
+      child: Container(
+        padding: EdgeInsets.all(4.w),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onTertiaryContainer,
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2))],
+        ),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: showAttachmentOptions,
+              child: Container(
+                width: 12.w,
+                height: 12.w,
+                decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6.w)),
+                child: Icon(Icons.attach_file, color: theme.colorScheme.primary, size: 6.w),
+              ),
             ),
-          ),
-          SizedBox(width: 3.w),
+            SizedBox(width: 3.w),
 
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-              decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(6.w)),
-              child: TextField(
-                controller: _messageController,
-                focusNode: _focusNode,
-                maxLines: 4,
-                minLines: 1,
-                style: TextStyle(fontSize: 14.sp, color: AppColors.text),
-                decoration: InputDecoration(
-                  hintText: 'Type a message...',
-                  hintStyle: TextStyle(color: AppColors.hint, fontSize: 14.sp),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+                decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(6.w)),
+                child: TextField(
+                  controller: messageController,
+                  focusNode: focusNode,
+                  maxLines: 4,
+                  minLines: 1,
+                  style: theme.textTheme.bodyMedium,
+                  decoration: InputDecoration(
+                    hintText: 'Type a message...',
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  onSubmitted: (_) => sendMessage(),
                 ),
-                onSubmitted: (_) => _sendMessage(),
               ),
             ),
-          ),
 
-          SizedBox(width: 3.w),
-          GestureDetector(
-            onTap: _sendMessage,
-            child: Container(
-              width: 12.w,
-              height: 12.w,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [AppColors.primary, AppColors.accent], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                borderRadius: BorderRadius.circular(6.w),
-                boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 2))],
+            SizedBox(width: 3.w),
+            GestureDetector(
+              onTap: sendMessage,
+              child: Container(
+                width: 12.w,
+                height: 12.w,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [theme.colorScheme.primary, theme.colorScheme.onSurface],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(6.w),
+                  boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 2))],
+                ),
+                child: Icon(Icons.send, color: Colors.white, size: 5.w),
               ),
-              child: Icon(Icons.send, color: Colors.white, size: 5.w),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildAttachmentBottomSheet() {
+  Widget buildAttachmentBottomSheet(BuildContext context, ThemeData theme) {
     return Container(
       padding: EdgeInsets.all(6.w),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.only(topLeft: Radius.circular(6.w), topRight: Radius.circular(6.w)),
       ),
       child: Column(
@@ -465,26 +618,26 @@ class _MessageScreenState extends State<MessageScreen> {
           Container(
             width: 15.w,
             height: 1.h,
-            decoration: BoxDecoration(color: AppColors.hint.withOpacity(0.3), borderRadius: BorderRadius.circular(0.5.h)),
+            decoration: BoxDecoration(color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(0.5.h)),
           ),
           SizedBox(height: 4.h),
 
-          Text('Send Attachment', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: AppColors.text)),
+          Text('Send Attachment', style: theme.textTheme.titleSmall),
           SizedBox(height: 4.h),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildAttachmentOption('Document', Icons.description_outlined, AppColors.primary, () {
-                Navigator.pop(context);
+              buildAttachmentOption(theme, 'Document', Icons.description_outlined, theme.colorScheme.primary, () {
+                context.pop();
                 // Handle document selection
               }),
-              _buildAttachmentOption('Photos', Icons.photo_library_outlined, AppColors.accent, () {
-                Navigator.pop(context);
+              buildAttachmentOption(theme, 'Photos', Icons.photo_library_outlined, theme.colorScheme.onSurface, () {
+                context.pop();
                 // Handle photo selection
               }),
-              _buildAttachmentOption('Files', Icons.folder_outlined, AppColors.onPrimary, () {
-                Navigator.pop(context);
+              buildAttachmentOption(theme, 'Files', Icons.folder_outlined, theme.colorScheme.onPrimary, () {
+                context.pop();
                 // Handle file selection
               }),
             ],
@@ -495,7 +648,7 @@ class _MessageScreenState extends State<MessageScreen> {
     );
   }
 
-  Widget _buildAttachmentOption(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget buildAttachmentOption(ThemeData theme, String title, IconData icon, Color color, GestureTapCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -503,38 +656,13 @@ class _MessageScreenState extends State<MessageScreen> {
           Container(
             width: 15.w,
             height: 15.w,
-            decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(7.5.w)),
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(7.5.w)),
             child: Icon(icon, color: color, size: 7.w),
           ),
           SizedBox(height: 2.h),
-          Text(title, style: TextStyle(fontSize: 12.sp, color: AppColors.text, fontWeight: FontWeight.w500)),
+          Text(title, style: theme.textTheme.bodySmall),
         ],
       ),
     );
-  }
-
-  String _formatTimestamp(DateTime timestamp) {
-    final now = DateTime.now();
-    final difference = now.difference(timestamp);
-
-    if (difference.inDays == 0) {
-      return 'Today';
-    } else if (difference.inDays == 1) {
-      return 'Yesterday';
-    } else {
-      return '${timestamp.day}/${timestamp.month}/${timestamp.year}';
-    }
-  }
-
-  String _formatMessageTime(DateTime timestamp) {
-    return '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}';
-  }
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    _scrollController.dispose();
-    _focusNode.dispose();
-    super.dispose();
   }
 }
