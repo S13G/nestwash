@@ -6,7 +6,6 @@ import 'package:nestcare/features/auth/presentation/otp_screen.dart';
 import 'package:nestcare/features/auth/presentation/registration_screen.dart';
 import 'package:nestcare/features/auth/presentation/signup_screen.dart';
 import 'package:nestcare/features/general/presentation/bottom_nav_screen.dart';
-import 'package:nestcare/features/general/presentation/chat_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/clothes_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/make_order_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/order_details_screen.dart';
@@ -14,12 +13,14 @@ import 'package:nestcare/features/general/presentation/customer/schedule_drop_of
 import 'package:nestcare/features/general/presentation/customer/schedule_pickup_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/select_clothes_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/track_order_screen.dart';
-import 'package:nestcare/features/general/presentation/menus/customer/customer_address_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_menu_screen.dart';
+import 'package:nestcare/features/general/presentation/menus/customer/customer_orders_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_profile_screen.dart';
-import 'package:nestcare/features/general/presentation/menus/customer/edit_address_screen.dart';
+import 'package:nestcare/features/general/presentation/menus/customer/delivery_address_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/invites_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/support_screen.dart';
+import 'package:nestcare/features/general/presentation/menus/terms_screen.dart';
+import 'package:nestcare/features/general/presentation/menus/transaction_history_screen.dart';
 import 'package:nestcare/features/general/presentation/message_screen.dart';
 import 'package:nestcare/features/general/presentation/messages_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_info_screen.dart';
@@ -99,19 +100,13 @@ final _generalRoutes = <GoRoute>[
       ),
     ],
   ),
+  GoRoute(path: '/terms', name: 'terms', builder: (context, state) => const TermsScreen()),
   GoRoute(path: '/support', name: 'support', builder: (context, state) => const SupportScreen()),
   GoRoute(
     path: '/chat/list',
     name: 'chat-list',
     builder: (context, state) => MessagesScreen(),
-    routes: <GoRoute>[
-      GoRoute(
-        path: "/message",
-        name: "message",
-        builder: (context, state) => MessageScreen(providerName: 'Ayomide', providerImage: 'bana', isOnline: true),
-      ),
-      GoRoute(path: '/chat', name: 'chat', builder: (context, index) => ChatScreen()),
-    ],
+    routes: <GoRoute>[GoRoute(path: "/chat", name: "chat", builder: (context, state) => MessageScreen())],
   ),
   GoRoute(path: '/invites', name: 'invites', builder: (context, state) => InvitesScreen()),
 ];
@@ -124,12 +119,8 @@ final _customerRoutes = <GoRoute>[
     builder: (context, state) => const CustomerMenuScreen(),
     routes: <GoRoute>[
       GoRoute(path: '/profile', name: 'customer_profile', builder: (context, state) => const CustomerProfileScreen()),
-      GoRoute(
-        path: '/addresses',
-        name: 'customer_addresses',
-        builder: (context, state) => const CustomerAddressScreen(),
-        routes: <GoRoute>[GoRoute(path: '/edit', name: 'edit_address', builder: (context, state) => const EditAddressScreen())],
-      ),
+      GoRoute(path: '/orders', name: 'customer_orders', builder: (context, state) => const CustomerOrdersScreen()),
+      GoRoute(path: '/addresses', name: 'customer_addresses', builder: (context, state) => const DeliveryAddressesScreen()),
     ],
   ),
   GoRoute(
@@ -138,6 +129,7 @@ final _customerRoutes = <GoRoute>[
     builder: (context, state) => const OrderDetailsScreen(),
     routes: <GoRoute>[GoRoute(path: '/track/status', name: 'track_order', builder: (context, state) => const OrderTrackingScreen())],
   ),
+  GoRoute(path: '/transaction/history', name: 'transaction_history', builder: (context, state) => const TransactionHistoryScreen()),
 ];
 
 // ================= SERVICE PROVIDER ROUTES =================
