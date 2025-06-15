@@ -126,8 +126,8 @@ final _customerRoutes = <GoRoute>[
   GoRoute(
     path: '/order/details',
     name: 'order_details',
-    builder: (context, state) => const OrderDetailsScreen(),
-    routes: <GoRoute>[GoRoute(path: '/track/status', name: 'track_order', builder: (context, state) => const OrderTrackingScreen())],
+    builder: (context, state) => OrderDetailsScreen(),
+    routes: <GoRoute>[GoRoute(path: '/track/status', name: 'track_order', builder: (context, state) => const TrackOrderScreen())],
   ),
   GoRoute(path: '/transaction/history', name: 'transaction_history', builder: (context, state) => const TransactionHistoryScreen()),
 ];
