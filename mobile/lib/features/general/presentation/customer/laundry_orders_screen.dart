@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -8,6 +9,7 @@ import 'package:nestcare/features/general/widgets/search_widget.dart';
 import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/laundry_orders_providers.dart';
+import 'package:nestcare/shared/util/order_utils.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -40,10 +42,7 @@ class LaundryOrdersScreen extends HookConsumerWidget {
 
             // Orders List or Empty State
             Expanded(
-              child:
-                  filteredLaundryOrders.isEmpty
-                      ? _buildEmptyState(theme, selectedFilter)
-                      : _buildOrdersList(filteredLaundryOrders, animations),
+              child: filteredLaundryOrders.isEmpty ? _buildEmptyState(theme, selectedFilter) : _buildOrdersList(filteredLaundryOrders, animations),
             ),
           ],
         ),
@@ -57,10 +56,7 @@ class LaundryOrdersScreen extends HookConsumerWidget {
       children: [
         Text('My Orders', style: theme.textTheme.titleLarge),
         SizedBox(height: 0.5.h),
-        Text(
-          'Track your laundry orders',
-          style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer),
-        ),
+        Text('Track your laundry orders', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
       ],
     );
   }
@@ -75,38 +71,11 @@ class LaundryOrdersScreen extends HookConsumerWidget {
         // Filter Buttons
         Row(
           children: [
-            Expanded(
-              child: _buildFilterButton(
-                ref,
-                theme,
-                selectedFilter,
-                'All Orders',
-                FilterType.all,
-                Icons.list_alt_rounded,
-              ),
-            ),
+            Expanded(child: _buildFilterButton(ref, theme, selectedFilter, 'All Orders', FilterType.all, Icons.list_alt_rounded)),
             SizedBox(width: 3.w),
-            Expanded(
-              child: _buildFilterButton(
-                ref,
-                theme,
-                selectedFilter,
-                'Active',
-                FilterType.active,
-                Icons.schedule_rounded,
-              ),
-            ),
+            Expanded(child: _buildFilterButton(ref, theme, selectedFilter, 'Active', FilterType.active, Icons.schedule_rounded)),
             SizedBox(width: 3.w),
-            Expanded(
-              child: _buildFilterButton(
-                ref,
-                theme,
-                selectedFilter,
-                'Past Orders',
-                FilterType.past,
-                Icons.history_rounded,
-              ),
-            ),
+            Expanded(child: _buildFilterButton(ref, theme, selectedFilter, 'Past Orders', FilterType.past, Icons.history_rounded)),
           ],
         ),
         SizedBox(height: 3.h),
@@ -114,14 +83,7 @@ class LaundryOrdersScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildFilterButton(
-    WidgetRef ref,
-    ThemeData theme,
-    FilterType selectedFilter,
-    String title,
-    FilterType filter,
-    IconData icon,
-  ) {
+  Widget _buildFilterButton(WidgetRef ref, ThemeData theme, FilterType selectedFilter, String title, FilterType filter, IconData icon) {
     final isSelected = selectedFilter == filter;
 
     return GestureDetector(
@@ -135,29 +97,11 @@ class LaundryOrdersScreen extends HookConsumerWidget {
         decoration: BoxDecoration(
           color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onTertiaryContainer,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(
-            color:
-                isSelected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.primary.withValues(alpha: 0.2),
-            width: 1,
-          ),
+          border: Border.all(color: isSelected ? theme.colorScheme.primary : theme.colorScheme.primary.withValues(alpha: 0.2), width: 1),
           boxShadow:
               isSelected
-                  ? [
-                    BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ]
-                  : [
-                    BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+                  ? [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 5))]
+                  : [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 3))],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -204,6 +148,7 @@ class LaundryOrdersScreen extends HookConsumerWidget {
         onTap: () {
           HapticFeedback.lightImpact();
           // Navigate to order details
+          context.pushNamed("order_details");
         },
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -211,13 +156,7 @@ class LaundryOrdersScreen extends HookConsumerWidget {
             color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: theme.colorScheme.onPrimary.withValues(alpha: 0.3), width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                blurRadius: 20,
-                offset: const Offset(0, 5),
-              ),
-            ],
+            boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 5))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,24 +165,16 @@ class LaundryOrdersScreen extends HookConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Order ${order.id}',
-                      style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                  Expanded(child: Text('Order ${order.id}', style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold))),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
                     decoration: BoxDecoration(
-                      color: getOrderStatusColor(order.status).withValues(alpha: 0.2),
+                      color: OrderUtils.getOrderStatusColor(order.status).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Text(
-                      getOrderStatusText(order.status),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: getOrderStatusColor(order.status),
-                        fontWeight: FontWeight.w600,
-                      ),
+                      OrderUtils.getOrderStatusText(order.status),
+                      style: theme.textTheme.bodySmall?.copyWith(color: OrderUtils.getOrderStatusColor(order.status), fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -253,30 +184,15 @@ class LaundryOrdersScreen extends HookConsumerWidget {
               // Service Type
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  order.serviceType,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
-                ),
+                decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
+                child: Text(order.serviceType, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
               ),
               SizedBox(height: 1.5.h),
               // Items being cleaned
-              Text(
-                'Items being cleaned:',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onPrimaryContainer,
-                ),
-              ),
+              Text('Items being cleaned:', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
               SizedBox(height: 1.h),
               // Items
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: order.items.map((item) => _buildItemChip(item, theme)).toList(),
-              ),
+              Wrap(spacing: 8, runSpacing: 8, children: order.items.map((item) => _buildItemChip(item, theme)).toList()),
               SizedBox(height: 1.h),
 
               // Time and Price Row
@@ -288,19 +204,13 @@ class LaundryOrdersScreen extends HookConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            LucideIcons.clock,
-                            color: theme.colorScheme.onPrimaryContainer,
-                            size: 16,
-                          ),
+                          Icon(LucideIcons.clock, color: theme.colorScheme.onPrimaryContainer, size: 16),
                           const SizedBox(width: 5),
                           Text(
                             order.status == OrderStatus.completed
                                 ? 'Delivered: ${order.deliveryDate.day} ${DateFormat('MMM, yyyy • h:mm a').format(order.deliveryDate)}'
                                 : 'Delivery: ${order.deliveryDate.day} ${DateFormat('MMM, yyyy • h:mm a').format(order.deliveryDate)}',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onPrimaryContainer,
-                            ),
+                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer),
                           ),
                         ],
                       ),
@@ -308,16 +218,13 @@ class LaundryOrdersScreen extends HookConsumerWidget {
                   ),
                   Text(
                     '\$${order.totalPrice.toStringAsFixed(2)}',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
+                    style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                   ),
                 ],
               ),
               SizedBox(height: 1.5.h),
               LinearProgressIndicator(
-                value: getOrderStatusProgressBarValue(order.status),
+                value: OrderUtils.getOrderStatusProgressBarValue(order.status),
                 backgroundColor: theme.colorScheme.surface,
                 valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary),
                 borderRadius: BorderRadius.circular(10),
@@ -337,10 +244,7 @@ class LaundryOrdersScreen extends HookConsumerWidget {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3), width: 1),
       ),
-      child: Text(
-        item.name,
-        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
-      ),
+      child: Text(item.name, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary)),
     );
   }
 
@@ -353,29 +257,15 @@ class LaundryOrdersScreen extends HookConsumerWidget {
             Container(
               width: 40.w,
               height: 18.5.h,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Icon(
-                LucideIcons.washingMachine,
-                size: 80,
-                color: theme.colorScheme.primary.withValues(alpha: 0.5),
-              ),
+              decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(30)),
+              child: Icon(LucideIcons.washingMachine, size: 80, color: theme.colorScheme.primary.withValues(alpha: 0.5)),
             ),
             SizedBox(height: 4.h),
-            Text(
-              _getEmptyStateTitle(selectedFilter),
-              style: theme.textTheme.titleLarge,
-              textAlign: TextAlign.center,
-            ),
+            Text(_getEmptyStateTitle(selectedFilter), style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
             SizedBox(height: 1.5.h),
             Text(
               _getEmptyStateSubtitle(selectedFilter),
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onPrimaryContainer,
-                height: 1.5,
-              ),
+              style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onPrimaryContainer, height: 1.5),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 2.5.h),
@@ -393,20 +283,11 @@ class LaundryOrdersScreen extends HookConsumerWidget {
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 5))],
                 ),
                 child: Text(
                   'Schedule Your First Order',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
