@@ -1,54 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:nestcare/core/config/app_theme.dart';
-
-enum FilterType { all, active, past }
-
-enum OrderStatus { active, completed, cancelled, pending, readyForDelivery }
-
-Color getOrderStatusColor(OrderStatus status) {
-  switch (status) {
-    case OrderStatus.active:
-      return AppColors.onPrimary;
-    case OrderStatus.completed:
-      return Colors.green;
-    case OrderStatus.cancelled:
-      return Colors.red;
-    case OrderStatus.pending:
-      return AppColors.accent;
-    case OrderStatus.readyForDelivery:
-      return Colors.orange;
-  }
-}
-
-String getOrderStatusText(OrderStatus status) {
-  switch (status) {
-    case OrderStatus.active:
-      return 'In Progress';
-    case OrderStatus.completed:
-      return 'Completed';
-    case OrderStatus.cancelled:
-      return 'Cancelled';
-    case OrderStatus.pending:
-      return 'Pending';
-    case OrderStatus.readyForDelivery:
-      return 'Ready for delivery';
-  }
-}
-
-double getOrderStatusProgressBarValue(OrderStatus status) {
-  switch (status) {
-    case OrderStatus.active:
-      return 0.5;
-    case OrderStatus.completed:
-      return 1.0;
-    case OrderStatus.cancelled:
-      return 0.0;
-    case OrderStatus.pending:
-      return 0.25;
-    case OrderStatus.readyForDelivery:
-      return 0.75;
-  }
-}
+import 'package:nestcare/shared/util/order_utils.dart';
 
 class Order {
   final String id;
@@ -83,19 +33,9 @@ class Order {
         deliveryDelayReason: "Delayed delivery",
         status: OrderStatus.readyForDelivery,
         items: [
-          OrderItem(
-            name: "Outer wear",
-            quantity: 2,
-            price: 3.0,
-            category: "Men",
-          ),
+          OrderItem(name: "Outer wear", quantity: 2, price: 3.0, category: "Men"),
           OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
-          OrderItem(
-            name: "Underwear",
-            quantity: 1,
-            price: 3.0,
-            category: "Men",
-          ),
+          OrderItem(name: "Underwear", quantity: 1, price: 3.0, category: "Men"),
         ],
         totalPrice: 18.0,
         address: "123 Main Street, Apt 4B, New York, NY 10001",
@@ -108,19 +48,69 @@ class Order {
         deliveryDelayReason: "Delayed delivery",
         status: OrderStatus.pending,
         items: [
-          OrderItem(
-            name: "Outer wear",
-            quantity: 2,
-            price: 3.0,
-            category: "Men",
-          ),
+          OrderItem(name: "Outer wear", quantity: 2, price: 3.0, category: "Men"),
           OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
-          OrderItem(
-            name: "Underwear",
-            quantity: 1,
-            price: 3.0,
-            category: "Men",
-          ),
+          OrderItem(name: "Underwear", quantity: 1, price: 3.0, category: "Men"),
+        ],
+        totalPrice: 18.0,
+        address: "123 Main Street, Apt 4B, New York, NY 10001",
+        serviceType: 'Dry clean',
+      ),
+      Order(
+        id: "ORD-2023-9897",
+        orderDate: DateTime.now().subtract(const Duration(days: 4)),
+        deliveryDate: DateTime.now().add(const Duration(days: 1)),
+        deliveryDelayReason: "Delayed delivery",
+        status: OrderStatus.completed,
+        items: [
+          OrderItem(name: "Outer wear", quantity: 2, price: 3.0, category: "Men"),
+          OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
+          OrderItem(name: "Underwear", quantity: 1, price: 3.0, category: "Men"),
+        ],
+        totalPrice: 18.0,
+        address: "123 Main Street, Apt 4B, New York, NY 10001",
+        serviceType: 'Dry clean',
+      ),
+      Order(
+        id: "ORD-2023-9898",
+        orderDate: DateTime.now().subtract(const Duration(days: 4)),
+        deliveryDate: DateTime.now().add(const Duration(days: 1)),
+        deliveryDelayReason: "Delayed delivery",
+        status: OrderStatus.active,
+        items: [
+          OrderItem(name: "Outer wear", quantity: 2, price: 3.0, category: "Men"),
+          OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
+          OrderItem(name: "Underwear", quantity: 1, price: 3.0, category: "Men"),
+        ],
+        totalPrice: 18.0,
+        address: "123 Main Street, Apt 4B, New York, NY 10001",
+        serviceType: 'Dry clean',
+      ),
+      Order(
+        id: "ORD-2023-9897",
+        orderDate: DateTime.now().subtract(const Duration(days: 4)),
+        deliveryDate: DateTime.now().add(const Duration(days: 1)),
+        deliveryDelayReason: "Delayed delivery",
+        status: OrderStatus.cancelled,
+        items: [
+          OrderItem(name: "Outer wear", quantity: 2, price: 3.0, category: "Men"),
+          OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
+          OrderItem(name: "Underwear", quantity: 1, price: 3.0, category: "Men"),
+        ],
+        totalPrice: 18.0,
+        address: "123 Main Street, Apt 4B, New York, NY 10001",
+        serviceType: 'Dry clean',
+      ),
+      Order(
+        id: "ORD-2023-9897",
+        orderDate: DateTime.now().subtract(const Duration(days: 4)),
+        deliveryDate: DateTime.now().add(const Duration(days: 1)),
+        deliveryDelayReason: "Delayed delivery",
+        status: OrderStatus.readyForPickup,
+        items: [
+          OrderItem(name: "Outer wear", quantity: 2, price: 3.0, category: "Men"),
+          OrderItem(name: "Shirt", quantity: 3, price: 3.0, category: "Men"),
+          OrderItem(name: "Underwear", quantity: 1, price: 3.0, category: "Men"),
         ],
         totalPrice: 18.0,
         address: "123 Main Street, Apt 4B, New York, NY 10001",
@@ -136,10 +126,5 @@ class OrderItem {
   final double price;
   final String category;
 
-  OrderItem({
-    required this.name,
-    required this.quantity,
-    required this.price,
-    required this.category,
-  });
+  OrderItem({required this.name, required this.quantity, required this.price, required this.category});
 }
