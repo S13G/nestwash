@@ -8,6 +8,7 @@ import 'package:nestcare/features/general/widgets/search_widget.dart';
 import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/laundry_orders_providers.dart';
+import 'package:nestcare/shared/util/order_utils.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -167,12 +168,12 @@ class CustomerOrdersScreen extends HookConsumerWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
                     decoration: BoxDecoration(
-                      color: getOrderStatusColor(order.status).withValues(alpha: 0.2),
+                      color: OrderUtils.getOrderStatusColor(order.status).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Text(
-                      getOrderStatusText(order.status),
-                      style: theme.textTheme.bodySmall?.copyWith(color: getOrderStatusColor(order.status), fontWeight: FontWeight.w600),
+                      OrderUtils.getOrderStatusText(order.status),
+                      style: theme.textTheme.bodySmall?.copyWith(color: OrderUtils.getOrderStatusColor(order.status), fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -222,7 +223,7 @@ class CustomerOrdersScreen extends HookConsumerWidget {
               ),
               SizedBox(height: 1.5.h),
               LinearProgressIndicator(
-                value: getOrderStatusProgressBarValue(order.status),
+                value: OrderUtils.getOrderStatusProgressBarValue(order.status),
                 backgroundColor: theme.colorScheme.surface,
                 valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary),
                 borderRadius: BorderRadius.circular(10),
