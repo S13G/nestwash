@@ -30,7 +30,7 @@ class TransactionHistoryScreen extends HookConsumerWidget {
           _buildSummaryCards(theme, totalSpent, totalOrders, animations),
           SizedBox(height: 1.h),
 
-          _buildFilterSection(selectedFilter, ref, TransactionFilterType.values, theme),
+          FadeTransition(opacity: animations.fadeAnimation, child: _buildFilterSection(selectedFilter, ref, TransactionFilterType.values, theme)),
           SizedBox(height: 2.h),
 
           Expanded(child: SlideTransition(position: animations.slideAnimation, child: _buildTransactionList(filteredTransactions, theme))),
