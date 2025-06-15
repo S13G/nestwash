@@ -20,13 +20,7 @@ class ProfileCardWidget extends HookConsumerWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(5.w),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.primary.withValues(alpha: 0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: Row(
         children: [
@@ -47,27 +41,7 @@ class ProfileCardWidget extends HookConsumerWidget {
               children: [
                 Text('John Doe', style: theme.textTheme.titleSmall?.copyWith(color: Colors.white)),
                 SizedBox(height: 0.5.h),
-                Text(
-                  'john.doe@email.com',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.8),
-                  ),
-                ),
-                SizedBox(height: 1.h),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(4.w),
-                  ),
-                  child: Text(
-                    'Premium Member',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                Text('john.doe@email.com', style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.8))),
               ],
             ),
           ),
