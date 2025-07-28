@@ -23,9 +23,11 @@ import 'package:nestcare/features/general/presentation/menus/terms_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/transaction_history_screen.dart';
 import 'package:nestcare/features/general/presentation/message_screen.dart';
 import 'package:nestcare/features/general/presentation/messages_screen.dart';
+import 'package:nestcare/features/general/services/model/service_provider_model.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_info_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_order_details_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_profile_screen.dart';
+import 'package:nestcare/features/general/services/presentation/service_provider_reviews_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_providers_screen.dart';
 
 class AppRouter {
@@ -33,8 +35,15 @@ class AppRouter {
 
   AppRouter(this.ref);
 
-  GoRouter get router =>
-      GoRouter(initialLocation: '/signup', routes: [..._authRoutes, ..._generalRoutes, ..._customerRoutes, ..._serviceProviderRoutes]);
+  GoRouter get router => GoRouter(
+    initialLocation: '/signup',
+    routes: [
+      ..._authRoutes,
+      ..._generalRoutes,
+      ..._customerRoutes,
+      ..._serviceProviderRoutes,
+    ],
+  );
 }
 
 // ================= AUTH ROUTES =================
@@ -48,13 +57,25 @@ final _authRoutes = <GoRoute>[
         path: '/email/verify',
         name: 'verify_email',
         builder: (context, state) => OtpScreen(),
-        routes: <GoRoute>[GoRoute(path: '/register', name: 'register', builder: (context, state) => const RegistrationScreen())],
+        routes: <GoRoute>[
+          GoRoute(
+            path: '/register',
+            name: 'register',
+            builder: (context, state) => const RegistrationScreen(),
+          ),
+        ],
       ),
       GoRoute(
         path: '/login',
         name: 'login',
         builder: (context, state) => const LoginScreen(),
-        routes: <GoRoute>[GoRoute(path: '/forgot_password', name: 'forgot_password', builder: (context, state) => const ForgotPasswordScreen())],
+        routes: <GoRoute>[
+          GoRoute(
+            path: '/forgot_password',
+            name: 'forgot_password',
+            builder: (context, state) => const ForgotPasswordScreen(),
+          ),
+        ],
       ),
     ],
   ),
@@ -70,7 +91,11 @@ final _generalRoutes = <GoRoute>[
       GoRoute(
         path: '/services/service_providers',
         name: 'service_providers',
-        builder: (context, state) => const ServiceProvidersScreen(),
+        builder: (context, state) {
+          final selectedService =
+              state.uri.queryParameters['selectedService'] ?? '';
+          return ServiceProvidersScreen(selectedService: selectedService);
+        },
         routes: <GoRoute>[
           GoRoute(
             path: '/service_provider_info',
@@ -82,14 +107,27 @@ final _generalRoutes = <GoRoute>[
                 name: 'make_order',
                 builder: (context, state) => const MakeOrderScreen(),
                 routes: <GoRoute>[
-                  GoRoute(path: '/schedule_pickup', name: 'schedule_pickup', builder: (context, state) => const SchedulePickupScreen()),
-                  GoRoute(path: '/schedule_drop_off', name: 'schedule_drop_off', builder: (context, state) => const ScheduleDropOffScreen()),
+                  GoRoute(
+                    path: '/schedule_pickup',
+                    name: 'schedule_pickup',
+                    builder: (context, state) => const SchedulePickupScreen(),
+                  ),
+                  GoRoute(
+                    path: '/schedule_drop_off',
+                    name: 'schedule_drop_off',
+                    builder: (context, state) => const ScheduleDropOffScreen(),
+                  ),
                   GoRoute(
                     path: '/clothes',
                     name: 'clothes',
                     builder: (context, state) => const ClothesScreen(),
                     routes: <GoRoute>[
-                      GoRoute(path: '/select_clothes', name: 'select_clothes', builder: (context, state) => const SelectClothesScreen()),
+                      GoRoute(
+                        path: '/select_clothes',
+                        name: 'select_clothes',
+                        builder:
+                            (context, state) => const SelectClothesScreen(),
+                      ),
                     ],
                   ),
                 ],
@@ -100,15 +138,33 @@ final _generalRoutes = <GoRoute>[
       ),
     ],
   ),
-  GoRoute(path: '/terms', name: 'terms', builder: (context, state) => const TermsScreen()),
-  GoRoute(path: '/support', name: 'support', builder: (context, state) => const SupportScreen()),
+  GoRoute(
+    path: '/terms',
+    name: 'terms',
+    builder: (context, state) => const TermsScreen(),
+  ),
+  GoRoute(
+    path: '/support',
+    name: 'support',
+    builder: (context, state) => const SupportScreen(),
+  ),
   GoRoute(
     path: '/chat/list',
     name: 'chat-list',
     builder: (context, state) => MessagesScreen(),
-    routes: <GoRoute>[GoRoute(path: "/chat", name: "chat", builder: (context, state) => MessageScreen())],
+    routes: <GoRoute>[
+      GoRoute(
+        path: "/chat",
+        name: "chat",
+        builder: (context, state) => MessageScreen(),
+      ),
+    ],
   ),
-  GoRoute(path: '/invites', name: 'invites', builder: (context, state) => InvitesScreen()),
+  GoRoute(
+    path: '/invites',
+    name: 'invites',
+    builder: (context, state) => InvitesScreen(),
+  ),
 ];
 
 // ================= CUSTOMER ROUTES =================
@@ -118,23 +174,62 @@ final _customerRoutes = <GoRoute>[
     name: 'customer_menu',
     builder: (context, state) => const CustomerMenuScreen(),
     routes: <GoRoute>[
-      GoRoute(path: '/profile', name: 'customer_profile', builder: (context, state) => const CustomerProfileScreen()),
-      GoRoute(path: '/orders', name: 'customer_orders', builder: (context, state) => const CustomerOrdersScreen()),
-      GoRoute(path: '/addresses', name: 'customer_addresses', builder: (context, state) => const DeliveryAddressesScreen()),
+      GoRoute(
+        path: '/profile',
+        name: 'customer_profile',
+        builder: (context, state) => const CustomerProfileScreen(),
+      ),
+      GoRoute(
+        path: '/orders',
+        name: 'customer_orders',
+        builder: (context, state) => const CustomerOrdersScreen(),
+      ),
+      GoRoute(
+        path: '/addresses',
+        name: 'customer_addresses',
+        builder: (context, state) => const DeliveryAddressesScreen(),
+      ),
     ],
   ),
   GoRoute(
     path: '/order/details',
     name: 'order_details',
     builder: (context, state) => OrderDetailsScreen(),
-    routes: <GoRoute>[GoRoute(path: '/track/status', name: 'track_order', builder: (context, state) => const TrackOrderScreen())],
+    routes: <GoRoute>[
+      GoRoute(
+        path: '/track/status',
+        name: 'track_order',
+        builder: (context, state) => const TrackOrderScreen(),
+      ),
+    ],
   ),
-  GoRoute(path: '/transaction/history', name: 'transaction_history', builder: (context, state) => const TransactionHistoryScreen()),
+  GoRoute(
+    path: '/transaction/history',
+    name: 'transaction_history',
+    builder: (context, state) => const TransactionHistoryScreen(),
+  ),
 ];
 
 // ================= SERVICE PROVIDER ROUTES =================
 final _serviceProviderRoutes = <GoRoute>[
-  GoRoute(path: '/service_provider/profile', name: 'service_provider_profile', builder: (context, state) => const ServiceProviderProfileScreen()),
+  GoRoute(
+    path: '/service_provider/profile',
+    name: 'service_provider_profile',
+    builder: (context, state) {
+      final provider = state.extra as ServiceProvider;
+      return ServiceProviderProfileScreen(provider: provider);
+    },
+    routes: <GoRoute>[
+      GoRoute(
+        path: '/reviews',
+        name: 'service_provider_reviews',
+        builder: (context, state) {
+          final provider = state.extra as ServiceProvider;
+          return ServiceProviderReviewsScreen(provider: provider);
+        },
+      ),
+    ],
+  ),
   GoRoute(
     path: '/service_provider/order_details',
     name: 'service_provider_order_details',

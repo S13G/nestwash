@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/core/config/app_theme.dart';
 import 'package:nestcare/features/general/model/order_model.dart';
 import 'package:nestcare/hooks/use_laundry_animations.dart';
-import 'package:nestcare/shared/util/order_utils.dart';
+import 'package:nestcare/shared/util/general_utils.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 

@@ -34,21 +34,18 @@ class AppTheme {
       onTertiary: AppColors.onTertiary,
       onTertiaryContainer: AppColors.surface,
     ),
+    appBarTheme: AppBarTheme(backgroundColor: AppColors.background, elevation: 0),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       hintStyle: TextStyle(color: AppColors.hint, fontSize: 16.sp),
       labelStyle: TextStyle(color: AppColors.hint, fontSize: 16.sp),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: AppColors.primaryContainer.withValues(alpha: 0.6),
-        ),
+        borderSide: BorderSide(color: AppColors.primaryContainer.withValues(alpha: 0.6)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: AppColors.primaryContainer.withValues(alpha: 0.6),
-        ),
+        borderSide: BorderSide(color: AppColors.primaryContainer.withValues(alpha: 0.6)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -98,9 +95,6 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     fontFamily: "Manrope",
     brightness: Brightness.dark,
-    colorScheme: ColorScheme.dark(
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-    ),
+    colorScheme: ColorScheme.dark(primary: AppColors.primary, secondary: AppColors.secondary),
   );
 }
