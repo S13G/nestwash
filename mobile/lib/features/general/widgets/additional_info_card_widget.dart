@@ -19,7 +19,7 @@ class AdditionalInfoContainer extends StatelessWidget {
       height: 8.2.h,
       padding: EdgeInsets.symmetric(horizontal: 2.h, vertical: 1.5.h),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withValues(alpha: 0.7),
+        color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(

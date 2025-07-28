@@ -1,6 +1,7 @@
 // screens/laundry_services_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/services/model/service_model.dart';
 import 'package:nestcare/features/general/widgets/search_widget.dart';
@@ -50,7 +51,13 @@ class LaundryServicesScreen extends HookConsumerWidget {
               Expanded(
                 child: SlideTransition(
                   position: animations.slideAnimation,
-                  child: _buildServicesGrid(theme, allServices, selectedServiceId, context, ref),
+                  child: _buildServicesGrid(
+                    theme,
+                    allServices,
+                    selectedServiceId,
+                    context,
+                    ref,
+                  ),
                 ),
               ),
 
@@ -61,7 +68,13 @@ class LaundryServicesScreen extends HookConsumerWidget {
                   opacity: animations.bottomSheetFadeAnimation,
                   child:
                       selectedServiceId != null
-                          ? _buildBottomAction(theme, allServices, selectedServiceId, ref)
+                          ? _buildBottomAction(
+                            theme,
+                            context,
+                            allServices,
+                            selectedServiceId,
+                            ref,
+                          )
                           : const SizedBox.shrink(),
                 ),
               ),
@@ -80,7 +93,9 @@ class LaundryServicesScreen extends HookConsumerWidget {
         SizedBox(height: 0.5.h),
         Text(
           'Choose the perfect care for your clothes',
-          style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onPrimaryContainer,
+          ),
         ),
       ],
     );
@@ -127,13 +142,13 @@ class LaundryServicesScreen extends HookConsumerWidget {
       onTap: () {
         HapticFeedback.mediumImpact();
         // Toggle selection - set to null if already selected, otherwise set to service.id
-        ref.read(selectedServiceProvider.notifier).state = isSelected ? null : service.id;
+        ref.read(selectedServiceProvider.notifier).state =
+            isSelected ? null : service.id;
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          // image: DecorationImage(image: AssetImage('assets/images/icons/home.png')),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -145,7 +160,10 @@ class LaundryServicesScreen extends HookConsumerWidget {
           ),
           borderRadius: BorderRadius.circular(25),
           border: Border.all(
-            color: isSelected ? service.color : service.color.withValues(alpha: 0.2),
+            color:
+                isSelected
+                    ? service.color
+                    : service.color.withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
@@ -168,10 +186,16 @@ class LaundryServicesScreen extends HookConsumerWidget {
               children: [
                 if (service.isPopular)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [theme.colorScheme.onSurface, theme.colorScheme.primary],
+                        colors: [
+                          theme.colorScheme.onSurface,
+                          theme.colorScheme.primary,
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -192,7 +216,10 @@ class LaundryServicesScreen extends HookConsumerWidget {
                   duration: const Duration(milliseconds: 300),
                   padding: EdgeInsets.all(3.w),
                   decoration: BoxDecoration(
-                    color: isSelected ? service.color : service.color.withValues(alpha: 0.1),
+                    color:
+                        isSelected
+                            ? service.color
+                            : service.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Icon(
@@ -208,7 +235,9 @@ class LaundryServicesScreen extends HookConsumerWidget {
             // Service Name & Description
             Text(
               service.name,
-              style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             SizedBox(height: 1.h),
             Text(
@@ -235,7 +264,9 @@ class LaundryServicesScreen extends HookConsumerWidget {
                 SizedBox(height: 0.5.h),
                 Text(
                   service.duration,
-                  style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -247,11 +278,14 @@ class LaundryServicesScreen extends HookConsumerWidget {
 
   Widget _buildBottomAction(
     ThemeData theme,
+    BuildContext context,
     List<LaundryServiceModel> allServices,
     String selectedServiceId,
     WidgetRef ref,
   ) {
-    final selectedService = allServices.firstWhere((service) => service.id == selectedServiceId);
+    final selectedService = allServices.firstWhere(
+      (service) => service.id == selectedServiceId,
+    );
 
     return Padding(
       padding: EdgeInsets.all(1.5.h),
@@ -264,7 +298,10 @@ class LaundryServicesScreen extends HookConsumerWidget {
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: selectedService.color.withValues(alpha: 0.3), width: 1),
+              border: Border.all(
+                color: selectedService.color.withValues(alpha: 0.3),
+                width: 1,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: selectedService.color.withValues(alpha: 0.15),
@@ -283,7 +320,11 @@ class LaundryServicesScreen extends HookConsumerWidget {
                         color: selectedService.color.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Icon(selectedService.icon, color: selectedService.color, size: 24),
+                      child: Icon(
+                        selectedService.icon,
+                        color: selectedService.color,
+                        size: 24,
+                      ),
                     ),
                     SizedBox(width: 4.w),
                     Expanded(
@@ -317,12 +358,19 @@ class LaundryServicesScreen extends HookConsumerWidget {
                         selectedService.features
                             .map(
                               (feature) => Container(
-                                padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 1.h),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 2.5.w,
+                                  vertical: 1.h,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: selectedService.color.withValues(alpha: 0.1),
+                                  color: selectedService.color.withValues(
+                                    alpha: 0.1,
+                                  ),
                                   borderRadius: BorderRadius.circular(15),
                                   border: Border.all(
-                                    color: selectedService.color.withValues(alpha: 0.3),
+                                    color: selectedService.color.withValues(
+                                      alpha: 0.3,
+                                    ),
                                     width: 1,
                                   ),
                                 ),
@@ -346,13 +394,20 @@ class LaundryServicesScreen extends HookConsumerWidget {
           GestureDetector(
             onTap: () {
               HapticFeedback.mediumImpact();
+              context.pushNamed(
+                "service_providers",
+                queryParameters: {'selectedService': selectedService.name},
+              );
             },
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(vertical: 2.5.h),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [selectedService.color, selectedService.color.withValues(alpha: 0.8)],
+                  colors: [
+                    selectedService.color,
+                    selectedService.color.withValues(alpha: 0.8),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -377,7 +432,11 @@ class LaundryServicesScreen extends HookConsumerWidget {
                     ),
                   ),
                   SizedBox(width: 2.5.w),
-                  const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
+                  const Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ],
               ),
             ),

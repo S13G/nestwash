@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/model/order_model.dart';
-import 'package:nestcare/shared/util/order_utils.dart';
+import 'package:nestcare/shared/util/general_utils.dart';
 
 final laundryOrderSelectedFilterProvider = StateProvider<FilterType>((ref) => FilterType.all);
 final allLaundryOrdersProvider = Provider<List<Order>>((ref) => Order.sampleOrder());

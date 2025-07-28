@@ -9,7 +9,6 @@ class ChatListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     return NestScaffold(
       showBackButton: true,
       title: 'all chats',

@@ -47,7 +47,10 @@ class CustomerHomeScreen extends HookConsumerWidget {
                     },
                     child: Text(
                       'See all',
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w600),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -69,7 +72,13 @@ class CustomerHomeScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(5.w),
-        boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 9))],
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 9),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -79,22 +88,45 @@ class CustomerHomeScreen extends HookConsumerWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [theme.colorScheme.primary, theme.colorScheme.onTertiary],
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.onTertiary,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 5))],
+              boxShadow: [
+                BoxShadow(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
-            child: const Icon(LucideIcons.personStanding, color: Colors.white, size: 30),
+            child: const Icon(
+              LucideIcons.personStanding,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
           SizedBox(width: 3.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Good day, Sarah! 👋', style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  'Good day, Sarah! 👋',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(height: 0.5.h),
-                Text('Your clothes deserve the best care', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
+                Text(
+                  'Your clothes deserve the best care',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onPrimaryContainer,
+                  ),
+                ),
               ],
             ),
           ),
@@ -117,7 +149,13 @@ class CustomerHomeScreen extends HookConsumerWidget {
                 HapticFeedback.lightImpact();
                 ref.read(bottomNavigationProvider.notifier).state = 3;
               },
-              child: Text('See all', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w600)),
+              child: Text(
+                'See all',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         ),
@@ -126,12 +164,21 @@ class CustomerHomeScreen extends HookConsumerWidget {
           padding: EdgeInsets.all(4.5.w),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [theme.colorScheme.onSurface, theme.colorScheme.onTertiary],
+              colors: [
+                theme.colorScheme.onSurface,
+                theme.colorScheme.onTertiary,
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [BoxShadow(color: theme.colorScheme.onSurface.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 8))],
+            boxShadow: [
+              BoxShadow(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -140,21 +187,52 @@ class CustomerHomeScreen extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
-                      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(20)),
-                      child: Text('30% OFF', style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 3.w,
+                        vertical: 0.5.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '30% OFF',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     SizedBox(height: 1.h),
-                    const Text('First Time Users', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                    Text('Get premium cleaning at\ndiscounted rates', style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70)),
+                    const Text(
+                      'First Time Users',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Get premium cleaning at\ndiscounted rates',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white70,
+                      ),
+                    ),
                   ],
                 ),
               ),
               Container(
                 width: 80,
                 height: 80,
-                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(20)),
-                child: const Icon(LucideIcons.washingMachine, color: Colors.white, size: 40),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(
+                  LucideIcons.washingMachine,
+                  color: Colors.white,
+                  size: 40,
+                ),
               ),
             ],
           ),
@@ -174,8 +252,17 @@ class CustomerHomeScreen extends HookConsumerWidget {
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: theme.colorScheme.onPrimary.withValues(alpha: 0.3), width: 1),
-          boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 5))],
+          border: Border.all(
+            color: theme.colorScheme.onPrimary.withValues(alpha: 0.3),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withValues(alpha: 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,13 +270,24 @@ class CustomerHomeScreen extends HookConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Order #LN2024001', style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  'Order #LN2024001',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-                  decoration: BoxDecoration(color: theme.colorScheme.onPrimary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(15)),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   child: Text(
                     'In Progress',
-                    style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -199,38 +297,76 @@ class CustomerHomeScreen extends HookConsumerWidget {
             // Service Type
             Container(
               padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-              decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
-              child: Text('Wash and Fold', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary)),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'Wash and Fold',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
             ),
             SizedBox(height: 1.5.h),
 
             // Items being cleaned
-            Text('Items being cleaned:', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
+            Text(
+              'Items being cleaned:',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onPrimaryContainer,
+              ),
+            ),
             SizedBox(height: 1.h),
             Row(
               children: [
                 _buildItemChip('👖 2 Jeans', theme.colorScheme.primary, theme),
                 const SizedBox(width: 10),
-                _buildItemChip('👔 3 Shirts', theme.colorScheme.onTertiary, theme),
+                _buildItemChip(
+                  '👔 3 Shirts',
+                  theme.colorScheme.onTertiary,
+                  theme,
+                ),
                 const SizedBox(width: 10),
-                _buildItemChip('👖 1 Trouser', theme.colorScheme.onSurface, theme),
+                _buildItemChip(
+                  '👖 1 Trouser',
+                  theme.colorScheme.onSurface,
+                  theme,
+                ),
               ],
             ),
             const SizedBox(height: 15),
             Row(
               children: [
-                Icon(Icons.access_time_rounded, color: theme.colorScheme.onPrimaryContainer, size: 16),
+                Icon(
+                  Icons.access_time_rounded,
+                  color: theme.colorScheme.onPrimaryContainer,
+                  size: 16,
+                ),
                 const SizedBox(width: 5),
-                Text('Delivery: Tomorrow, 2:00 PM', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
+                Text(
+                  'Delivery: Tomorrow, 2:00 PM',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onPrimaryContainer,
+                  ),
+                ),
                 Spacer(),
-                Text('\$25.20', style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+                Text(
+                  '\$25.20',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 1.5.h),
             LinearProgressIndicator(
               value: 0.7,
               backgroundColor: theme.colorScheme.surface,
-              valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                theme.colorScheme.onPrimary,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
           ],
@@ -247,7 +383,10 @@ class CustomerHomeScreen extends HookConsumerWidget {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
-      child: Text(label, style: theme.textTheme.bodySmall?.copyWith(color: color)),
+      child: Text(
+        label,
+        style: theme.textTheme.bodySmall?.copyWith(color: color),
+      ),
     );
   }
 }

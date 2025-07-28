@@ -36,43 +36,28 @@ class SignupScreen extends HookConsumerWidget {
                   children: [
                     Text(
                       "Welcome to NestWash",
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.5,
-                      ),
+                      style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w900, letterSpacing: 1.5),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 2.h),
                     Text(
                       "Sign up to experience premium laundry services",
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                      ),
+                      style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500, fontSize: 18),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 1.h),
-                    ImageWidget(
-                      imageName: "email_icon",
-                      width: double.infinity,
-                      height: 32.h,
-                      fit: BoxFit.contain,
-                    ),
+                    ImageWidget(imageName: "email_icon", width: double.infinity, height: 32.h, fit: BoxFit.contain),
                     SizedBox(height: 2.h),
                     Text(
                       "Enter your email to get started",
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                      ),
+                      style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500, fontSize: 18),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 2.h),
                     NestForm(
                       formKey: formKey,
                       spacing: 2,
-                      submitText: "Submit Code",
+                      submitText: "Submit",
                       fields: [
                         NestFormField(
                           controller: emailController,
@@ -101,10 +86,7 @@ class SignupScreen extends HookConsumerWidget {
             RichText(
               text: TextSpan(
                 text: "I have an account? ",
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: Colors.black,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: theme.textTheme.bodyLarge?.copyWith(color: Colors.black, fontStyle: FontStyle.italic),
                 children: [
                   TextSpan(
                     text: "Log in",

@@ -9,24 +9,13 @@ final userProvider = StateNotifierProvider<UserNotifier, UserState?>((ref) {
 class UserNotifier extends StateNotifier<UserState?> {
   UserNotifier(super.state);
 
-  // Update user details
-  void setUser(String email, String fullName, String? accountType) {
-    state = UserState(
-      email: email,
-      fullName: fullName,
-      accountType: accountType,
-    );
-  }
-
   // Clear user details
   void clearUser() {
     state = null;
   }
 }
 
-final dummyAddressDataProvider = StateProvider<List<Map<String, String>>>((
-  ref,
-) {
+final dummyAddressDataProvider = StateProvider<List<Map<String, String>>>((ref) {
   return [
     {"street": "Royalton", "houseNumber": "9"},
     {"street": "Oceanview", "houseNumber": "21"},
@@ -34,23 +23,17 @@ final dummyAddressDataProvider = StateProvider<List<Map<String, String>>>((
   ];
 });
 
-final streetControllerProvider = Provider.autoDispose<TextEditingController>((
-  ref,
-) {
+final streetControllerProvider = Provider.autoDispose<TextEditingController>((ref) {
   final controller = TextEditingController();
   return controller;
 });
 
-final cityControllerProvider = Provider.autoDispose<TextEditingController>((
-  ref,
-) {
+final cityControllerProvider = Provider.autoDispose<TextEditingController>((ref) {
   final controller = TextEditingController();
   return controller;
 });
 
-final addressControllerProvider = Provider.autoDispose<TextEditingController>((
-  ref,
-) {
+final addressControllerProvider = Provider.autoDispose<TextEditingController>((ref) {
   final controller = TextEditingController();
   return controller;
 });

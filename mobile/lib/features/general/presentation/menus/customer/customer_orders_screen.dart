@@ -8,7 +8,7 @@ import 'package:nestcare/features/general/widgets/search_widget.dart';
 import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/laundry_orders_providers.dart';
-import 'package:nestcare/shared/util/order_utils.dart';
+import 'package:nestcare/shared/util/general_utils.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
