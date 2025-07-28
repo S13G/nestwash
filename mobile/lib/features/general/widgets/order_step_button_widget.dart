@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OrderStepButton extends StatelessWidget {
@@ -37,7 +38,9 @@ class OrderStepButton extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
+                  color: theme.colorScheme.secondaryContainer.withValues(
+                    alpha: 0.2,
+                  ),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -53,7 +56,6 @@ class OrderStepButton extends StatelessWidget {
               Text(
                 title,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w500,
                   color:
                       isCompleted
                           ? theme.colorScheme.primary
@@ -62,8 +64,11 @@ class OrderStepButton extends StatelessWidget {
               ),
               Spacer(),
               isCompleted
-                  ? Icon(Icons.check_circle, color: Colors.green)
-                  : Icon(Icons.add, color: theme.colorScheme.primaryContainer),
+                  ? Icon(LucideIcons.badgeCheck, color: Colors.green)
+                  : Icon(
+                    LucideIcons.plus,
+                    color: theme.colorScheme.primaryContainer,
+                  ),
             ],
           ),
         ),

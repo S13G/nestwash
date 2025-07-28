@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/features/general/widgets/order_step_button_widget.dart';
 import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
@@ -19,22 +20,21 @@ class MakeOrderScreen extends ConsumerWidget {
     final completedSteps = ref.watch(completedStepsProvider);
 
     final orderSteps = [
-      {'title': 'Pickup address', 'icon': Icons.home},
-      {'title': 'Schedule pick up', 'icon': Icons.local_shipping},
-      {'title': 'Drop off address', 'icon': Icons.house},
-      {'title': 'Schedule drop off', 'icon': Icons.calendar_month},
-      {'title': 'Clothes', 'icon': Icons.shopping_bag},
+      {'title': 'Pickup address', 'icon': LucideIcons.mapPinHouse},
+      {'title': 'Schedule pick up', 'icon': LucideIcons.truck},
+      {'title': 'Drop off address', 'icon': LucideIcons.mapPinHouse},
+      {'title': 'Schedule drop off', 'icon': LucideIcons.calendarDays},
+      {'title': 'Clothes', 'icon': LucideIcons.boxes},
     ];
 
     return NestScaffold(
       showBackButton: true,
       title: 'Place Order',
-      padding: EdgeInsets.zero,
       body: Column(
         children: [
           // Progress Indicator
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.h, vertical: 2.h),
+            padding: EdgeInsets.symmetric(vertical: 2.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,6 +42,7 @@ class MakeOrderScreen extends ConsumerWidget {
                   '${(progress * 100).toInt()}% complete',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 SizedBox(height: 1.h),
@@ -49,7 +50,8 @@ class MakeOrderScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
                     value: progress,
-                    backgroundColor: theme.colorScheme.primaryContainer,
+                    backgroundColor: theme.colorScheme.secondaryContainer
+                        .withValues(alpha: 0.5),
                     valueColor: AlwaysStoppedAnimation<Color>(
                       theme.colorScheme.primary,
                     ),
@@ -62,39 +64,35 @@ class MakeOrderScreen extends ConsumerWidget {
 
           // Steps
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.h),
-              child: Column(
-                children: [
-                  ...orderSteps.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final step = entry.value;
+            child: Column(
+              children: [
+                ...orderSteps.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final step = entry.value;
 
-                    final isEnabled = index == 0 || completedSteps[index - 1];
-                    final isCompleted = completedSteps[index];
+                  final isEnabled = index == 0 || completedSteps[index - 1];
+                  final isCompleted = completedSteps[index];
 
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 2.h),
-                      child: OrderStepButton(
-                        icon: step['icon'] as IconData,
-                        title: step['title'] as String,
-                        isCompleted: isCompleted,
-                        isEnabled: isEnabled,
-                        onTap: () => _navigateToStep(context, ref, index),
-                      ),
-                    );
-                  }),
-                  const Spacer(),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 4.h),
-                    child: NestButton(
-                      text: 'Continue',
-                      onPressed:
-                          () => _handleContinue(ref, context, currentStep),
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 2.h),
+                    child: OrderStepButton(
+                      icon: step['icon'] as IconData,
+                      title: step['title'] as String,
+                      isCompleted: isCompleted,
+                      isEnabled: isEnabled,
+                      onTap: () => _navigateToStep(context, ref, index),
                     ),
+                  );
+                }),
+                const Spacer(),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 4.h),
+                  child: NestButton(
+                    text: 'Continue',
+                    onPressed: () => _handleContinue(ref, context, currentStep),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
