@@ -13,7 +13,7 @@ class ServiceProviderDiscountsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ProfileCardWidget(theme: theme),
+        ProfileCardWidget(),
         SizedBox(height: 2.h),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 2.w),

@@ -25,20 +25,12 @@ class ServiceProviderHomeScreen extends ConsumerWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 4.h,
-                  child: ImageWidget(imageName: 'user_pic'),
-                ),
+                CircleAvatar(radius: 4.h, child: ImageWidget(imageName: 'user_pic')),
                 SizedBox(width: 4.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Good morning!',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.primaryContainer,
-                      ),
-                    ),
+                    Text('Good morning!', style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primaryContainer)),
                     Text(
                       'William',
                       style: theme.textTheme.titleLarge?.copyWith(
@@ -67,12 +59,7 @@ class ServiceProviderHomeScreen extends ConsumerWidget {
                     ref.read(bottomNavigationProvider.notifier).state = 1;
                     ref.read(selectedOrderTabProvider.notifier).state = 2;
                   },
-                  child: Text(
-                    'See all',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
+                  child: Text('See all', style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary)),
                 ),
               ],
             ),
@@ -85,7 +72,7 @@ class ServiceProviderHomeScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               final service = allActiveOrders[index];
 
-              return ServiceCard(service: service);
+              return ServiceCard();
             },
           ),
           SizedBox(height: 3.h),
@@ -100,12 +87,7 @@ class ServiceProviderHomeScreen extends ConsumerWidget {
                     ref.read(bottomNavigationProvider.notifier).state = 1;
                     ref.read(selectedOrderTabProvider.notifier).state = 0;
                   },
-                  child: Text(
-                    'See all',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
+                  child: Text('See all', style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary)),
                 ),
               ],
             ),
@@ -118,7 +100,7 @@ class ServiceProviderHomeScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               final service = allActiveOrders[index];
 
-              return ServiceCard(service: service);
+              return ServiceCard();
             },
           ),
         ],
