@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ModernGenderDropdown extends StatelessWidget {
@@ -16,39 +16,40 @@ class ModernGenderDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.colorScheme.outline.withValues(alpha: 0.3),
+    return Row(
+      children: [
+        RotatedBox(
+          quarterTurns: 1,
+          child: Icon(
+            LucideIcons.play,
+            color: theme.colorScheme.secondary,
+            size: 3.5.w,
+          ),
         ),
-      ),
-      child: DropdownButton<String>(
-        value: value,
-        icon: Icon(
-          Icons.keyboard_arrow_down_rounded,
-          size: 4.w,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+        SizedBox(width: 1.2.w),
+        DropdownButton<String>(
+          value: value,
+          icon: null,
+          iconSize: 0,
+          underline: const SizedBox(),
+          isDense: true,
+          borderRadius: BorderRadius.circular(12),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.secondary.withValues(alpha: 0.8),
+            fontWeight: FontWeight.w600,
+          ),
+          items: const [
+            DropdownMenuItem(value: 'Men', child: Text('Men')),
+            DropdownMenuItem(value: 'Women', child: Text('Women')),
+            DropdownMenuItem(value: 'Both', child: Text('Both')),
+          ],
+          onChanged: (newValue) {
+            if (newValue != null) {
+              onChanged(newValue);
+            }
+          },
         ),
-        underline: const SizedBox(),
-        isDense: true,
-        borderRadius: BorderRadius.circular(12),
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurface,
-        ),
-        items: const [
-          DropdownMenuItem(value: 'Men', child: Text('Men')),
-          DropdownMenuItem(value: 'Women', child: Text('Women')),
-          DropdownMenuItem(value: 'Both', child: Text('Both')),
-        ],
-        onChanged: (newValue) {
-          if (newValue != null) {
-            onChanged(newValue);
-          }
-        },
-      ),
+      ],
     );
   }
 }
@@ -71,9 +72,6 @@ class ModernQuantityControl extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.colorScheme.outline.withValues(alpha: 0.2),
-        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -86,13 +84,12 @@ class ModernQuantityControl extends StatelessWidget {
           ),
           Container(
             width: 12.w,
-            padding: EdgeInsets.symmetric(vertical: 1.h),
             alignment: Alignment.center,
             child: Text(
               '$quantity',
-              style: theme.textTheme.titleSmall?.copyWith(
+              style: theme.textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface,
+                color: theme.colorScheme.primary,
               ),
             ),
           ),
@@ -118,18 +115,14 @@ class ModernQuantityControl extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 8.w,
-        height: 8.w,
-        decoration: BoxDecoration(
-          color: enabled 
-              ? theme.colorScheme.primary
-              : theme.colorScheme.outline.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(8),
-        ),
+        width: 4.w,
+        height: 4.w,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         child: Icon(
           icon,
-          color: enabled ? Colors.white : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+          color: theme.colorScheme.secondary,
           size: 4.w,
+          weight: 4,
         ),
       ),
     );

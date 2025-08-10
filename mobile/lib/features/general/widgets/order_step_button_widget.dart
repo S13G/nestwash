@@ -38,16 +38,14 @@ class OrderStepButton extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.secondaryContainer.withValues(
-                    alpha: 0.2,
-                  ),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   icon,
                   color:
                       isCompleted
-                          ? Colors.green
+                          ? theme.colorScheme.primary
                           : theme.colorScheme.primaryContainer,
                   size: 24,
                 ),
@@ -58,13 +56,16 @@ class OrderStepButton extends StatelessWidget {
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color:
                       isCompleted
-                          ? Colors.green
+                          ? theme.colorScheme.primary
                           : theme.colorScheme.primaryContainer,
                 ),
               ),
               Spacer(),
               isCompleted
-                  ? Icon(LucideIcons.badgeCheck, color: Colors.green)
+                  ? Icon(
+                    LucideIcons.badgeCheck,
+                    color: theme.colorScheme.primary,
+                  )
                   : Icon(
                     LucideIcons.plus,
                     color: theme.colorScheme.primaryContainer,

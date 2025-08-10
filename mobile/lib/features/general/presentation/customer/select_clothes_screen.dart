@@ -120,7 +120,7 @@ class SelectClothesScreen extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 2.h),
       child: NestButton(
-        color: totalItems > 0 ? theme.colorScheme.onPrimary : Colors.grey,
+        color: totalItems > 0 ? theme.colorScheme.primary : Colors.grey,
         onPressed:
             totalItems > 0
                 ? () => _confirmSelection(context, ref, selectedItems)

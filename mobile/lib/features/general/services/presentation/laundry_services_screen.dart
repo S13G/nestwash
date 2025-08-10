@@ -1,4 +1,3 @@
-// screens/laundry_services_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -288,7 +287,7 @@ class LaundryServicesScreen extends HookConsumerWidget {
     );
 
     return Padding(
-      padding: EdgeInsets.all(1.5.h),
+      padding: EdgeInsets.only(top: 3.h, bottom: 1.5.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

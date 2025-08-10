@@ -38,37 +38,16 @@ final clothingItemsProvider = Provider<Map<String, List<ClothingItemModel>>>((
       ),
     ],
     'dry_clean': [
-      ClothingItemModel(
-        name: 'Suits (2-piece)',
-        price: 15.0,
-        icon: 'suit_icon',
-      ),
-      ClothingItemModel(
-        name: 'Suits (3-piece)',
-        price: 20.0,
-        icon: 'suit_icon',
-      ),
+      ClothingItemModel(name: 'Suits', price: 20.0, icon: 'suit_icon'),
       ClothingItemModel(
         name: 'Jackets / Blazers',
         price: 12.0,
         icon: 'jacket_icon',
       ),
-      ClothingItemModel(
-        name: 'Dresses (Casual)',
-        price: 10.0,
-        icon: 'dress_icon',
-      ),
-      ClothingItemModel(name: 'Evening Gowns', price: 25.0, icon: 'gown_icon'),
-      ClothingItemModel(
-        name: 'Coats / Trench Coats',
-        price: 18.0,
-        icon: 'coat_icon',
-      ),
-      ClothingItemModel(
-        name: 'Formal Trousers',
-        price: 8.0,
-        icon: 'formal_pants_icon',
-      ),
+      ClothingItemModel(name: 'Dresses', price: 10.0, icon: 'dress_icon'),
+      ClothingItemModel(name: 'Gowns', price: 25.0, icon: 'gown_icon'),
+      ClothingItemModel(name: 'Coats', price: 18.0, icon: 'coat_icon'),
+      ClothingItemModel(name: 'Trousers', price: 8.0, icon: 'jeans_icon'),
       ClothingItemModel(
         name: 'Sweaters / Cardigans',
         price: 10.0,

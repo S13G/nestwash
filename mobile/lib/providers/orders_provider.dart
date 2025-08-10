@@ -28,9 +28,6 @@ enum TimeRange { morning, afternoon, evening }
 enum PreferredDay { anyDay, weekendsOnly, weekdaysOnly }
 
 final selectedTimeRangeProvider = StateProvider<TimeRange?>((ref) => null);
-final selectedPreferredDayProvider = StateProvider<PreferredDay?>(
-  (ref) => null,
-);
 
 // Clothes provider
 final selectedImagesProvider = StateProvider<List<File>>((ref) => []);

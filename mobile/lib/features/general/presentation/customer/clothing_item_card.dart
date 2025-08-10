@@ -23,7 +23,8 @@ class ClothingItemCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: EdgeInsets.all(2.w),
+      padding: EdgeInsets.all(4.w),
+      margin: EdgeInsets.only(bottom: 2.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
@@ -33,7 +34,7 @@ class ClothingItemCard extends StatelessWidget {
       child: Row(
         children: [
           _buildItemIcon(theme),
-          SizedBox(width: 4.w),
+          SizedBox(width: 6.w),
           Expanded(child: _buildItemDetails(theme)),
           _buildQuantityControls(theme),
         ],
@@ -43,12 +44,9 @@ class ClothingItemCard extends StatelessWidget {
 
   Widget _buildItemIcon(ThemeData theme) {
     return Container(
-      width: 10.w,
-      height: 10.w,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
+      width: 13.w,
+      height: 13.w,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: IconImageWidget(iconName: item.icon, width: 8.w, height: 8.w),
     );
   }
@@ -59,12 +57,13 @@ class ClothingItemCard extends StatelessWidget {
       children: [
         Text(
           item.name,
-          style: theme.textTheme.titleSmall?.copyWith(
+          style: theme.textTheme.bodyLarge?.copyWith(
+            fontSize: 19,
             fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onSurface,
+            color: theme.colorScheme.primaryContainer,
           ),
         ),
-        SizedBox(height: 0.5.h),
+        SizedBox(height: 1.h),
         Row(
           children: [
             Container(
@@ -75,18 +74,18 @@ class ClothingItemCard extends StatelessWidget {
               ),
               child: Text(
                 '\$${item.price.toStringAsFixed(2)}',
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(width: 3.w),
-            ModernGenderDropdown(
-              value: selection.gender,
-              onChanged: onGenderChanged,
-            ),
           ],
+        ),
+        SizedBox(height: 3.w),
+        ModernGenderDropdown(
+          value: selection.gender,
+          onChanged: onGenderChanged,
         ),
       ],
     );

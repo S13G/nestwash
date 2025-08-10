@@ -14,7 +14,6 @@ class ScheduleDropOffScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final timeRange = ref.watch(selectedTimeRangeProvider);
-    final preferredDay = ref.watch(selectedPreferredDayProvider);
     final theme = Theme.of(context);
 
     return NestScaffold(
@@ -112,42 +111,6 @@ class ScheduleDropOffScreen extends ConsumerWidget {
                           );
                         }).toList(),
                   ),
-
-                  SizedBox(height: 2.h),
-
-                  // Preferred Day Selection Section
-                  Text(
-                    'Preferred Delivery Days',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colorScheme.secondary,
-                    ),
-                  ),
-                  SizedBox(height: 1.5.h),
-
-                  Column(
-                    children:
-                        PreferredDay.values.map((day) {
-                          final isSelected = preferredDay == day;
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 1.5.h),
-                            child: _ModernSelectionCard(
-                              label: _dayLabel(day),
-                              icon: LucideIcons.calendar,
-                              isSelected: isSelected,
-                              onTap: () {
-                                HapticFeedback.lightImpact();
-                                ref
-                                    .read(selectedPreferredDayProvider.notifier)
-                                    .state = day;
-                              },
-                            ),
-                          );
-                        }).toList(),
-                  ),
-
-                  // Add some bottom spacing instead of Spacer()
-                  SizedBox(height: 4.h),
                 ],
               ),
             ),
@@ -160,7 +123,7 @@ class ScheduleDropOffScreen extends ConsumerWidget {
               NestButton(
                 text: 'Confirm Drop-off Schedule',
                 onPressed:
-                    timeRange != null && preferredDay != null
+                    timeRange != null
                         ? () {
                           HapticFeedback.mediumImpact();
                           _completeDropoffStep(ref);
@@ -168,7 +131,7 @@ class ScheduleDropOffScreen extends ConsumerWidget {
                         }
                         : null,
                 color:
-                    timeRange != null && preferredDay != null
+                    timeRange != null
                         ? theme.colorScheme.primary
                         : theme.colorScheme.primary.withValues(alpha: 0.3),
               ),
@@ -203,17 +166,6 @@ class ScheduleDropOffScreen extends ConsumerWidget {
         return 'Afternoon (12PM–4PM)';
       case TimeRange.evening:
         return 'Evening (4PM–7PM)';
-    }
-  }
-
-  String _dayLabel(PreferredDay day) {
-    switch (day) {
-      case PreferredDay.anyDay:
-        return 'Any day';
-      case PreferredDay.weekendsOnly:
-        return 'Weekends only';
-      case PreferredDay.weekdaysOnly:
-        return 'Weekdays only';
     }
   }
 }
