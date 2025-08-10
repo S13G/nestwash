@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nestcare/features/general/model/clothes_model.dart';
+import 'package:nestcare/features/general/presentation/customer/clothing_item_card.dart';
+import 'package:nestcare/providers/clothing_items_provider.dart';
 import 'package:nestcare/providers/orders_provider.dart';
-import 'package:nestcare/shared/widgets/image_widget.dart';
+import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -13,281 +17,163 @@ class SelectClothesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedItems = ref.watch(selectedItemsProvider);
-    final theme = Theme.of(context);
+    final selectedServiceId = ref.watch(selectedServiceProvider);
 
-    // Map of item names to their icon paths
-    final itemIcons = {
-      'Outer wear': 'jacket_icon',
-      'Shirt': 'tshirt_icon',
-      'Dress': 'dress_icon',
-      'Others': 'bra_icon',
-      'Bottom': 'jeans_icon',
-    };
+    // Get items for the selected service from the provider
+    final availableItems = ref.watch(
+      serviceClothingItemsProvider(selectedServiceId ?? 'wash_fold'),
+    );
+    final totalItems = _getTotalSelectedItems(selectedItems);
+    final totalPrice = _calculateTotalPrice(selectedItems, availableItems);
 
     return NestScaffold(
       showBackButton: true,
       title: 'Select Items',
-      padding: EdgeInsets.only(left: 3.w, right: 3.w, top: 1.h, bottom: 8.h),
       body: Column(
         children: [
+          _buildHeader(context, totalItems, totalPrice),
+          SizedBox(height: 2.h),
           Expanded(
-            child: ListView(
-              children: [
-                ...selectedItems.entries.map((entry) {
-                  final itemName = entry.key;
-                  final itemSelection = entry.value;
-
-                  return Column(
-                    children: [
-                      ClothingItemTile(
-                        name: itemName,
-                        price: 3,
-                        gender: itemSelection.gender,
-                        quantity: itemSelection.quantity,
-                        iconName: itemIcons[itemName]!,
-                        onGenderChanged: (gender) {
-                          ref
-                              .read(selectedItemsProvider.notifier)
-                              .updateGender(itemName, gender);
-                        },
-                        onDecrement: () {
-                          ref
-                              .read(selectedItemsProvider.notifier)
-                              .updateQuantity(itemName, -1);
-                        },
-                        onIncrement: () {
-                          ref
-                              .read(selectedItemsProvider.notifier)
-                              .updateQuantity(itemName, 1);
-                        },
-                      ),
-                      Divider(
-                        height: 1,
-                        color: theme.colorScheme.primaryContainer,
-                      ),
-                    ],
-                  );
-                }),
-              ],
-            ),
+            child: _buildItemsList(context, ref, availableItems, selectedItems),
           ),
-          NestButton(
-            onPressed: () {
-              // Filter items with quantity > 0
-              final selectedClothes = Map.fromEntries(
-                selectedItems.entries.where(
-                  (entry) => entry.value.quantity > 0,
-                ),
-              );
-
-              if (selectedClothes.isNotEmpty) {
-                context.pop(selectedClothes);
-              }
-            },
-            text: 'confirm Selection',
-          ),
+          _buildBottomSection(context, ref, selectedItems, totalItems),
         ],
       ),
     );
   }
-}
 
-class ClothingItemTile extends StatelessWidget {
-  final String name;
-  final int price;
-  final String gender;
-  final int quantity;
-  final String iconName;
-  final Function(String) onGenderChanged;
-  final VoidCallback onDecrement;
-  final VoidCallback onIncrement;
-
-  const ClothingItemTile({
-    super.key,
-    required this.name,
-    required this.price,
-    required this.gender,
-    required this.quantity,
-    required this.iconName,
-    required this.onGenderChanged,
-    required this.onDecrement,
-    required this.onIncrement,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 4.w),
-      child: Row(
-        children: [
-          // Icon representation
-          ClothingIcon(iconName: iconName),
-          SizedBox(width: 4.w),
-
-          // Item details
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: theme.colorScheme.primaryContainer,
-                  ),
-                ),
-                SizedBox(height: 0.5.h),
-                Row(
-                  children: [
-                    Text(
-                      '\$$price',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                    SizedBox(width: 4.w),
-
-                    // Gender dropdown
-                    GenderDropdown(value: gender, onChanged: onGenderChanged),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // Quantity control
-          QuantityControl(
-            quantity: quantity,
-            onDecrement: onDecrement,
-            onIncrement: onIncrement,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ClothingIcon extends StatelessWidget {
-  final String iconName;
-
-  const ClothingIcon({super.key, required this.iconName});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return IconImageWidget(iconName: iconName, width: 14.w, height: 14.w);
-  }
-}
-
-class GenderDropdown extends StatelessWidget {
-  final String value;
-  final Function(String) onChanged;
-
-  const GenderDropdown({
-    super.key,
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 2.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
-        ),
-      ),
-      child: DropdownButton<String>(
-        value: value,
-        icon: const Icon(Icons.keyboard_arrow_down),
-        underline: const SizedBox(),
-        isDense: true,
-        borderRadius: BorderRadius.circular(8),
-        items: const [
-          DropdownMenuItem(value: 'Men', child: Text('Men')),
-          DropdownMenuItem(value: 'Women', child: Text('Women')),
-          DropdownMenuItem(value: 'Both', child: Text('Both')),
-        ],
-        onChanged: (newValue) {
-          if (newValue != null) {
-            onChanged(newValue);
-          }
-        },
-      ),
-    );
-  }
-}
-
-class QuantityControl extends StatelessWidget {
-  final int quantity;
-  final VoidCallback onDecrement;
-  final VoidCallback onIncrement;
-
-  const QuantityControl({
-    super.key,
-    required this.quantity,
-    required this.onDecrement,
-    required this.onIncrement,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildHeader(BuildContext context, int totalItems, double totalPrice) {
     final theme = Theme.of(context);
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Minus button
-        QuantityButton(icon: Icons.remove, onTap: onDecrement),
-
-        // Quantity display
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Selected Items',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 0.5.h),
+            Text(
+              '$totalItems items',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.secondary.withValues(alpha: 0.7),
+              ),
+            ),
+          ],
+        ),
         Container(
-          width: 10.w,
-          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.secondaryContainer,
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Text(
-            '$quantity',
-            style: theme.textTheme.bodyLarge?.copyWith(
+            '\$${totalPrice.toStringAsFixed(2)}',
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-
-        // Plus button
-        QuantityButton(icon: Icons.add, onTap: onIncrement),
       ],
     );
   }
-}
 
-class QuantityButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
+  Widget _buildItemsList(
+    BuildContext context,
+    WidgetRef ref,
+    List<ClothingItemModel> availableItems,
+    Map<String, ClothesItemSelectionModel> selectedItems,
+  ) {
+    return ListView.separated(
+      physics: const BouncingScrollPhysics(),
+      itemCount: availableItems.length,
+      separatorBuilder: (context, index) => SizedBox(height: 1.h),
+      itemBuilder: (context, index) {
+        final item = availableItems[index];
+        final selection =
+            selectedItems[item.name] ?? ClothesItemSelectionModel();
 
-  const QuantityButton({super.key, required this.icon, required this.onTap});
+        return ClothingItemCard(
+          item: item,
+          selection: selection,
+          onGenderChanged: (gender) => _updateGender(ref, item.name, gender),
+          onQuantityChanged:
+              (change) => _updateQuantity(ref, item.name, change),
+        );
+      },
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildBottomSection(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, ClothesItemSelectionModel> selectedItems,
+    int totalItems,
+  ) {
     final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 7.w,
-        height: 7.w,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimary,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, color: Colors.white, size: 4.w),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 2.h),
+      child: NestButton(
+        color: totalItems > 0 ? theme.colorScheme.onPrimary : Colors.grey,
+        onPressed:
+            totalItems > 0
+                ? () => _confirmSelection(context, ref, selectedItems)
+                : null,
+        text: totalItems > 0 ? 'Confirm Selection' : 'Select items to continue',
       ),
     );
+  }
+
+  int _getTotalSelectedItems(
+    Map<String, ClothesItemSelectionModel> selectedItems,
+  ) {
+    return selectedItems.values
+        .map((item) => item.quantity)
+        .fold(0, (sum, qty) => sum + qty);
+  }
+
+  double _calculateTotalPrice(
+    Map<String, ClothesItemSelectionModel> selectedItems,
+    List<ClothingItemModel> availableItems,
+  ) {
+    double total = 0.0;
+    for (final item in availableItems) {
+      final selection = selectedItems[item.name];
+      if (selection != null && selection.quantity > 0) {
+        total += item.price * selection.quantity;
+      }
+    }
+    return total;
+  }
+
+  void _updateGender(WidgetRef ref, String itemName, String gender) {
+    ref.read(selectedItemsProvider.notifier).updateGender(itemName, gender);
+    HapticFeedback.selectionClick();
+  }
+
+  void _updateQuantity(WidgetRef ref, String itemName, int change) {
+    ref.read(selectedItemsProvider.notifier).updateQuantity(itemName, change);
+    HapticFeedback.lightImpact();
+  }
+
+  void _confirmSelection(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, ClothesItemSelectionModel> selectedItems,
+  ) {
+    final selectedClothes = Map.fromEntries(
+      selectedItems.entries.where((entry) => entry.value.quantity > 0),
+    );
+
+    if (selectedClothes.isNotEmpty) {
+      HapticFeedback.mediumImpact();
+      context.pop(selectedClothes);
+    }
   }
 }

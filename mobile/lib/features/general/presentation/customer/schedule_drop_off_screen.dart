@@ -1,9 +1,9 @@
-// schedule_dropoff_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/providers/orders_provider.dart';
-import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -21,67 +21,178 @@ class ScheduleDropOffScreen extends ConsumerWidget {
       title: 'Schedule Drop-off',
       showBackButton: true,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Choose a time range', style: theme.textTheme.titleMedium),
-          SizedBox(height: 1.h),
-          Wrap(
-            spacing: 10,
-            children:
-                TimeRange.values.map((range) {
-                  return ChoiceChip(
-                    label: Text(_rangeLabel(range)),
-                    selected: timeRange == range,
-                    selectedColor: theme.colorScheme.primary,
-                    labelStyle: TextStyle(
-                      color:
-                          timeRange == range
-                              ? Colors.white
-                              : theme.colorScheme.onSurface,
+          // Scrollable content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(bottom: 2.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header Section
+                  Container(
+                    padding: EdgeInsets.all(5.w),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.primary.withValues(alpha: 0.08),
+                          theme.colorScheme.primary.withValues(alpha: 0.04),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: theme.colorScheme.primary.withValues(
+                          alpha: 0.12,
+                        ),
+                        width: 1,
+                      ),
                     ),
-                    onSelected:
-                        (_) =>
-                            ref.read(selectedTimeRangeProvider.notifier).state =
-                                range,
-                  );
-                }).toList(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Schedule Your Drop-off',
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                  SizedBox(height: 0.5.h),
+                                  Text(
+                                    'Choose when you want your clean laundry delivered',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.primaryContainer,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 2.h),
+
+                  // Time Range Selection Section
+                  Text(
+                    'Delivery Time Range',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.secondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 1.5.h),
+
+                  Column(
+                    children:
+                        TimeRange.values.map((range) {
+                          final isSelected = timeRange == range;
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 1.5.h),
+                            child: _ModernSelectionCard(
+                              label: _rangeLabel(range),
+                              icon: LucideIcons.clock,
+                              isSelected: isSelected,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                ref
+                                    .read(selectedTimeRangeProvider.notifier)
+                                    .state = range;
+                              },
+                            ),
+                          );
+                        }).toList(),
+                  ),
+
+                  SizedBox(height: 2.h),
+
+                  // Preferred Day Selection Section
+                  Text(
+                    'Preferred Delivery Days',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.secondary,
+                    ),
+                  ),
+                  SizedBox(height: 1.5.h),
+
+                  Column(
+                    children:
+                        PreferredDay.values.map((day) {
+                          final isSelected = preferredDay == day;
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 1.5.h),
+                            child: _ModernSelectionCard(
+                              label: _dayLabel(day),
+                              icon: LucideIcons.calendar,
+                              isSelected: isSelected,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                ref
+                                    .read(selectedPreferredDayProvider.notifier)
+                                    .state = day;
+                              },
+                            ),
+                          );
+                        }).toList(),
+                  ),
+
+                  // Add some bottom spacing instead of Spacer()
+                  SizedBox(height: 4.h),
+                ],
+              ),
+            ),
           ),
-          SizedBox(height: 4.h),
-          Text('Preferred delivery days', style: theme.textTheme.titleMedium),
-          SizedBox(height: 1.h),
+
+          // Fixed bottom button
           Column(
-            children:
-                PreferredDay.values.map((day) {
-                  return RadioListTile<PreferredDay>(
-                    title: Text(_dayLabel(day)),
-                    value: day,
-                    groupValue: preferredDay,
-                    activeColor: theme.colorScheme.primary,
-                    onChanged:
-                        (val) =>
-                            ref
-                                .read(selectedPreferredDayProvider.notifier)
-                                .state = val,
-                  );
-                }).toList(),
-          ),
-          const Spacer(),
-          NestButton(
-            text: 'Confirm',
-            onPressed: () {
-              if (timeRange == null || preferredDay == null) {
-                ToastUtil.showErrorToast(
-                  context,
-                  'Please select time range and preferred day',
-                );
-                return;
-              }
-              context.pop(true);
-            },
+            children: [
+              SizedBox(height: 1.5.h),
+              NestButton(
+                text: 'Confirm Drop-off Schedule',
+                onPressed:
+                    timeRange != null && preferredDay != null
+                        ? () {
+                          HapticFeedback.mediumImpact();
+                          _completeDropoffStep(ref);
+                          context.pop(true);
+                        }
+                        : null,
+                color:
+                    timeRange != null && preferredDay != null
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.primary.withValues(alpha: 0.3),
+              ),
+              SizedBox(height: 3.h),
+            ],
           ),
         ],
       ),
     );
+  }
+
+  void _completeDropoffStep(WidgetRef ref) {
+    // Mark step 3 (schedule dropoff) as completed
+    final completed = [...ref.read(completedStepsProvider)];
+    completed[3] = true;
+    ref.read(completedStepsProvider.notifier).state = completed;
+
+    // Update progress
+    final newProgress =
+        completed.where((step) => step).length / completed.length;
+    ref.read(orderProgressProvider.notifier).state = newProgress;
+
+    // Move to next step
+    ref.read(currentStepProvider.notifier).state = 4;
   }
 
   String _rangeLabel(TimeRange range) {
@@ -104,5 +215,111 @@ class ScheduleDropOffScreen extends ConsumerWidget {
       case PreferredDay.weekdaysOnly:
         return 'Weekdays only';
     }
+  }
+}
+
+class _ModernSelectionCard extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ModernSelectionCard({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOutCubic,
+        padding: EdgeInsets.all(4.5.w),
+        decoration: BoxDecoration(
+          color:
+              isSelected
+                  ? theme.colorScheme.primary.withValues(alpha: 0.06)
+                  : theme.colorScheme.onTertiaryContainer,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color:
+                isSelected
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.primary.withValues(alpha: 0.08),
+            width: isSelected ? 2.5 : 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color:
+                  isSelected
+                      ? theme.colorScheme.primary.withValues(alpha: 0.15)
+                      : Colors.black.withValues(alpha: 0.03),
+              blurRadius: isSelected ? 12 : 6,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Icon Container
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: 12.w,
+              height: 12.w,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors:
+                      isSelected
+                          ? [
+                            theme.colorScheme.primary,
+                            theme.colorScheme.primary.withValues(alpha: 0.8),
+                          ]
+                          : [
+                            theme.colorScheme.onPrimaryContainer.withValues(
+                              alpha: 0.1,
+                            ),
+                            theme.colorScheme.onPrimaryContainer.withValues(
+                              alpha: 0.05,
+                            ),
+                          ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(
+                icon,
+                color:
+                    isSelected
+                        ? Colors.white
+                        : theme.colorScheme.onPrimaryContainer,
+                size: 6.w,
+              ),
+            ),
+
+            SizedBox(width: 4.w),
+
+            // Label
+            Expanded(
+              child: Text(
+                label,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color:
+                      isSelected
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.onPrimaryContainer,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

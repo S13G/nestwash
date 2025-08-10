@@ -24,8 +24,11 @@ class MakeOrderScreen extends ConsumerWidget {
       {'title': 'Schedule pick up', 'icon': LucideIcons.truck},
       {'title': 'Drop off address', 'icon': LucideIcons.mapPinHouse},
       {'title': 'Schedule drop off', 'icon': LucideIcons.calendarDays},
-      {'title': 'Clothes', 'icon': LucideIcons.boxes},
+      {'title': 'Wears', 'icon': LucideIcons.boxes},
     ];
+
+    // Check if all steps are completed
+    final allStepsCompleted = completedSteps.every((step) => step);
 
     return NestScaffold(
       showBackButton: true,
@@ -88,8 +91,18 @@ class MakeOrderScreen extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.only(bottom: 4.h),
                   child: NestButton(
-                    text: 'Continue',
-                    onPressed: () => _handleContinue(ref, context, currentStep),
+                    text:
+                        allStepsCompleted
+                            ? 'Continue to order summary'
+                            : 'Complete All Steps',
+                    onPressed:
+                        allStepsCompleted
+                            ? () => _handleContinue(ref, context, currentStep)
+                            : null,
+                    color:
+                        allStepsCompleted
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.primary.withValues(alpha: 0.3),
                   ),
                 ),
               ],
@@ -111,19 +124,19 @@ class MakeOrderScreen extends ConsumerWidget {
     String namedRoute;
     switch (stepIndex) {
       case 0:
-        namedRoute = 'customer_addresses';
+        namedRoute = 'select_pickup_address';
         break;
       case 1:
         namedRoute = 'schedule_pickup';
         break;
       case 2:
-        namedRoute = 'customer_addresses';
+        namedRoute = 'select_dropoff_address';
         break;
       case 3:
         namedRoute = 'schedule_drop_off';
         break;
       case 4:
-        namedRoute = 'clothes';
+        namedRoute = 'wears';
       default:
         return;
     }
@@ -132,7 +145,6 @@ class MakeOrderScreen extends ConsumerWidget {
 
     if (result == true) {
       ref.read(currentStepProvider.notifier).state = stepIndex;
-
       completeStep(ref, stepIndex);
     }
   }
@@ -140,20 +152,18 @@ class MakeOrderScreen extends ConsumerWidget {
   void _handleContinue(WidgetRef ref, BuildContext context, int currentStep) {
     final completed = [...ref.read(completedStepsProvider)];
 
-    if (!completed[currentStep]) {
-      ToastUtil.showErrorToast(context, 'Please complete this step first.');
+    // Check if all steps are completed
+    if (!completed.every((step) => step)) {
+      ToastUtil.showErrorToast(context, 'Please complete all steps first.');
       return;
     }
 
-    if (currentStep < 3) {
-      ref.read(currentStepProvider.notifier).state = currentStep + 1;
-    } else {
-      ToastUtil.showSuccessToast(context, 'Order placed successfully');
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (!context.mounted) return;
-        context.goNamed("order_details");
-      });
-    }
+    // All steps completed, place the order
+    ToastUtil.showSuccessToast(context, 'Order placed successfully');
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (!context.mounted) return;
+      context.pushNamed("order_details");
+    });
   }
 
   void completeStep(WidgetRef ref, int stepIndex) {

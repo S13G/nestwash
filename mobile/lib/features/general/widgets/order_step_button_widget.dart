@@ -47,7 +47,7 @@ class OrderStepButton extends StatelessWidget {
                   icon,
                   color:
                       isCompleted
-                          ? theme.colorScheme.primary
+                          ? Colors.green
                           : theme.colorScheme.primaryContainer,
                   size: 24,
                 ),
@@ -58,7 +58,7 @@ class OrderStepButton extends StatelessWidget {
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color:
                       isCompleted
-                          ? theme.colorScheme.primary
+                          ? Colors.green
                           : theme.colorScheme.primaryContainer,
                 ),
               ),
