@@ -12,6 +12,8 @@ import 'package:nestcare/features/general/presentation/customer/order_details_sc
 import 'package:nestcare/features/general/presentation/customer/schedule_drop_off_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/schedule_pickup_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/select_clothes_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/select_dropoff_address_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/select_pickup_address_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/track_order_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_menu_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/customer_orders_screen.dart';
@@ -108,9 +110,21 @@ final _generalRoutes = <GoRoute>[
                 builder: (context, state) => const MakeOrderScreen(),
                 routes: <GoRoute>[
                   GoRoute(
+                    path: '/select_pickup_address',
+                    name: 'select_pickup_address',
+                    builder:
+                        (context, state) => const SelectPickupAddressScreen(),
+                  ),
+                  GoRoute(
                     path: '/schedule_pickup',
                     name: 'schedule_pickup',
                     builder: (context, state) => const SchedulePickupScreen(),
+                  ),
+                  GoRoute(
+                    path: '/select_dropoff_address',
+                    name: 'select_dropoff_address',
+                    builder:
+                        (context, state) => const SelectDropoffAddressScreen(),
                   ),
                   GoRoute(
                     path: '/schedule_drop_off',
@@ -118,8 +132,8 @@ final _generalRoutes = <GoRoute>[
                     builder: (context, state) => const ScheduleDropOffScreen(),
                   ),
                   GoRoute(
-                    path: '/clothes',
-                    name: 'clothes',
+                    path: '/wears',
+                    name: 'wears',
                     builder: (context, state) => const ClothesScreen(),
                     routes: <GoRoute>[
                       GoRoute(

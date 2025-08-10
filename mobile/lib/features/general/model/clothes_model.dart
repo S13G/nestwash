@@ -11,3 +11,15 @@ class ClothesItemSelectionModel {
     );
   }
 }
+
+class ClothingItemModel {
+  final String name;
+  final double price;
+  final String icon;
+
+  ClothingItemModel({
+    required this.name,
+    required this.price,
+    required this.icon,
+  });
+}
