@@ -2,9 +2,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/model/address_model.dart';
 
 // Provider for managing the list of addresses
-final addressListNotifierProvider = StateNotifierProvider<AddressListNotifier, List<AddressModel>>((ref) {
-  return AddressListNotifier();
-});
+final addressListNotifierProvider =
+    StateNotifierProvider<AddressListNotifier, List<AddressModel>>((ref) {
+      return AddressListNotifier();
+    });
 
 class AddressListNotifier extends StateNotifier<List<AddressModel>> {
   AddressListNotifier() : super(_initialAddresses);
@@ -47,7 +48,10 @@ class AddressListNotifier extends StateNotifier<List<AddressModel>> {
   }
 
   void setAsDefault(String id) {
-    state = [for (final address in state) address.copyWith(isDefault: address.id == id)];
+    state = [
+      for (final address in state)
+        address.copyWith(isDefault: address.id == id),
+    ];
   }
 }
 
@@ -58,5 +62,7 @@ final editingAddressIdProvider = StateProvider<String?>((ref) => null);
 final isEditingExistingAddressProvider = StateProvider<AddressModel?>((ref) {
   final addresses = ref.watch(addressListNotifierProvider);
   final editingAddressId = ref.watch(editingAddressIdProvider);
-  return editingAddressId != null ? addresses.firstWhere((address) => address.id == editingAddressId) : null;
+  return editingAddressId != null
+      ? addresses.firstWhere((address) => address.id == editingAddressId)
+      : null;
 });

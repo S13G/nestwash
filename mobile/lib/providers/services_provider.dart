@@ -16,12 +16,7 @@ final allServicesProvider = StateProvider<List<LaundryServiceModel>>((ref) {
       icon: LucideIcons.washingMachine,
       color: AppColors.primary,
       imageUrl: 'wash_fold_illustration.svg',
-      features: [
-        'Professional washing',
-        'Machine drying',
-        'Neat folding',
-        'Fabric softener',
-      ],
+      features: ['Machine wash', 'Tumble dry', 'Neat fold'],
       isPopular: true,
     ),
     LaundryServiceModel(
@@ -32,27 +27,7 @@ final allServicesProvider = StateProvider<List<LaundryServiceModel>>((ref) {
       icon: LucideIcons.brushCleaning,
       color: AppColors.onTertiary,
       imageUrl: 'dry_clean_illustration.svg',
-      features: [
-        'Eco-friendly solvents',
-        'Stain removal',
-        'Professional pressing',
-        'Garment protection',
-      ],
-    ),
-    LaundryServiceModel(
-      id: 'express',
-      name: 'Express Service',
-      description: 'Quick turnaround for urgent laundry needs',
-      duration: '24 hours',
-      icon: LucideIcons.cloudLightning,
-      color: AppColors.accent,
-      imageUrl: 'express_illustration.svg',
-      features: [
-        'Same-day service',
-        'Priority handling',
-        'Express delivery',
-        'Perfect for emergencies',
-      ],
+      features: ['Stain removal', 'Soft press', 'Fabric care'],
     ),
     LaundryServiceModel(
       id: 'ironing',
@@ -62,12 +37,7 @@ final allServicesProvider = StateProvider<List<LaundryServiceModel>>((ref) {
       icon: LucideIcons.anvil,
       color: AppColors.onPrimary,
       imageUrl: 'ironing_illustration.svg',
-      features: [
-        'Steam pressing',
-        'Crease removal',
-        'Collar & cuff care',
-        'Hanger service',
-      ],
+      features: ['Steam press', 'Sharp creases', 'Hanger ready'],
     ),
     LaundryServiceModel(
       id: 'premium',
@@ -77,27 +47,18 @@ final allServicesProvider = StateProvider<List<LaundryServiceModel>>((ref) {
       icon: LucideIcons.star,
       color: AppColors.secondaryContainer,
       imageUrl: 'premium_illustration.svg',
-      features: [
-        'Hand washing',
-        'Premium detergents',
-        'Individual care',
-        'Luxury packaging',
-      ],
+      features: ['Hand wash', 'Luxury soap', 'Special wrap'],
     ),
     LaundryServiceModel(
-      id: 'alterations',
-      name: 'Alterations',
-      description: 'Professional tailoring and garment alterations',
-      duration: '5-7 days',
-      icon: LucideIcons.scissors,
-      color: AppColors.tertiary,
-      imageUrl: 'alterations_illustration.svg',
-      features: [
-        'Expert tailoring',
-        'Size adjustments',
-        'Repair services',
-        'Custom fitting',
-      ],
+      id: 'household',
+      name: 'Household Items',
+      description:
+          'Cleaning for curtains, duvets, bedsheets, and other household fabrics',
+      duration: '3-5 days',
+      icon: LucideIcons.blinds,
+      color: AppColors.accent,
+      imageUrl: 'household_items_illustration.svg',
+      features: ['Curtain wash', 'Duvet clean', 'Sheet press'],
     ),
     LaundryServiceModel(
       id: 'footwears',
@@ -107,7 +68,7 @@ final allServicesProvider = StateProvider<List<LaundryServiceModel>>((ref) {
       icon: LucideIcons.footprints,
       color: AppColors.hint,
       imageUrl: 'footwears_illustration.svg',
-      features: ['Sneakers cleaning', 'Footwear fixes', 'Custom fitting'],
+      features: ['Sneaker wash', 'Sole scrub', 'Color restore'],
     ),
   ];
 });
