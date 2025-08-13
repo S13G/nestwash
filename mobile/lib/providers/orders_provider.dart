@@ -91,3 +91,31 @@ class SelectedItemsNotifier
     state = {};
   }
 }
+
+void resetAllOrderProviders(WidgetRef ref) {
+  // Reset step tracking first
+  ref.read(completedStepsProvider.notifier).state = [
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
+  ref.read(orderProgressProvider.notifier).state = 0.0;
+  ref.read(currentStepProvider.notifier).state = 0;
+  
+  // Reset address selections
+  ref.read(selectedPickupAddressProvider.notifier).state = null;
+  ref.read(selectedDropoffAddressProvider.notifier).state = null;
+  
+  // Reset scheduling
+  ref.read(selectedDateProvider.notifier).state = null;
+  ref.read(selectedTimeProvider.notifier).state = null;
+  ref.read(selectedTimeRangeProvider.notifier).state = null;
+  
+  // Reset clothes/items
+  ref.read(selectedImagesProvider.notifier).state = [];
+  ref.read(isImageUploadingProvider.notifier).state = false;
+  ref.read(notesProvider.notifier).state = '';
+  ref.read(selectedItemsProvider.notifier).clearSelection();
+}

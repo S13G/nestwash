@@ -19,8 +19,12 @@ class CustomerProfileScreen extends HookConsumerWidget {
     final originalPhone = useState('123-456-7890');
 
     final formKey = useRef(GlobalKey<FormState>()).value;
-    final fullNameController = useTextEditingController(text: originalFullName.value);
-    final emailController = useTextEditingController(text: 'john.mclean@examplepetstore.com');
+    final fullNameController = useTextEditingController(
+      text: originalFullName.value,
+    );
+    final emailController = useTextEditingController(
+      text: 'john.mclean@examplepetstore.com',
+    );
     final phoneController = useTextEditingController(text: originalPhone.value);
 
     final emailNotifications = ref.watch(emailNotificationsProvider);
@@ -42,7 +46,10 @@ class CustomerProfileScreen extends HookConsumerWidget {
             margin: EdgeInsets.only(right: 4.w),
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
             decoration: BoxDecoration(
-              color: isEditing ? theme.colorScheme.primary : theme.colorScheme.surface,
+              color:
+                  isEditing
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(6.w),
             ),
             child: Text(
@@ -85,7 +92,12 @@ class CustomerProfileScreen extends HookConsumerWidget {
                   // Preferences Section
                   _buildSectionHeader('Preferences', theme),
                   SizedBox(height: 2.h),
-                  _buildPreferencesSection(theme, emailNotifications, ref, isEditing),
+                  _buildPreferencesSection(
+                    theme,
+                    emailNotifications,
+                    ref,
+                    isEditing,
+                  ),
                   SizedBox(height: 4.h),
 
                   // Account Statistics
@@ -151,7 +163,10 @@ class CustomerProfileScreen extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary,
                   borderRadius: BorderRadius.circular(5.w),
-                  border: Border.all(color: theme.colorScheme.onTertiaryContainer, width: 3),
+                  border: Border.all(
+                    color: theme.colorScheme.onTertiaryContainer,
+                    width: 3,
+                  ),
                 ),
                 child: Icon(Icons.camera_alt, color: Colors.white, size: 5.w),
               ),
@@ -162,7 +177,10 @@ class CustomerProfileScreen extends HookConsumerWidget {
   }
 
   Widget _buildSectionHeader(String title, ThemeData theme) {
-    return Text(title, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold));
+    return Text(
+      title,
+      style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+    );
   }
 
   Widget _buildPersonalInfoSection(
@@ -309,7 +327,7 @@ class CustomerProfileScreen extends HookConsumerWidget {
               children: [
                 Expanded(
                   child: _buildStatCard(
-                    'Money Saved',
+                    'Money Spent',
                     '\$127',
                     Icons.savings_outlined,
                     theme.colorScheme.onPrimary,
@@ -334,7 +352,13 @@ class CustomerProfileScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color, ThemeData theme) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+    ThemeData theme,
+  ) {
     return Container(
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
@@ -349,7 +373,9 @@ class CustomerProfileScreen extends HookConsumerWidget {
           SizedBox(height: 0.5.h),
           Text(
             title,
-            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onPrimaryContainer),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onPrimaryContainer,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -404,7 +430,9 @@ class CustomerProfileScreen extends HookConsumerWidget {
           activeColor: theme.colorScheme.primary,
           activeTrackColor: theme.colorScheme.primary.withValues(alpha: 0.3),
           inactiveThumbColor: theme.colorScheme.primary.withValues(alpha: 0.3),
-          inactiveTrackColor: theme.colorScheme.onTertiary.withValues(alpha: 0.1),
+          inactiveTrackColor: theme.colorScheme.onTertiary.withValues(
+            alpha: 0.1,
+          ),
         ),
       ],
     );

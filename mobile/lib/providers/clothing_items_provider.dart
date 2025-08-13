@@ -102,19 +102,9 @@ final clothingItemsProvider = Provider<Map<String, List<ClothingItemModel>>>((
         icon: 'leather_jacket_icon',
       ),
       ClothingItemModel(
-        name: 'Velvet Clothing',
-        price: 25.0,
-        icon: 'velvet_icon',
-      ),
-      ClothingItemModel(
         name: 'Silk Dresses',
         price: 28.0,
         icon: 'silk_dress_icon',
-      ),
-      ClothingItemModel(
-        name: 'Cashmere Sweaters',
-        price: 22.0,
-        icon: 'cashmere_icon',
       ),
       ClothingItemModel(
         name: 'Beaded/Embroidered Wear',
