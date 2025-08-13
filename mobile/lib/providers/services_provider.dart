@@ -25,7 +25,7 @@ final allServicesProvider = StateProvider<List<LaundryServiceModel>>((ref) {
       description: 'Premium dry cleaning for delicate fabrics and formal wear',
       duration: '3-4 days',
       icon: LucideIcons.brushCleaning,
-      color: AppColors.onTertiary,
+      color: const Color(0xFF0D9488),
       imageUrl: 'dry_clean_illustration.svg',
       features: ['Stain removal', 'Soft press', 'Fabric care'],
     ),

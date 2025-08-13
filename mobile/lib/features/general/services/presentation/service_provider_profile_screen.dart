@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/features/general/services/model/service_provider_model.dart';
 import 'package:nestcare/features/general/services/presentation/widgets/rating_modal.dart';
 import 'package:nestcare/features/general/widgets/additional_info_card_widget.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/chat_provider.dart';
 import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
@@ -14,7 +15,7 @@ import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class ServiceProviderProfileScreen extends ConsumerWidget {
+class ServiceProviderProfileScreen extends HookConsumerWidget {
   final ServiceProvider provider;
 
   const ServiceProviderProfileScreen({super.key, required this.provider});
@@ -23,6 +24,7 @@ class ServiceProviderProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isExpanded = ref.watch(serviceProviderExpandedDescriptionProvider);
+    final animations = useLaundryAnimations(null);
 
     final fullText =
         "${provider.name}'s expertise in laundry services is complemented by their friendly and approachable nature. They enjoy building strong relationships with clients and take the time to listen to their needs and concerns. Their focus on customer satisfaction has earned them a loyal following and many repeat clients. With ${provider.reviewCount} completed orders and a ${provider.rating}-star rating, they are committed to providing exceptional service quality.";
@@ -33,31 +35,37 @@ class ServiceProviderProfileScreen extends ConsumerWidget {
     return NestScaffold(
       showBackButton: true,
       title: "Provider Profile",
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProviderHeader(theme),
-            SizedBox(height: 3.h),
+      body: FadeTransition(
+        opacity: animations.fadeAnimation,
+        child: SlideTransition(
+          position: animations.slideAnimation,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProviderHeader(theme),
+                SizedBox(height: 3.h),
 
-            _buildDescription(theme, fullText, shortText, isExpanded, ref),
-            SizedBox(height: 3.h),
+                _buildDescription(theme, fullText, shortText, isExpanded, ref),
+                SizedBox(height: 3.h),
 
-            _buildStatsRow(theme),
-            SizedBox(height: 3.h),
+                _buildStatsRow(theme),
+                SizedBox(height: 3.h),
 
-            _buildServicesSection(theme),
-            SizedBox(height: 3.h),
+                _buildServicesSection(theme),
+                SizedBox(height: 3.h),
 
-            _buildPricingSection(theme),
-            SizedBox(height: 2.h),
+                _buildPricingSection(theme),
+                SizedBox(height: 2.h),
 
-            _buildReviewsSection(theme, context),
-            SizedBox(height: 2.h),
+                _buildReviewsSection(theme, context),
+                SizedBox(height: 2.h),
 
-            _buildActionButtons(context, ref, theme),
-            SizedBox(height: 2.h),
-          ],
+                _buildActionButtons(context, ref, theme),
+                SizedBox(height: 2.h),
+              ],
+            ),
+          ),
         ),
       ),
     );
