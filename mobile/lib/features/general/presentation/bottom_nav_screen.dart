@@ -45,7 +45,7 @@ class BottomNavScreen extends ConsumerWidget {
 
     return NestScaffold(
       appBar: null,
-      padding: EdgeInsets.only(top: 4.h, left: 4.h, right: 4.h),
+      padding: EdgeInsets.only(top: 2.h, left: 6.w, right: 6.w),
       body: SafeArea(child: screens[selectedIndex]),
       bottomNavigationBar: const NestCareBottomNavBar(),
     );
@@ -67,7 +67,7 @@ class NestCareBottomNavBar extends ConsumerWidget {
     return SafeArea(
       child: Container(
         height: 6.h,
-        margin: EdgeInsets.only(top: 1.5.h, left: 4.h, right: 4.h),
+        margin: EdgeInsets.only(top: 1.5.h, left: 6.w, right: 6.w),
         decoration: BoxDecoration(
           color: theme.colorScheme.primary,
           borderRadius: BorderRadius.circular(20),
@@ -78,11 +78,20 @@ class NestCareBottomNavBar extends ConsumerWidget {
             final icons =
                 accountType == "service_provider"
                     ? ['home', 'orders', 'chats', 'discounts', 'notifications']
-                    : ['home', 'orders', 'services', 'discounts', 'notifications'];
+                    : [
+                      'home',
+                      'orders',
+                      'services',
+                      'discounts',
+                      'notifications',
+                    ];
 
             return Expanded(
               child: GestureDetector(
-                onTap: () => ref.read(bottomNavigationProvider.notifier).state = index,
+                onTap:
+                    () =>
+                        ref.read(bottomNavigationProvider.notifier).state =
+                            index,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -126,7 +135,10 @@ class NestCareBottomNavBar extends ConsumerWidget {
                       height: 0.4.h,
                       width: 4.h,
                       decoration: BoxDecoration(
-                        color: selectedIndex == index ? Colors.white : Colors.transparent,
+                        color:
+                            selectedIndex == index
+                                ? Colors.white
+                                : Colors.transparent,
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),

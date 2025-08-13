@@ -30,7 +30,12 @@ class NotificationsScreen extends HookConsumerWidget {
             SizedBox(height: 2.h),
 
             // filter toggle
-            _buildFilterToggle(theme, ref, showUnreadOnly, allUnreadNotifications),
+            _buildFilterToggle(
+              theme,
+              ref,
+              showUnreadOnly,
+              allUnreadNotifications,
+            ),
             SizedBox(height: 2.h),
 
             // notifications list and empty state
@@ -43,7 +48,11 @@ class NotificationsScreen extends HookConsumerWidget {
                       )
                       : SlideTransition(
                         position: animations.slideAnimation,
-                        child: _buildNotificationsList(filteredNotifications, theme, ref),
+                        child: _buildNotificationsList(
+                          filteredNotifications,
+                          theme,
+                          ref,
+                        ),
                       ),
             ),
           ],
@@ -55,7 +64,9 @@ class NotificationsScreen extends HookConsumerWidget {
   Widget _buildHeader(ThemeData theme, WidgetRef ref) {
     return Row(
       children: [
-        Expanded(child: Text('Notifications', style: theme.textTheme.titleMedium)),
+        Expanded(
+          child: Text('Notifications', style: theme.textTheme.titleMedium),
+        ),
         GestureDetector(
           onTap: () {
             ref.read(allNotificationsProvider.notifier).markAllAsRead();
@@ -108,7 +119,10 @@ class NotificationsScreen extends HookConsumerWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 3.w),
                 decoration: BoxDecoration(
-                  color: !showUnreadOnly ? theme.colorScheme.primary : Colors.transparent,
+                  color:
+                      !showUnreadOnly
+                          ? theme.colorScheme.primary
+                          : Colors.transparent,
                   borderRadius: BorderRadius.circular(3.w),
                 ),
                 child: Text(
@@ -116,7 +130,10 @@ class NotificationsScreen extends HookConsumerWidget {
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: !showUnreadOnly ? Colors.white : theme.colorScheme.onPrimaryContainer,
+                    color:
+                        !showUnreadOnly
+                            ? Colors.white
+                            : theme.colorScheme.onPrimaryContainer,
                   ),
                 ),
               ),
@@ -130,7 +147,10 @@ class NotificationsScreen extends HookConsumerWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 3.w),
                 decoration: BoxDecoration(
-                  color: showUnreadOnly ? theme.colorScheme.primary : Colors.transparent,
+                  color:
+                      showUnreadOnly
+                          ? theme.colorScheme.primary
+                          : Colors.transparent,
                   borderRadius: BorderRadius.circular(3.w),
                 ),
                 child: Row(
@@ -140,7 +160,10 @@ class NotificationsScreen extends HookConsumerWidget {
                       'Unread',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: showUnreadOnly ? Colors.white : theme.colorScheme.onPrimaryContainer,
+                        color:
+                            showUnreadOnly
+                                ? Colors.white
+                                : theme.colorScheme.onPrimaryContainer,
                       ),
                     ),
                     SizedBox(width: 2.w),
@@ -188,7 +211,11 @@ class NotificationsScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildNotificationCard(NotificationItem notification, ThemeData theme, WidgetRef ref) {
+  Widget _buildNotificationCard(
+    NotificationItem notification,
+    ThemeData theme,
+    WidgetRef ref,
+  ) {
     return GestureDetector(
       onTap: () {
         ref.read(allNotificationsProvider.notifier).markAsRead(notification.id);
@@ -201,7 +228,10 @@ class NotificationsScreen extends HookConsumerWidget {
           border:
               notification.isRead
                   ? null
-                  : Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2), width: 1.5),
+                  : Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                    width: 1.5,
+                  ),
           boxShadow: [
             BoxShadow(
               color:
@@ -226,7 +256,11 @@ class NotificationsScreen extends HookConsumerWidget {
                     color: notification.getColor().withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(3.w),
                   ),
-                  child: Icon(notification.getIcon(), color: notification.getColor(), size: 6.w),
+                  child: Icon(
+                    notification.getIcon(),
+                    color: notification.getColor(),
+                    size: 6.w,
+                  ),
                 ),
                 SizedBox(width: 3.w),
                 Expanded(
@@ -287,14 +321,19 @@ class NotificationsScreen extends HookConsumerWidget {
                 ),
                 if (notification.orderId != null)
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.w),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 3.w,
+                      vertical: 1.w,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surface,
                       borderRadius: BorderRadius.circular(3.w),
                     ),
                     child: Text(
                       notification.orderId!,
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
               ],
