@@ -22,63 +22,37 @@ class LaundryServicesScreen extends HookConsumerWidget {
     final allServices = ref.watch(filteredServiceProvider(searchText));
     final selectedServiceId = ref.watch(selectedServiceProvider);
 
-    final animations = useLaundryAnimations(selectedServiceId);
+    final animations = useLaundryAnimations(null);
 
     return NestScaffold(
       padding: EdgeInsets.zero,
-      body: GestureDetector(
-        onTap: () {
-          // Deselect service when tapping outside
-          if (selectedServiceId != null) {
-            ref.read(selectedServiceProvider.notifier).state = null;
-          }
-        },
-        child: FadeTransition(
-          opacity: animations.fadeAnimation,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // header section
-              _buildHeader(theme),
-              SizedBox(height: 3.h),
+      body: FadeTransition(
+        opacity: animations.fadeAnimation,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // header section
+            _buildHeader(theme),
+            SizedBox(height: 3.h),
 
-              // search bar
-              SearchWidget(hintText: 'Search services...'),
-              SizedBox(height: 3.h),
+            // search bar
+            SearchWidget(hintText: 'Search services...'),
+            SizedBox(height: 3.h),
 
-              // services grid
-              Expanded(
-                child: SlideTransition(
-                  position: animations.slideAnimation,
-                  child: _buildServicesGrid(
-                    theme,
-                    allServices,
-                    selectedServiceId,
-                    context,
-                    ref,
-                  ),
+            // services grid
+            Expanded(
+              child: SlideTransition(
+                position: animations.slideAnimation,
+                child: _buildServicesGrid(
+                  theme,
+                  allServices,
+                  selectedServiceId,
+                  context,
+                  ref,
                 ),
               ),
-
-              // Animated Bottom Action Button (if service selected)
-              SlideTransition(
-                position: animations.bottomSheetSlideAnimation,
-                child: FadeTransition(
-                  opacity: animations.bottomSheetFadeAnimation,
-                  child:
-                      selectedServiceId != null
-                          ? _buildBottomAction(
-                            theme,
-                            context,
-                            allServices,
-                            selectedServiceId,
-                            ref,
-                          )
-                          : const SizedBox.shrink(),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -140,9 +114,8 @@ class LaundryServicesScreen extends HookConsumerWidget {
     return GestureDetector(
       onTap: () {
         HapticFeedback.mediumImpact();
-        // Toggle selection - set to null if already selected, otherwise set to service.id
-        ref.read(selectedServiceProvider.notifier).state =
-            isSelected ? null : service.id;
+        // Show bottom sheet when service is tapped
+        _showServiceBottomSheet(context, service, ref);
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -159,19 +132,13 @@ class LaundryServicesScreen extends HookConsumerWidget {
           ),
           borderRadius: BorderRadius.circular(25),
           border: Border.all(
-            color:
-                isSelected
-                    ? service.color
-                    : service.color.withValues(alpha: 0.2),
-            width: isSelected ? 2 : 1,
+            color: service.color.withValues(alpha: 0.2),
+            width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color:
-                  isSelected
-                      ? service.color.withValues(alpha: 0.3)
-                      : theme.colorScheme.primary.withValues(alpha: 0.08),
-              blurRadius: isSelected ? 20 : 15,
+              color: theme.colorScheme.primary.withValues(alpha: 0.08),
+              blurRadius: 15,
               offset: const Offset(0, 8),
             ),
           ],
@@ -215,17 +182,10 @@ class LaundryServicesScreen extends HookConsumerWidget {
                   duration: const Duration(milliseconds: 300),
                   padding: EdgeInsets.all(3.w),
                   decoration: BoxDecoration(
-                    color:
-                        isSelected
-                            ? service.color
-                            : service.color.withValues(alpha: 0.1),
+                    color: service.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Icon(
-                    service.icon,
-                    color: isSelected ? Colors.white : service.color,
-                    size: 28,
-                  ),
+                  child: Icon(service.icon, color: service.color, size: 28),
                 ),
               ],
             ),
@@ -275,172 +235,210 @@ class LaundryServicesScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildBottomAction(
-    ThemeData theme,
+  void _showServiceBottomSheet(
     BuildContext context,
-    List<LaundryServiceModel> allServices,
-    String selectedServiceId,
+    LaundryServiceModel service,
     WidgetRef ref,
   ) {
-    final selectedService = allServices.firstWhere(
-      (service) => service.id == selectedServiceId,
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _ServiceBottomSheet(service: service),
     );
+  }
+}
 
-    return Padding(
-      padding: EdgeInsets.only(top: 3.h, bottom: 1.5.h),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Service Details Card
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: selectedService.color.withValues(alpha: 0.3),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: selectedService.color.withValues(alpha: 0.15),
-                  blurRadius: 20,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: selectedService.color.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Icon(
-                        selectedService.icon,
-                        color: selectedService.color,
-                        size: 24,
-                      ),
-                    ),
-                    SizedBox(width: 4.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            selectedService.name,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Duration for service: ${selectedService.duration}',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 2.h),
+class _ServiceBottomSheet extends StatelessWidget {
+  final LaundryServiceModel service;
 
-                if (selectedService.features.isNotEmpty)
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children:
-                        selectedService.features
-                            .map(
-                              (feature) => Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 2.5.w,
-                                  vertical: 1.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: selectedService.color.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
-                                    color: selectedService.color.withValues(
-                                      alpha: 0.3,
-                                    ),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Text(
-                                  feature,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: selectedService.color,
-                                    fontSize: 13.sp,
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                  ),
-              ],
-            ),
-          ),
-          SizedBox(height: 2.h),
+  const _ServiceBottomSheet({required this.service});
 
-          // Continue Button
-          GestureDetector(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.pushNamed(
-                "service_providers",
-                queryParameters: {'selectedService': selectedService.name},
-              );
-            },
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 2.5.h),
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 5.w,
+          right: 5.w,
+          top: 3.h,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 5.h,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              width: 12.w,
+              height: 0.5.h,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    selectedService.color,
-                    selectedService.color.withValues(alpha: 0.8),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(height: 3.h),
+
+            // Service Details Card
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: service.color.withValues(alpha: 0.3),
+                  width: 1,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: selectedService.color.withValues(alpha: 0.4),
+                    color: service.color.withValues(alpha: 0.15),
                     blurRadius: 20,
-                    offset: const Offset(0, 8),
+                    offset: const Offset(0, 5),
                   ),
                 ],
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: [
-                  Text(
-                    'Continue with ${selectedService.name}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: service.color.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Icon(
+                          service.icon,
+                          color: service.color,
+                          size: 24,
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              service.name,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Duration for service: ${service.duration}',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onPrimaryContainer,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 2.h),
+
+                  if (service.features.isNotEmpty)
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children:
+                          service.features
+                              .map(
+                                (feature) => Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 2.5.w,
+                                    vertical: 1.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: service.color.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: service.color.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    feature,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: service.color,
+                                      fontSize: 13.sp,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
                     ),
-                  ),
-                  SizedBox(width: 2.5.w),
-                  const Icon(
-                    Icons.arrow_forward_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
                 ],
               ),
             ),
-          ),
-        ],
+            SizedBox(height: 2.h),
+
+            // Continue Button
+            GestureDetector(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                // Close the bottom sheet first
+                context.pop();
+                // Then navigate to service providers
+                context.pushNamed(
+                  "service_providers",
+                  queryParameters: {'selectedService': service.name},
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 2.5.h),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      service.color,
+                      service.color.withValues(alpha: 0.8),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: service.color.withValues(alpha: 0.4),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Continue with ${service.name}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 2.5.w),
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
