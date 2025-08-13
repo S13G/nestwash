@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/widgets/profile_card_widget.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -15,46 +16,53 @@ class CustomerMenuScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final animations = useLaundryAnimations(null);
 
     return NestScaffold(
       showBackButton: true,
       title: "menu",
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Card
-            _buildProfileCard(),
-            SizedBox(height: 4.h),
+      body: FadeTransition(
+        opacity: animations.fadeAnimation,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Profile Card
+              _buildProfileCard(),
+              SizedBox(height: 4.h),
 
-            // Communication Section
-            _buildSectionHeader('Communication', theme),
-            SizedBox(height: 2.h),
-            _buildCommunicationSection(theme, context),
-            SizedBox(height: 4.h),
+              // Communication Section
+              _buildSectionHeader('Communication', theme),
+              SizedBox(height: 2.h),
+              _buildCommunicationSection(theme, context),
+              SizedBox(height: 4.h),
 
-            // Services Section
-            _buildSectionHeader('Services', theme),
-            SizedBox(height: 2.h),
-            _buildServicesSection(theme, context),
-            SizedBox(height: 4.h),
+              // Services Section
+              _buildSectionHeader('Services', theme),
+              SizedBox(height: 2.h),
+              _buildServicesSection(theme, context),
+              SizedBox(height: 4.h),
 
-            // Account Settings Section
-            _buildSectionHeader('Account Settings', theme),
-            SizedBox(height: 2.h),
-            _buildAccountSection(theme, context),
-            SizedBox(height: 4.h),
+              // Account Settings Section
+              _buildSectionHeader('Account Settings', theme),
+              SizedBox(height: 2.h),
+              _buildAccountSection(theme, context),
+              SizedBox(height: 4.h),
 
-            // Help & Support Section
-            _buildSectionHeader('Help & Support', theme),
-            SizedBox(height: 2.h),
-            _buildHelpSection(theme, context),
-            SizedBox(height: 4.h),
+              // Help & Support Section
+              _buildSectionHeader('Help & Support', theme),
+              SizedBox(height: 2.h),
+              _buildHelpSection(theme, context),
+              SizedBox(height: 4.h),
 
-            // Logout Button
-            _buildLogoutButton(theme, context),
-            SizedBox(height: 2.h),
-          ],
+              _buildRequestFeatureSection(theme),
+              SizedBox(height: 4.h),
+
+              // Logout Button
+              _buildLogoutButton(theme, context),
+              SizedBox(height: 2.h),
+            ],
+          ),
         ),
       ),
     );
@@ -65,7 +73,10 @@ class CustomerMenuScreen extends HookConsumerWidget {
   }
 
   Widget _buildSectionHeader(String title, ThemeData theme) {
-    return Text(title, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold));
+    return Text(
+      title,
+      style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+    );
   }
 
   Widget _buildCommunicationSection(ThemeData theme, BuildContext context) {
@@ -73,7 +84,13 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -97,7 +114,13 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -119,7 +142,13 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -152,7 +181,13 @@ class CustomerMenuScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(4.w),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -174,8 +209,41 @@ class CustomerMenuScreen extends HookConsumerWidget {
             () => context.pushNamed("terms"),
           ),
           _buildDivider(),
-          _buildMenuItem('Rate Our App', 'Share your feedback', Icons.star_outline, Colors.amber.shade600, theme, () {}),
+          _buildMenuItem(
+            'Rate Our App',
+            'Share your feedback',
+            Icons.star_outline,
+            Colors.amber.shade600,
+            theme,
+            () {},
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildRequestFeatureSection(ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.onTertiaryContainer,
+        borderRadius: BorderRadius.circular(4.w),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: _buildMenuItem(
+        'Request a Feature',
+        'Help us improve the app',
+        Icons.lightbulb_outline,
+        Colors.amber.shade400,
+        theme,
+        () {
+          // Feature request functionality
+        },
       ),
     );
   }
@@ -198,7 +266,10 @@ class CustomerMenuScreen extends HookConsumerWidget {
           Container(
             width: 12.w,
             height: 12.w,
-            decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(3.w)),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(3.w),
+            ),
             child: Icon(icon, color: iconColor, size: 6.w),
           ),
           if (showBadge)
@@ -207,25 +278,51 @@ class CustomerMenuScreen extends HookConsumerWidget {
               top: 0,
               child: Container(
                 padding: EdgeInsets.all(0.5.w),
-                decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(2.w)),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(2.w),
+                ),
                 constraints: BoxConstraints(minWidth: 4.w, minHeight: 4.w),
                 child: Text(
                   badgeCount,
-                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
         ],
       ),
-      title: Text(title, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
-      subtitle: Text(subtitle, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
-      trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onPrimaryContainer, size: 4.w),
+      title: Text(
+        title,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onPrimaryContainer,
+        ),
+      ),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        color: theme.colorScheme.onPrimaryContainer,
+        size: 4.w,
+      ),
     );
   }
 
   Widget _buildDivider() {
-    return Divider(height: 1, thickness: 1, color: AppColors.background, indent: 4.w, endIndent: 4.w);
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: AppColors.background,
+      indent: 4.w,
+      endIndent: 4.w,
+    );
   }
 
   Widget _buildLogoutButton(ThemeData theme, BuildContext context) {
@@ -246,7 +343,14 @@ class CustomerMenuScreen extends HookConsumerWidget {
           children: [
             Icon(Icons.logout_outlined, color: Colors.red.shade600, size: 6.w),
             SizedBox(width: 3.w),
-            Text('Logout', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.red.shade600)),
+            Text(
+              'Logout',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.red.shade600,
+              ),
+            ),
           ],
         ),
       ),
@@ -254,7 +358,11 @@ class CustomerMenuScreen extends HookConsumerWidget {
   }
 
   void contactSupport(BuildContext context) async {
-    final Uri emailUri = Uri(scheme: 'mailto', path: 'siliconsynergy2024@gmail.com', queryParameters: {'subject': 'Support Request'});
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'siliconsynergy2024@gmail.com',
+      queryParameters: {'subject': 'Support Request'},
+    );
 
     try {
       if (await canLaunchUrl(emailUri)) {

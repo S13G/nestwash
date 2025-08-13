@@ -54,28 +54,48 @@ class TermsScreen extends HookWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(5.w),
-        boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 8))],
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Container(
             width: 20.w,
             height: 20.w,
-            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(10.w)),
-            child: Icon(Icons.description_outlined, color: Colors.white, size: 10.w),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(10.w),
+            ),
+            child: Icon(
+              Icons.description_outlined,
+              color: Colors.white,
+              size: 10.w,
+            ),
           ),
           SizedBox(height: 3.h),
-          Text('Terms & Conditions', style: theme.textTheme.titleMedium?.copyWith(color: Colors.white)),
-          SizedBox(height: 1.h),
-          Text('Last updated: June 30, 2025', style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.8))),
+          Text(
+            'Terms & Conditions',
+            style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
+          ),
           SizedBox(height: 2.h),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
-            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(4.w)),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(4.w),
+            ),
             child: Text(
               'Please read these terms carefully before using our service',
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white, height: 1.4),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+                height: 1.4,
+              ),
             ),
           ),
         ],
@@ -88,7 +108,13 @@ class TermsScreen extends HookWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(5.w),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -177,7 +203,14 @@ class TermsScreen extends HookWidget {
     );
   }
 
-  Widget _buildTermsSection(ThemeData theme, String title, String content, IconData icon, Color iconColor, {bool isLast = false}) {
+  Widget _buildTermsSection(
+    ThemeData theme,
+    String title,
+    String content,
+    IconData icon,
+    Color iconColor, {
+    bool isLast = false,
+  }) {
     return Column(
       children: [
         Padding(
@@ -188,7 +221,10 @@ class TermsScreen extends HookWidget {
               Container(
                 width: 12.w,
                 height: 12.w,
-                decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(3.w)),
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(3.w),
+                ),
                 child: Icon(icon, color: iconColor, size: 6.w),
               ),
               SizedBox(width: 4.w),
@@ -196,16 +232,34 @@ class TermsScreen extends HookWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(
+                      title,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(height: 1.h),
-                    Text(content, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, height: 1.5)),
+                    Text(
+                      content,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                        height: 1.5,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        if (!isLast) Divider(height: 1, thickness: 1, color: theme.colorScheme.surface, indent: 5.w, endIndent: 5.w),
+        if (!isLast)
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: theme.colorScheme.surface,
+            indent: 5.w,
+            endIndent: 5.w,
+          ),
       ],
     );
   }
