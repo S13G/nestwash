@@ -31,6 +31,7 @@ import 'package:nestcare/features/general/services/presentation/service_provider
 import 'package:nestcare/features/general/services/presentation/service_provider_profile_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_reviews_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_providers_screen.dart';
+import 'package:nestcare/features/general/presentation/customer/order_summary_screen.dart';
 
 class AppRouter {
   final Ref ref;
@@ -143,6 +144,11 @@ final _generalRoutes = <GoRoute>[
                             (context, state) => const SelectClothesScreen(),
                       ),
                     ],
+                  ),
+                  GoRoute(
+                    path: '/order_summary',
+                    name: 'order_summary',
+                    builder: (context, state) => const OrderSummaryScreen(),
                   ),
                 ],
               ),
