@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class SchedulePickupScreen extends ConsumerWidget {
+class SchedulePickupScreen extends HookConsumerWidget {
   const SchedulePickupScreen({super.key});
 
   @override
@@ -16,126 +17,130 @@ class SchedulePickupScreen extends ConsumerWidget {
     final selectedDate = ref.watch(selectedDateProvider);
     final selectedTime = ref.watch(selectedTimeProvider);
     final theme = Theme.of(context);
+    final animations = useLaundryAnimations(null);
 
     return NestScaffold(
       title: 'Schedule Pickup',
       showBackButton: true,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header Section
-          Container(
-            padding: EdgeInsets.all(5.w),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  theme.colorScheme.primary.withValues(alpha: 0.08),
-                  theme.colorScheme.primary.withValues(alpha: 0.04),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                width: 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Schedule Your Pickup',
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              color: theme.colorScheme.primary,
-                            ),
-                          ),
-                          SizedBox(height: 0.5.h),
-                          Text(
-                            'Choose when our rider should collect your laundry',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.primaryContainer,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+      body: FadeTransition(
+        opacity: animations.fadeAnimation,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Section
+            Container(
+              padding: EdgeInsets.all(5.w),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withValues(alpha: 0.08),
+                    theme.colorScheme.primary.withValues(alpha: 0.04),
                   ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-              ],
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Schedule Your Pickup',
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                            SizedBox(height: 0.5.h),
+                            Text(
+                              'Choose when our rider should collect your laundry',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.primaryContainer,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          SizedBox(height: 2.h),
+            SizedBox(height: 2.h),
 
-          // Date Selection Section
-          Text(
-            'Pickup Date',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.secondary,
-              fontWeight: FontWeight.w600,
+            // Date Selection Section
+            Text(
+              'Pickup Date',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.secondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          SizedBox(height: 1.5.h),
+            SizedBox(height: 1.5.h),
 
-          _ModernScheduleCard(
-            label:
-                selectedDate != null
-                    ? _formatDate(selectedDate)
-                    : 'Select pickup date',
-            icon: LucideIcons.calendar,
-            isSelected: selectedDate != null,
-            onTap: () => _selectDate(context, ref, selectedDate),
-          ),
-
-          SizedBox(height: 2.h),
-
-          // Time Selection Section
-          Text(
-            'Pickup Time',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.secondary,
+            _ModernScheduleCard(
+              label:
+                  selectedDate != null
+                      ? _formatDate(selectedDate)
+                      : 'Select pickup date',
+              icon: LucideIcons.calendar,
+              isSelected: selectedDate != null,
+              onTap: () => _selectDate(context, ref, selectedDate),
             ),
-          ),
-          SizedBox(height: 1.5.h),
 
-          _ModernScheduleCard(
-            label:
-                selectedTime != null
-                    ? selectedTime.format(context)
-                    : 'Select pickup time',
-            icon: LucideIcons.clock,
-            isSelected: selectedTime != null,
-            onTap: () => _selectTime(context, ref, selectedTime),
-          ),
+            SizedBox(height: 2.h),
 
-          const Spacer(),
+            // Time Selection Section
+            Text(
+              'Pickup Time',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.secondary,
+              ),
+            ),
+            SizedBox(height: 1.5.h),
 
-          // Bottom Action
-          NestButton(
-            text: 'Confirm Schedule',
-            onPressed:
-                selectedDate != null && selectedTime != null
-                    ? () {
-                      HapticFeedback.mediumImpact();
-                      _completeScheduleStep(ref);
-                      context.pop(true);
-                    }
-                    : null,
-            color:
-                selectedDate != null && selectedTime != null
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.primary.withValues(alpha: 0.3),
-          ),
-          SizedBox(height: 3.h),
-        ],
+            _ModernScheduleCard(
+              label:
+                  selectedTime != null
+                      ? selectedTime.format(context)
+                      : 'Select pickup time',
+              icon: LucideIcons.clock,
+              isSelected: selectedTime != null,
+              onTap: () => _selectTime(context, ref, selectedTime),
+            ),
+
+            const Spacer(),
+
+            // Bottom Action
+            NestButton(
+              text: 'Confirm Schedule',
+              onPressed:
+                  selectedDate != null && selectedTime != null
+                      ? () {
+                        HapticFeedback.mediumImpact();
+                        _completeScheduleStep(ref);
+                        context.pop(true);
+                      }
+                      : null,
+              color:
+                  selectedDate != null && selectedTime != null
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.primary.withValues(alpha: 0.3),
+            ),
+            SizedBox(height: 3.h),
+          ],
+        ),
       ),
     );
   }

@@ -4,13 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/features/general/model/address_model.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/address_provider.dart';
 import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class SelectDropoffAddressScreen extends ConsumerWidget {
+class SelectDropoffAddressScreen extends HookConsumerWidget {
   const SelectDropoffAddressScreen({super.key});
 
   @override
@@ -18,123 +19,127 @@ class SelectDropoffAddressScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final addresses = ref.watch(addressListNotifierProvider);
     final selectedAddress = ref.watch(selectedDropoffAddressProvider);
+    final animations = useLaundryAnimations(null);
 
     return NestScaffold(
       showBackButton: true,
       title: 'Dropoff Location',
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(5.w),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  theme.colorScheme.primary.withValues(alpha: 0.08),
-                  theme.colorScheme.primary.withValues(alpha: 0.04),
+      body: FadeTransition(
+        opacity: animations.fadeAnimation,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(5.w),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withValues(alpha: 0.08),
+                    theme.colorScheme.primary.withValues(alpha: 0.04),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Choose Dropoff Address',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  SizedBox(height: 0.5.h),
+                  Text(
+                    'Select where our rider should deliver your clean laundry',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
                 ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                width: 1,
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Choose Dropoff Address',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-                SizedBox(height: 0.5.h),
-                Text(
-                  'Select where our rider should deliver your clean laundry',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onPrimaryContainer,
-                  ),
-                ),
-              ],
+
+            SizedBox(height: 2.h),
+
+            Text(
+              'Saved Addresses',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: theme.colorScheme.secondary,
+              ),
             ),
-          ),
+            SizedBox(height: 1.h),
 
-          SizedBox(height: 2.h),
+            // Content Area
+            Expanded(
+              child: Container(
+                child:
+                    addresses.isNotEmpty
+                        ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Address List
+                            Expanded(
+                              child: ListView.separated(
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: addresses.length,
+                                separatorBuilder:
+                                    (context, index) => SizedBox(height: 2.h),
+                                itemBuilder: (context, index) {
+                                  final address = addresses[index];
+                                  final isSelected =
+                                      selectedAddress?.id == address.id;
 
-          Text(
-            'Saved Addresses',
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: theme.colorScheme.secondary,
-            ),
-          ),
-          SizedBox(height: 1.h),
-
-          // Content Area
-          Expanded(
-            child: Container(
-              child:
-                  addresses.isNotEmpty
-                      ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Address List
-                          Expanded(
-                            child: ListView.separated(
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: addresses.length,
-                              separatorBuilder:
-                                  (context, index) => SizedBox(height: 2.h),
-                              itemBuilder: (context, index) {
-                                final address = addresses[index];
-                                final isSelected =
-                                    selectedAddress?.id == address.id;
-
-                                return _buildModernAddressCard(
-                                  context,
-                                  ref,
-                                  theme,
-                                  address,
-                                  isSelected,
-                                );
-                              },
+                                  return _buildModernAddressCard(
+                                    context,
+                                    ref,
+                                    theme,
+                                    address,
+                                    isSelected,
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      )
-                      : _buildModernEmptyState(theme, context),
+                          ],
+                        )
+                        : _buildModernEmptyState(theme, context),
+              ),
             ),
-          ),
 
-          // Modern Bottom Action Area
-          addresses.isNotEmpty
-              ? NestButton(
-                text: "Confirm Dropoff Location",
-                onPressed:
-                    selectedAddress != null
-                        ? () {
-                          // Add haptic feedback
-                          HapticFeedback.mediumImpact();
+            // Modern Bottom Action Area
+            addresses.isNotEmpty
+                ? NestButton(
+                  text: "Confirm Dropoff Location",
+                  onPressed:
+                      selectedAddress != null
+                          ? () {
+                            // Add haptic feedback
+                            HapticFeedback.mediumImpact();
 
-                          // Complete the dropoff address step
-                          _completeDropoffStep(ref);
+                            // Complete the dropoff address step
+                            _completeDropoffStep(ref);
 
-                          // Navigate back to make order screen
-                          context.pop(true);
-                        }
-                        : null,
-                color:
-                    selectedAddress != null
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.primary.withValues(alpha: 0.3),
-              )
-              : SizedBox.shrink(),
-          SizedBox(height: 3.h),
-        ],
+                            // Navigate back to make order screen
+                            context.pop(true);
+                          }
+                          : null,
+                  color:
+                      selectedAddress != null
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.primary.withValues(alpha: 0.3),
+                )
+                : SizedBox.shrink(),
+            SizedBox(height: 3.h),
+          ],
+        ),
       ),
     );
   }

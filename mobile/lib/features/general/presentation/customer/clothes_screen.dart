@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart' show ImagePicker;
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/loader_widget.dart';
@@ -13,7 +14,7 @@ import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class ClothesScreen extends ConsumerWidget {
+class ClothesScreen extends HookConsumerWidget {
   const ClothesScreen({super.key});
 
   @override
@@ -23,57 +24,73 @@ class ClothesScreen extends ConsumerWidget {
     final itemCount = ref.watch(selectedItemsCountProvider);
     final isLoading = ref.watch(isImageUploadingProvider);
     final notes = ref.watch(notesProvider);
+    final animations = useLaundryAnimations(null);
 
     return NestScaffold(
       showBackButton: true,
       title: 'Upload Clothes',
-      body: Column(
-        children: [
-          // Header Section
-          _buildHeaderSection(theme),
+      body: FadeTransition(
+        opacity: animations.fadeAnimation,
+        child: Column(
+          children: [
+            // Header Section
+            _buildHeaderSection(theme),
 
-          SizedBox(height: 3.h),
+            SizedBox(height: 3.h),
 
-          Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Image Upload Section
-                  _buildImageUploadSection(
-                    context,
-                    theme,
-                    ref,
-                    images,
-                    isLoading,
-                  ),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Image Upload Section
+                    _buildImageUploadSection(
+                      context,
+                      theme,
+                      ref,
+                      images,
+                      isLoading,
+                    ),
 
-                  SizedBox(height: 3.h),
-
-                  // Selected Images Display
-                  if (images.isNotEmpty) ...[
-                    _buildSelectedImagesSection(theme, images, isLoading, ref),
                     SizedBox(height: 3.h),
+
+                    // Selected Images Display
+                    if (images.isNotEmpty) ...[
+                      _buildSelectedImagesSection(
+                        theme,
+                        images,
+                        isLoading,
+                        ref,
+                      ),
+                      SizedBox(height: 3.h),
+                    ],
+
+                    // Items Selection Section
+                    _buildItemsSelectionSection(context, theme, itemCount),
+
+                    SizedBox(height: 3.h),
+
+                    // Notes Section
+                    _buildNotesSection(theme, ref, notes),
+
+                    SizedBox(height: 4.h),
                   ],
-
-                  // Items Selection Section
-                  _buildItemsSelectionSection(context, theme, itemCount),
-
-                  SizedBox(height: 3.h),
-
-                  // Notes Section
-                  _buildNotesSection(theme, ref, notes),
-
-                  SizedBox(height: 4.h),
-                ],
+                ),
               ),
             ),
-          ),
 
-          // Bottom Action Button
-          _buildBottomAction(context, theme, ref, images, itemCount, isLoading),
-        ],
+            // Bottom Action Button
+            _buildBottomAction(
+              context,
+              theme,
+              ref,
+              images,
+              itemCount,
+              isLoading,
+            ),
+          ],
+        ),
       ),
     );
   }

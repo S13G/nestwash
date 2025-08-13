@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/model/clothes_model.dart';
 import 'package:nestcare/features/general/presentation/customer/clothing_item_card.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/clothing_items_provider.dart';
 import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/providers/services_provider.dart';
@@ -11,13 +12,14 @@ import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class SelectClothesScreen extends ConsumerWidget {
+class SelectClothesScreen extends HookConsumerWidget {
   const SelectClothesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedItems = ref.watch(selectedItemsProvider);
     final selectedServiceId = ref.watch(selectedServiceProvider);
+    final animations = useLaundryAnimations(null);
 
     // Get items for the selected service from the provider
     final availableItems = ref.watch(
@@ -29,15 +31,23 @@ class SelectClothesScreen extends ConsumerWidget {
     return NestScaffold(
       showBackButton: true,
       title: 'Select Items',
-      body: Column(
-        children: [
-          _buildHeader(context, totalItems, totalPrice),
-          SizedBox(height: 2.h),
-          Expanded(
-            child: _buildItemsList(context, ref, availableItems, selectedItems),
-          ),
-          _buildBottomSection(context, ref, selectedItems, totalItems),
-        ],
+      body: SlideTransition(
+        position: animations.slideAnimation,
+        child: Column(
+          children: [
+            _buildHeader(context, totalItems, totalPrice),
+            SizedBox(height: 2.h),
+            Expanded(
+              child: _buildItemsList(
+                context,
+                ref,
+                availableItems,
+                selectedItems,
+              ),
+            ),
+            _buildBottomSection(context, ref, selectedItems, totalItems),
+          ],
+        ),
       ),
     );
   }

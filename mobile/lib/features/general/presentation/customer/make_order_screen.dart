@@ -3,13 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/features/general/widgets/order_step_button_widget.dart';
+import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class MakeOrderScreen extends ConsumerWidget {
+class MakeOrderScreen extends HookConsumerWidget {
   const MakeOrderScreen({super.key});
 
   @override
@@ -18,6 +19,7 @@ class MakeOrderScreen extends ConsumerWidget {
     final progress = ref.watch(orderProgressProvider);
     final currentStep = ref.watch(currentStepProvider);
     final completedSteps = ref.watch(completedStepsProvider);
+    final animations = useLaundryAnimations(null);
 
     final orderSteps = [
       {'title': 'Pickup address', 'icon': LucideIcons.mapPinHouse},
@@ -33,82 +35,87 @@ class MakeOrderScreen extends ConsumerWidget {
     return NestScaffold(
       showBackButton: true,
       title: 'Place Order',
-      body: Column(
-        children: [
-          // Progress Indicator
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 2.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${(progress * 100).toInt()}% complete',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 1.h),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: theme.colorScheme.secondaryContainer
-                        .withValues(alpha: 0.5),
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.colorScheme.primary,
+      body: SlideTransition(
+        position: animations.slideAnimation,
+        child: Column(
+          children: [
+            // Progress Indicator
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 2.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${(progress * 100).toInt()}% complete',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w600,
                     ),
-                    minHeight: 0.8.h,
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          // Steps
-          Expanded(
-            child: Column(
-              children: [
-                ...orderSteps.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final step = entry.value;
-
-                  final isEnabled = index == 0 || completedSteps[index - 1];
-                  final isCompleted = completedSteps[index];
-
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 2.h),
-                    child: OrderStepButton(
-                      icon: step['icon'] as IconData,
-                      title: step['title'] as String,
-                      isCompleted: isCompleted,
-                      isEnabled: isEnabled,
-                      onTap: () => _navigateToStep(context, ref, index),
+                  SizedBox(height: 1.h),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: theme.colorScheme.secondaryContainer
+                          .withValues(alpha: 0.5),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        theme.colorScheme.primary,
+                      ),
+                      minHeight: 0.8.h,
                     ),
-                  );
-                }),
-                const Spacer(),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 4.h),
-                  child: NestButton(
-                    text:
-                        allStepsCompleted
-                            ? 'Continue to order summary'
-                            : 'Complete All Steps',
-                    onPressed:
-                        allStepsCompleted
-                            ? () => _handleContinue(ref, context, currentStep)
-                            : null,
-                    color:
-                        allStepsCompleted
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.primary.withValues(alpha: 0.3),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+
+            // Steps
+            Expanded(
+              child: Column(
+                children: [
+                  ...orderSteps.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final step = entry.value;
+
+                    final isEnabled = index == 0 || completedSteps[index - 1];
+                    final isCompleted = completedSteps[index];
+
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 2.h),
+                      child: OrderStepButton(
+                        icon: step['icon'] as IconData,
+                        title: step['title'] as String,
+                        isCompleted: isCompleted,
+                        isEnabled: isEnabled,
+                        onTap: () => _navigateToStep(context, ref, index),
+                      ),
+                    );
+                  }),
+                  const Spacer(),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 4.h),
+                    child: NestButton(
+                      text:
+                          allStepsCompleted
+                              ? 'Continue to order summary'
+                              : 'Complete All Steps',
+                      onPressed:
+                          allStepsCompleted
+                              ? () => _handleContinue(ref, context, currentStep)
+                              : null,
+                      color:
+                          allStepsCompleted
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.primary.withValues(
+                                alpha: 0.3,
+                              ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -158,12 +165,8 @@ class MakeOrderScreen extends ConsumerWidget {
       return;
     }
 
-    // All steps completed, place the order
-    ToastUtil.showSuccessToast(context, 'Order placed successfully');
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (!context.mounted) return;
-      context.pushNamed("order_details");
-    });
+    // All steps completed, navigate to order summary
+    context.pushNamed("order_summary");
   }
 
   void completeStep(WidgetRef ref, int stepIndex) {
