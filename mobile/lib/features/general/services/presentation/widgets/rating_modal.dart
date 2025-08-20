@@ -56,166 +56,115 @@ class RatingModal extends HookConsumerWidget {
             ),
           ],
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Rate ${provider.name}',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onSecondary,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Rate ${provider.name}',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onSecondary,
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () => context.pop(),
-                  icon: Icon(
-                    LucideIcons.x,
-                    color: theme.colorScheme.onPrimaryContainer,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 4.w),
-
-            // Rating Stars
-            Text(
-              'Your Rating',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSecondary,
-              ),
-            ),
-            SizedBox(height: 2.w),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(5, (index) {
-                return GestureDetector(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    rating.value = (index + 1).toDouble();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(1.w),
-                    child: Icon(
-                      Icons.star_rounded,
-                      size: 10.w,
-                      color:
-                          index < rating.value.floor()
-                              ? Colors.amber
-                              : Colors.grey.withValues(alpha: 0.3),
+                  IconButton(
+                    onPressed: () => context.pop(),
+                    icon: Icon(
+                      LucideIcons.x,
+                      color: theme.colorScheme.onPrimaryContainer,
                     ),
                   ),
-                );
-              }),
-            ),
-            SizedBox(height: 4.w),
-
-            // Service Type Dropdown
-            Text(
-              'Service Type',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSecondary,
+                ],
               ),
-            ),
-            SizedBox(height: 2.w),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.w),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
+              SizedBox(height: 4.w),
+
+              // Rating Stars
+              Text(
+                'Your Rating',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSecondary,
                 ),
               ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: serviceType.value,
-                  isExpanded: true,
-                  icon: Icon(
-                    LucideIcons.chevronDown,
-                    color: theme.colorScheme.onPrimaryContainer,
-                    size: 4.w,
-                  ),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSecondary,
-                  ),
-                  dropdownColor: theme.colorScheme.onTertiaryContainer,
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      serviceType.value = newValue;
-                    }
-                  },
-                  items:
-                      [
-                        'Regular Cleaning',
-                        'Express Cleaning',
-                        'Dry Cleaning',
-                        'Stain Removal',
-                        'Ironing',
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+              SizedBox(height: 2.w),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      rating.value = (index + 1).toDouble();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(1.w),
+                      child: Icon(
+                        Icons.star_rounded,
+                        size: 10.w,
+                        color:
+                            index < rating.value.floor()
+                                ? Colors.amber
+                                : Colors.grey.withValues(alpha: 0.3),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+
+              SizedBox(height: 4.w),
+
+              // Comment Field
+              Text(
+                'Your Review',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSecondary,
                 ),
               ),
-            ),
-            SizedBox(height: 4.w),
-
-            // Comment Field
-            Text(
-              'Your Review',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSecondary,
+              SizedBox(height: 2.w),
+              NestFormField(
+                controller: commentController,
+                hintText: 'Share your experience...',
+                maxLines: 4,
+                belowSpacing: false,
               ),
-            ),
-            SizedBox(height: 2.w),
-            NestFormField(
-              controller: commentController,
-              hintText: 'Share your experience...',
-              maxLines: 4,
-              belowSpacing: false,
-            ),
-            SizedBox(height: 6.w),
+              SizedBox(height: 6.w),
 
-            // Submit Button
-            SizedBox(
-              width: double.infinity,
-              child: NestButton(
-                text: 'Submit Rating',
-                onPressed:
-                    ratingState.isLoading
-                        ? null
-                        : () {
-                          if (!_validateRatingSubmission(
-                            context,
-                            commentController.text,
-                            serviceType.value,
-                          )) {
-                            return;
-                          }
+              // Submit Button
+              SizedBox(
+                width: double.infinity,
+                child: NestButton(
+                  text: 'Submit Rating',
+                  onPressed:
+                      ratingState.isLoading
+                          ? null
+                          : () {
+                            if (!_validateRatingSubmission(
+                              context,
+                              commentController.text,
+                              serviceType.value,
+                            )) {
+                              return;
+                            }
 
-                          ref
-                              .read(ratingControllerProvider.notifier)
-                              .submitRating(
-                                serviceProviderId: provider.id,
-                                rating: rating.value,
-                                comment: commentController.text.trim(),
-                                serviceType: serviceType.value,
-                              );
-                        },
+                            ref
+                                .read(ratingControllerProvider.notifier)
+                                .submitRating(
+                                  serviceProviderId: provider.id,
+                                  rating: rating.value,
+                                  comment: commentController.text.trim(),
+                                  serviceType: serviceType.value,
+                                );
+                          },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

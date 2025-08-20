@@ -70,7 +70,6 @@ class ServiceProviderHomeScreen extends ConsumerWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: allActiveOrders.length,
             itemBuilder: (context, index) {
-              final service = allActiveOrders[index];
 
               return ServiceCard();
             },
@@ -98,7 +97,6 @@ class ServiceProviderHomeScreen extends ConsumerWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: allActiveOrders.length,
             itemBuilder: (context, index) {
-              final service = allActiveOrders[index];
 
               return ServiceCard();
             },

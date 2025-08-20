@@ -8,6 +8,8 @@ import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/shared/widgets/nest_button.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 
 class SchedulePickupScreen extends HookConsumerWidget {
   const SchedulePickupScreen({super.key});
@@ -95,7 +97,7 @@ class SchedulePickupScreen extends HookConsumerWidget {
                       : 'Select pickup date',
               icon: LucideIcons.calendar,
               isSelected: selectedDate != null,
-              onTap: () => _selectDate(context, ref, selectedDate),
+              onTap: () => _selectDateWithCalendar(context, ref, selectedDate),
             ),
 
             SizedBox(height: 2.h),
@@ -117,7 +119,7 @@ class SchedulePickupScreen extends HookConsumerWidget {
                       : 'Select pickup time',
               icon: LucideIcons.clock,
               isSelected: selectedTime != null,
-              onTap: () => _selectTime(context, ref, selectedTime),
+              onTap: () => _selectTimeWithDayNight(context, ref, selectedTime),
             ),
 
             const Spacer(),
@@ -160,56 +162,102 @@ class SchedulePickupScreen extends HookConsumerWidget {
     ref.read(currentStepProvider.notifier).state = 2;
   }
 
-  Future<void> _selectDate(
+  Future<void> _selectDateWithCalendar(
     BuildContext context,
     WidgetRef ref,
     DateTime? currentDate,
   ) async {
+    final theme = Theme.of(context);
     final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: currentDate ?? now,
-      firstDate: now,
-      lastDate: now.add(const Duration(days: 365)),
-      builder:
-          (context, child) => Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Theme.of(context).colorScheme.primary,
-                // onSurface: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            child: child!,
-          ),
+
+    final config = CalendarDatePicker2WithActionButtonsConfig(
+      calendarType: CalendarDatePicker2Type.single,
+      selectedDayHighlightColor: theme.colorScheme.primary,
+      weekdayLabels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      weekdayLabelTextStyle: TextStyle(
+        color: theme.colorScheme.onSurface,
+        fontWeight: FontWeight.w600,
+      ),
+      firstDayOfWeek: 1,
+      controlsHeight: 50,
+      controlsTextStyle: TextStyle(
+        color: theme.colorScheme.primary,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+      dayTextStyle: TextStyle(
+        color: theme.colorScheme.onSurface,
+        fontWeight: FontWeight.w500,
+      ),
+      disabledDayTextStyle: TextStyle(
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+      ),
+      selectableDayPredicate: (day) => !day.isBefore(now),
+      centerAlignModePicker: true,
+      customModePickerIcon: const SizedBox(),
+      selectedDayTextStyle: const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      // Action buttons configuration
+      cancelButtonTextStyle: TextStyle(
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+        fontWeight: FontWeight.w500,
+      ),
+      okButtonTextStyle: TextStyle(
+        color: theme.colorScheme.primary,
+        fontWeight: FontWeight.w600,
+      ),
     );
-    if (picked != null) {
-      ref.read(selectedDateProvider.notifier).state = picked;
+
+    final values = await showCalendarDatePicker2Dialog(
+      context: context,
+      config: config,
+      dialogSize: Size(85.w, 60.h),
+      borderRadius: BorderRadius.circular(20),
+      value: currentDate != null ? [currentDate] : [],
+      dialogBackgroundColor: theme.colorScheme.surface,
+    );
+
+    if (values != null && values.isNotEmpty && values.first != null) {
+      ref.read(selectedDateProvider.notifier).state = values.first!;
     }
   }
 
-  Future<void> _selectTime(
+  Future<void> _selectTimeWithDayNight(
     BuildContext context,
     WidgetRef ref,
     TimeOfDay? currentTime,
   ) async {
-    final now = TimeOfDay.now();
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: currentTime ?? now,
-      builder:
-          (context, child) => Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Theme.of(context).colorScheme.primary,
-                // onSurface: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            child: child!,
-          ),
+    final theme = Theme.of(context);
+
+    Navigator.of(context).push(
+      showPicker(
+        context: context,
+        value: Time(
+          hour: currentTime?.hour ?? TimeOfDay.now().hour,
+          minute: currentTime?.minute ?? TimeOfDay.now().minute,
+        ),
+        onChange: (Time newTime) {
+          ref.read(selectedTimeProvider.notifier).state = TimeOfDay(
+            hour: newTime.hour,
+            minute: newTime.minute,
+          );
+        },
+        minuteInterval: TimePickerInterval.ONE,
+        iosStylePicker: true,
+        minHour: 7, // 7 AM
+        maxHour: 19, // 7 PM
+        is24HrFormat: true,
+        accentColor: theme.colorScheme.primary,
+        unselectedColor: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+        cancelText: 'Cancel',
+        okText: 'Confirm',
+        blurredBackground: true,
+        borderRadius: 20,
+        elevation: 8,
+      ),
     );
-    if (picked != null) {
-      ref.read(selectedTimeProvider.notifier).state = picked;
-    }
   }
 
   String _formatDate(DateTime date) {
