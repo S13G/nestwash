@@ -23,6 +23,7 @@ import 'package:nestcare/features/general/presentation/menus/invites_screen.dart
 import 'package:nestcare/features/general/presentation/menus/support_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/terms_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/transaction_history_screen.dart';
+import 'package:nestcare/features/general/presentation/message_profile_view_screen.dart';
 import 'package:nestcare/features/general/presentation/message_screen.dart';
 import 'package:nestcare/features/general/presentation/messages_screen.dart';
 import 'package:nestcare/features/general/services/model/service_provider_model.dart';
@@ -177,6 +178,16 @@ final _generalRoutes = <GoRoute>[
         path: "/chat",
         name: "chat",
         builder: (context, state) => MessageScreen(),
+        routes: <GoRoute>[
+          GoRoute(
+            path: "/profile",
+            name: "message_profile_view",
+            builder: (context, state) {
+              final provider = state.extra as ServiceProvider;
+              return MessageProfileViewScreen(provider: provider);
+            },
+          ),
+        ],
       ),
     ],
   ),

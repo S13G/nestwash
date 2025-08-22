@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -21,7 +22,9 @@ class CustomerOrdersScreen extends HookConsumerWidget {
 
     final selectedFilter = ref.watch(laundryOrderSelectedFilterProvider);
     final searchText = ref.watch(searchTextProvider);
-    final filteredLaundryOrders = ref.watch(filteredLaundryOrdersProvider(searchText));
+    final filteredLaundryOrders = ref.watch(
+      filteredLaundryOrdersProvider(searchText),
+    );
     final animations = useLaundryAnimations(null);
 
     return NestScaffold(
@@ -42,7 +45,10 @@ class CustomerOrdersScreen extends HookConsumerWidget {
 
             // Orders List or Empty State
             Expanded(
-              child: filteredLaundryOrders.isEmpty ? _buildEmptyState(theme, selectedFilter) : _buildOrdersList(filteredLaundryOrders, animations),
+              child:
+                  filteredLaundryOrders.isEmpty
+                      ? _buildEmptyState(theme, selectedFilter, context)
+                      : _buildOrdersList(filteredLaundryOrders, animations),
             ),
           ],
         ),
@@ -56,12 +62,21 @@ class CustomerOrdersScreen extends HookConsumerWidget {
       children: [
         Text('My Orders', style: theme.textTheme.titleLarge),
         SizedBox(height: 0.5.h),
-        Text('Track your laundry orders', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
+        Text(
+          'Track your laundry orders',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onPrimaryContainer,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildSearchAndFilter(WidgetRef ref, ThemeData theme, FilterType selectedFilter) {
+  Widget _buildSearchAndFilter(
+    WidgetRef ref,
+    ThemeData theme,
+    FilterType selectedFilter,
+  ) {
     return Column(
       children: [
         // Search Bar
@@ -71,11 +86,38 @@ class CustomerOrdersScreen extends HookConsumerWidget {
         // Filter Buttons
         Row(
           children: [
-            Expanded(child: _buildFilterButton(ref, theme, selectedFilter, 'All Orders', FilterType.all, Icons.list_alt_rounded)),
+            Expanded(
+              child: _buildFilterButton(
+                ref,
+                theme,
+                selectedFilter,
+                'All Orders',
+                FilterType.all,
+                Icons.list_alt_rounded,
+              ),
+            ),
             SizedBox(width: 3.w),
-            Expanded(child: _buildFilterButton(ref, theme, selectedFilter, 'Active', FilterType.active, Icons.schedule_rounded)),
+            Expanded(
+              child: _buildFilterButton(
+                ref,
+                theme,
+                selectedFilter,
+                'Active',
+                FilterType.active,
+                Icons.schedule_rounded,
+              ),
+            ),
             SizedBox(width: 3.w),
-            Expanded(child: _buildFilterButton(ref, theme, selectedFilter, 'Past Orders', FilterType.past, Icons.history_rounded)),
+            Expanded(
+              child: _buildFilterButton(
+                ref,
+                theme,
+                selectedFilter,
+                'Past Orders',
+                FilterType.past,
+                Icons.history_rounded,
+              ),
+            ),
           ],
         ),
         SizedBox(height: 3.h),
@@ -83,7 +125,14 @@ class CustomerOrdersScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildFilterButton(WidgetRef ref, ThemeData theme, FilterType selectedFilter, String title, FilterType filter, IconData icon) {
+  Widget _buildFilterButton(
+    WidgetRef ref,
+    ThemeData theme,
+    FilterType selectedFilter,
+    String title,
+    FilterType filter,
+    IconData icon,
+  ) {
     final isSelected = selectedFilter == filter;
 
     return GestureDetector(
@@ -95,18 +144,43 @@ class CustomerOrdersScreen extends HookConsumerWidget {
         duration: const Duration(milliseconds: 500),
         padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
         decoration: BoxDecoration(
-          color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onTertiaryContainer,
+          color:
+              isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onTertiaryContainer,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: isSelected ? theme.colorScheme.primary : theme.colorScheme.primary.withValues(alpha: 0.2), width: 1),
+          border: Border.all(
+            color:
+                isSelected
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.primary.withValues(alpha: 0.2),
+            width: 1,
+          ),
           boxShadow:
               isSelected
-                  ? [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 5))]
-                  : [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 3))],
+                  ? [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ]
+                  : [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: isSelected ? Colors.white : theme.colorScheme.primary, size: 18),
+            Icon(
+              icon,
+              color: isSelected ? Colors.white : theme.colorScheme.primary,
+              size: 18,
+            ),
             const SizedBox(width: 8),
             Flexible(
               child: Text(
@@ -124,7 +198,10 @@ class CustomerOrdersScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildOrdersList(List<Order> filteredLaundryOrders, LaundryAnimations animations) {
+  Widget _buildOrdersList(
+    List<Order> filteredLaundryOrders,
+    LaundryAnimations animations,
+  ) {
     return SlideTransition(
       position: animations.slideAnimation,
       child: ListView.builder(
@@ -147,15 +224,25 @@ class CustomerOrdersScreen extends HookConsumerWidget {
       child: GestureDetector(
         onTap: () {
           HapticFeedback.lightImpact();
-          // Navigate to order details
+          // Navigate to order details with order data
+          context.pushNamed('order_details', extra: order);
         },
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: theme.colorScheme.onPrimary.withValues(alpha: 0.3), width: 1),
-            boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 5))],
+            border: Border.all(
+              color: theme.colorScheme.onPrimary.withValues(alpha: 0.3),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,16 +251,31 @@ class CustomerOrdersScreen extends HookConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(child: Text('Order ${order.id}', style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold))),
+                  Expanded(
+                    child: Text(
+                      'Order ${order.id}',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 3.w,
+                      vertical: 1.h,
+                    ),
                     decoration: BoxDecoration(
-                      color: OrderUtils.getOrderStatusColor(order.status).withValues(alpha: 0.2),
+                      color: OrderUtils.getOrderStatusColor(
+                        order.status,
+                      ).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Text(
                       OrderUtils.getOrderStatusText(order.status),
-                      style: theme.textTheme.bodySmall?.copyWith(color: OrderUtils.getOrderStatusColor(order.status), fontWeight: FontWeight.w600),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: OrderUtils.getOrderStatusColor(order.status),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -183,15 +285,35 @@ class CustomerOrdersScreen extends HookConsumerWidget {
               // Service Type
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
-                child: Text(order.serviceType, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  order.serviceType,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
               ),
               SizedBox(height: 1.5.h),
               // Items being cleaned
-              Text('Items being cleaned:', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
+              Text(
+                'Items being cleaned:',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+              ),
               SizedBox(height: 1.h),
               // Items
-              Wrap(spacing: 8, runSpacing: 8, children: order.items.map((item) => _buildItemChip(item, theme)).toList()),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children:
+                    order.items
+                        .map((item) => _buildItemChip(item, theme))
+                        .toList(),
+              ),
               SizedBox(height: 1.h),
 
               // Time and Price Row
@@ -203,13 +325,19 @@ class CustomerOrdersScreen extends HookConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(LucideIcons.clock, color: theme.colorScheme.onPrimaryContainer, size: 16),
+                          Icon(
+                            LucideIcons.clock,
+                            color: theme.colorScheme.onPrimaryContainer,
+                            size: 16,
+                          ),
                           const SizedBox(width: 5),
                           Text(
                             order.status == OrderStatus.completed
                                 ? 'Delivered: ${order.deliveryDate.day} ${DateFormat('MMM, yyyy • h:mm a').format(order.deliveryDate)}'
                                 : 'Delivery: ${order.deliveryDate.day} ${DateFormat('MMM, yyyy • h:mm a').format(order.deliveryDate)}',
-                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
                           ),
                         ],
                       ),
@@ -217,7 +345,10 @@ class CustomerOrdersScreen extends HookConsumerWidget {
                   ),
                   Text(
                     '\$${order.totalPrice.toStringAsFixed(2)}',
-                    style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
                 ],
               ),
@@ -225,7 +356,9 @@ class CustomerOrdersScreen extends HookConsumerWidget {
               LinearProgressIndicator(
                 value: OrderUtils.getOrderStatusProgressBarValue(order.status),
                 backgroundColor: theme.colorScheme.surface,
-                valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  theme.colorScheme.onPrimary,
+                ),
                 borderRadius: BorderRadius.circular(10),
               ),
             ],
@@ -241,13 +374,25 @@ class CustomerOrdersScreen extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3), width: 1),
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
-      child: Text(item.name, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary)),
+      child: Text(
+        item.name,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.primary,
+        ),
+      ),
     );
   }
 
-  Widget _buildEmptyState(ThemeData theme, FilterType selectedFilter) {
+  Widget _buildEmptyState(
+    ThemeData theme,
+    FilterType selectedFilter,
+    BuildContext context,
+  ) {
     return SingleChildScrollView(
       child: Center(
         child: Column(
@@ -256,37 +401,67 @@ class CustomerOrdersScreen extends HookConsumerWidget {
             Container(
               width: 40.w,
               height: 18.5.h,
-              decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(30)),
-              child: Icon(LucideIcons.washingMachine, size: 80, color: theme.colorScheme.primary.withValues(alpha: 0.5)),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Icon(
+                LucideIcons.washingMachine,
+                size: 80,
+                color: theme.colorScheme.primary.withValues(alpha: 0.5),
+              ),
             ),
             SizedBox(height: 4.h),
-            Text(_getEmptyStateTitle(selectedFilter), style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
+            Text(
+              _getEmptyStateTitle(selectedFilter),
+              style: theme.textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
             SizedBox(height: 1.5.h),
             Text(
               _getEmptyStateSubtitle(selectedFilter),
-              style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onPrimaryContainer, height: 1.5),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onPrimaryContainer,
+                height: 1.5,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 2.5.h),
             GestureDetector(
               onTap: () {
                 HapticFeedback.lightImpact();
-                // Navigate to create order
+                // Navigate to service providers to create order
+                context.pushNamed('service_providers');
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 6.5.w, vertical: 1.5.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 6.5.w,
+                  vertical: 1.5.h,
+                ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [theme.colorScheme.primary, theme.colorScheme.onTertiary],
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.onTertiary,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(25),
-                  boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 5))],
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
                 child: Text(
                   'Schedule Your First Order',
-                  style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

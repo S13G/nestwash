@@ -3,10 +3,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/model/messages_model.dart';
+import 'package:nestcare/features/general/services/model/service_provider_model.dart';
 import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/messages_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
+import 'package:nestcare/shared/util/file_attachment_service.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class MessageScreen extends HookConsumerWidget {
@@ -19,6 +21,20 @@ class MessageScreen extends HookConsumerWidget {
     final messageController = useTextEditingController();
     final messages = ref.watch(messageListNotifierProvider);
     final providerName = ref.watch(messageProviderName);
+    final serviceProvider = ServiceProvider(
+      id: '1',
+      name: 'John Smith',
+      rating: 4.8,
+      reviewCount: 150,
+      price: 12.50,
+      responseTime: '< 1 hour',
+      city: 'New York',
+      isAvailable: true,
+      isVerified: true,
+      services: ['Wash & Fold', 'Dry Cleaning', 'Ironing'],
+      profileImage: '',
+      distance: '',
+    );
     final isOnline = ref.watch(messageIsOnline);
     final focusNode = useFocusNode();
     final messageNotifier = ref.watch(messageListNotifierProvider.notifier);
@@ -28,12 +44,14 @@ class MessageScreen extends HookConsumerWidget {
     // Automatically scroll down to show the latest message.
     void scrollToBottom(ScrollController controller) {
       if (controller.hasClients) {
-        controller.animateTo(controller.position.maxScrollExtent, duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+        controller.animateTo(
+          controller.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
       }
     }
 
-    // Scrolling to bottom of chat
-    // Scrolling to bottom of chat - FIXED VERSION
     useEffect(() {
       // Initial scroll to bottom
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -78,16 +96,27 @@ class MessageScreen extends HookConsumerWidget {
         builder:
             (context) => FadeTransition(
               opacity: animations.bottomSheetFadeAnimation,
-              child: SlideTransition(position: animations.bottomSheetSlideAnimation, child: buildAttachmentBottomSheet(context, theme)),
+              child: SlideTransition(
+                position: animations.bottomSheetSlideAnimation,
+                child: buildAttachmentBottomSheet(context, theme),
+              ),
             ),
-      ).whenComplete(() => animations.bottomSheetAnimationController.reverse(from: 1.0));
+      ).whenComplete(
+        () => animations.bottomSheetAnimationController.reverse(from: 1.0),
+      );
     }
 
     void showMoreOptions() {
       showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
-        builder: (context) => buildMoreOptionsBottomSheet(context, theme, providerName),
+        builder:
+            (context) => buildMoreOptionsBottomSheet(
+              context,
+              theme,
+              providerName,
+              serviceProvider!,
+            ),
       );
     }
 
@@ -95,9 +124,23 @@ class MessageScreen extends HookConsumerWidget {
       padding: EdgeInsets.zero,
       body: Column(
         children: [
-          buildHeader(animations, theme, context, providerName: providerName, isOnline: isOnline, showMoreOptions: showMoreOptions),
+          buildHeader(
+            animations,
+            theme,
+            context,
+            providerName: providerName,
+            isOnline: isOnline,
+            showMoreOptions: showMoreOptions,
+          ),
           Expanded(child: buildMessagesList(theme, animations, messages)),
-          buildMessageInput(animations, theme, sendMessage, showAttachmentOptions, messageController, focusNode),
+          buildMessageInput(
+            animations,
+            theme,
+            sendMessage,
+            showAttachmentOptions,
+            messageController,
+            focusNode,
+          ),
         ],
       ),
     );
@@ -119,7 +162,13 @@ class MessageScreen extends HookConsumerWidget {
           padding: EdgeInsets.all(4.w),
           decoration: BoxDecoration(
             color: theme.colorScheme.onTertiaryContainer,
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -130,8 +179,15 @@ class MessageScreen extends HookConsumerWidget {
                 child: Container(
                   width: 10.w,
                   height: 10.w,
-                  decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(2.5.w)),
-                  child: Icon(Icons.arrow_back_ios_new, color: theme.colorScheme.secondary, size: 5.w),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(2.5.w),
+                  ),
+                  child: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: theme.colorScheme.secondary,
+                    size: 5.w,
+                  ),
                 ),
               ),
               SizedBox(width: 3.w),
@@ -142,7 +198,10 @@ class MessageScreen extends HookConsumerWidget {
                     height: 12.w,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [theme.colorScheme.primary, theme.colorScheme.onSurface],
+                        colors: [
+                          theme.colorScheme.primary,
+                          theme.colorScheme.onSurface,
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -160,7 +219,10 @@ class MessageScreen extends HookConsumerWidget {
                         decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(1.75.w),
-                          border: Border.all(color: theme.colorScheme.onTertiaryContainer, width: 2),
+                          border: Border.all(
+                            color: theme.colorScheme.onTertiaryContainer,
+                            width: 2,
+                          ),
                         ),
                       ),
                     ),
@@ -171,11 +233,21 @@ class MessageScreen extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(providerName, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(
+                      providerName,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(height: 0.5.h),
                     Text(
                       isOnline ? 'Online' : 'Last seen 2 hours ago',
-                      style: theme.textTheme.bodySmall?.copyWith(color: isOnline ? Colors.green : theme.colorScheme.onPrimaryContainer),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color:
+                            isOnline
+                                ? Colors.green
+                                : theme.colorScheme.onPrimaryContainer,
+                      ),
                     ),
                   ],
                 ),
@@ -189,8 +261,15 @@ class MessageScreen extends HookConsumerWidget {
                     child: Container(
                       width: 10.w,
                       height: 10.w,
-                      decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(2.5.w)),
-                      child: Icon(Icons.call_outlined, color: theme.colorScheme.primary, size: 5.w),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(2.5.w),
+                      ),
+                      child: Icon(
+                        Icons.call_outlined,
+                        color: theme.colorScheme.primary,
+                        size: 5.w,
+                      ),
                     ),
                   ),
                   SizedBox(width: 2.w),
@@ -199,8 +278,15 @@ class MessageScreen extends HookConsumerWidget {
                     child: Container(
                       width: 10.w,
                       height: 10.w,
-                      decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(2.5.w)),
-                      child: Icon(Icons.more_vert, color: theme.colorScheme.secondary, size: 5.w),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(2.5.w),
+                      ),
+                      child: Icon(
+                        Icons.more_vert,
+                        color: theme.colorScheme.secondary,
+                        size: 5.w,
+                      ),
                     ),
                   ),
                 ],
@@ -212,13 +298,21 @@ class MessageScreen extends HookConsumerWidget {
     );
   }
 
-  Widget buildMoreOptionsBottomSheet(BuildContext context, ThemeData theme, String providerName) {
+  Widget buildMoreOptionsBottomSheet(
+    BuildContext context,
+    ThemeData theme,
+    String providerName,
+    ServiceProvider serviceProvider,
+  ) {
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.all(6.w),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(6.w), topRight: Radius.circular(6.w)),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(6.w),
+            topRight: Radius.circular(6.w),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -227,7 +321,9 @@ class MessageScreen extends HookConsumerWidget {
               width: 15.w,
               height: 1.h,
               decoration: BoxDecoration(
-                color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.3),
+                color: theme.colorScheme.onPrimaryContainer.withValues(
+                  alpha: 0.3,
+                ),
                 borderRadius: BorderRadius.circular(0.5.h),
               ),
             ),
@@ -237,25 +333,49 @@ class MessageScreen extends HookConsumerWidget {
             SizedBox(height: 2.h),
 
             // More options list
-            buildMoreOptionItem(theme, 'View Profile', Icons.person_outline, () {
-              context.pop();
-            }),
+            buildMoreOptionItem(
+              theme,
+              'View Profile',
+              Icons.person_outline,
+              () {
+                context.pushNamed(
+                  'message_profile_view',
+                  extra: serviceProvider,
+                );
+              },
+            ),
             SizedBox(height: 2.h),
 
-            buildMoreOptionItem(theme, 'Add to favorites', Icons.favorite_outline, () {
-              context.pop();
-              ToastUtil.showSuccessToast(context, 'Added to favorites');
-            }),
-            SizedBox(height: 2.h),
-
-            buildMoreOptionItem(theme, 'Report User', Icons.report_outlined, () {
-              // Show report dialog
-              Future.delayed(const Duration(milliseconds: 300), () {
-                if (!context.mounted) return;
+            buildMoreOptionItem(
+              theme,
+              'Add to favorites',
+              Icons.favorite_outline,
+              () {
                 context.pop();
-                showDialog(context: context, builder: (context) => buildReportDialog(context, theme, providerName));
-              });
-            }, isDestructive: true),
+                ToastUtil.showSuccessToast(context, 'Added to favorites');
+              },
+            ),
+            SizedBox(height: 2.h),
+
+            buildMoreOptionItem(
+              theme,
+              'Report User',
+              Icons.report_outlined,
+              () {
+                // Show report dialog
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  if (!context.mounted) return;
+                  context.pop();
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) =>
+                            buildReportDialog(context, theme, providerName),
+                  );
+                });
+              },
+              isDestructive: true,
+            ),
             SizedBox(height: 4.h),
           ],
         ),
@@ -263,7 +383,13 @@ class MessageScreen extends HookConsumerWidget {
     );
   }
 
-  Widget buildMoreOptionItem(ThemeData theme, String title, IconData icon, VoidCallback onTap, {bool isDestructive = false}) {
+  Widget buildMoreOptionItem(
+    ThemeData theme,
+    String title,
+    IconData icon,
+    VoidCallback onTap, {
+    bool isDestructive = false,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -271,30 +397,53 @@ class MessageScreen extends HookConsumerWidget {
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(3.w),
-          border: Border.all(color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.1)),
+          border: Border.all(
+            color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.1),
+          ),
         ),
         child: Row(
           children: [
-            Icon(icon, color: isDestructive ? Colors.red : theme.colorScheme.secondary, size: 6.w),
+            Icon(
+              icon,
+              color: isDestructive ? Colors.red : theme.colorScheme.secondary,
+              size: 6.w,
+            ),
             SizedBox(width: 4.w),
             Expanded(
               child: Text(
                 title,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: isDestructive ? Colors.red : theme.colorScheme.secondary,
+                  color:
+                      isDestructive ? Colors.red : theme.colorScheme.secondary,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onPrimaryContainer, size: 4.w),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: theme.colorScheme.onPrimaryContainer,
+              size: 4.w,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget buildReportDialog(BuildContext context, ThemeData theme, String providerName) {
-    final reportReasons = ['Inappropriate behavior', 'Harassment', 'Spam', 'Fake profile', 'Inappropriate content', 'Fake or bad services', 'Other'];
+  Widget buildReportDialog(
+    BuildContext context,
+    ThemeData theme,
+    String providerName,
+  ) {
+    final reportReasons = [
+      'Inappropriate behavior',
+      'Harassment',
+      'Spam',
+      'Fake profile',
+      'Inappropriate content',
+      'Fake or bad services',
+      'Other',
+    ];
 
     return Dialog(
       backgroundColor: theme.colorScheme.surface,
@@ -310,13 +459,32 @@ class MessageScreen extends HookConsumerWidget {
                 children: [
                   Icon(Icons.report_outlined, color: Colors.red, size: 6.w),
                   SizedBox(width: 3.w),
-                  Expanded(child: Text('Report $providerName', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold))),
-                  GestureDetector(onTap: () => context.pop(), child: Icon(Icons.close, color: theme.colorScheme.onPrimaryContainer, size: 6.w)),
+                  Expanded(
+                    child: Text(
+                      'Report $providerName',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => context.pop(),
+                    child: Icon(
+                      Icons.close,
+                      color: theme.colorScheme.onPrimaryContainer,
+                      size: 4.w,
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 3.h),
 
-              Text('Why are you reporting this user?', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+              Text(
+                'Why are you reporting this user?',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               SizedBox(height: 2.h),
 
               // Report reasons
@@ -328,19 +496,31 @@ class MessageScreen extends HookConsumerWidget {
                   },
                   child: Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 2.h,
+                      horizontal: 4.w,
+                    ),
                     margin: EdgeInsets.only(bottom: 2.h),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.onTertiaryContainer,
-                      borderRadius: BorderRadius.circular(3.w),
-                      border: Border.all(color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.1)),
+                      borderRadius: BorderRadius.circular(4.w),
+                      border: Border.all(
+                        color: theme.colorScheme.onPrimaryContainer.withValues(
+                          alpha: 0.1,
+                        ),
+                      ),
                     ),
-                    child: Text(reason, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.secondary)),
+                    child: Text(
+                      reason,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.secondary,
+                      ),
+                    ),
                   ),
                 ),
               ),
 
-              SizedBox(height: 2.h),
+              SizedBox(height: 1.h),
 
               // Cancel button
               GestureDetector(
@@ -349,13 +529,18 @@ class MessageScreen extends HookConsumerWidget {
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(vertical: 2.h),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.1),
+                    color: theme.colorScheme.onPrimaryContainer.withValues(
+                      alpha: 0.1,
+                    ),
                     borderRadius: BorderRadius.circular(3.w),
                   ),
                   child: Center(
                     child: Text(
                       'Cancel',
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.w500),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
@@ -367,21 +552,45 @@ class MessageScreen extends HookConsumerWidget {
     );
   }
 
-  void _handleReport(BuildContext context, ThemeData theme, String providerName, String reason) {
+  void _handleReport(
+    BuildContext context,
+    ThemeData theme,
+    String providerName,
+    String reason,
+  ) {
     // Show confirmation
-    ToastUtil.showSuccessToast(context, 'Report submitted. Thank you for helping keep our community safe.');
+    ToastUtil.showSuccessToast(
+      context,
+      'Report submitted. Thank you for helping keep our community safe.',
+    );
   }
 
-  Widget buildMessagesList(ThemeData theme, LaundryAnimations animations, List<MessagesModel> messages) {
+  Widget buildMessagesList(
+    ThemeData theme,
+    LaundryAnimations animations,
+    List<MessagesModel> messages,
+  ) {
     return ListView.builder(
       controller: animations.scrollAnimationController,
       padding: EdgeInsets.all(4.w),
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final message = messages[index];
-        final showTimestamp = index == 0 || messages[index - 1].timestamp.difference(message.timestamp).inMinutes.abs() > 30;
+        final showTimestamp =
+            index == 0 ||
+            messages[index - 1].timestamp
+                    .difference(message.timestamp)
+                    .inMinutes
+                    .abs() >
+                30;
 
-        return Column(children: [if (showTimestamp) buildTimestamp(message, theme), buildMessageBubble(message, theme), SizedBox(height: 2.h)]);
+        return Column(
+          children: [
+            if (showTimestamp) buildTimestamp(message, theme),
+            buildMessageBubble(message, theme),
+            SizedBox(height: 2.h),
+          ],
+        );
       },
     );
   }
@@ -391,14 +600,18 @@ class MessageScreen extends HookConsumerWidget {
       margin: EdgeInsets.symmetric(vertical: 2.h),
       child: Text(
         MessagesModel.formatTimestamp(message.timestamp),
-        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.w500),
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onPrimaryContainer,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
 
   Widget buildMessageBubble(MessagesModel message, ThemeData theme) {
     return Row(
-      mainAxisAlignment: message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment:
+          message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         if (!message.isMe) ...[
@@ -407,7 +620,10 @@ class MessageScreen extends HookConsumerWidget {
             height: 8.w,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [theme.colorScheme.primary, theme.colorScheme.onSurface],
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.onSurface,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -423,23 +639,40 @@ class MessageScreen extends HookConsumerWidget {
             constraints: BoxConstraints(maxWidth: 75.w),
             padding: EdgeInsets.all(3.w),
             decoration: BoxDecoration(
-              color: message.isMe ? theme.colorScheme.primary : theme.colorScheme.onTertiaryContainer,
+              color:
+                  message.isMe
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onTertiaryContainer,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(4.w),
                 topRight: Radius.circular(4.w),
                 bottomLeft: Radius.circular(message.isMe ? 4.w : 1.w),
                 bottomRight: Radius.circular(message.isMe ? 1.w : 4.w),
               ),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (message.attachmentName != null) buildAttachment(message, theme),
+                if (message.attachmentName != null)
+                  buildAttachment(message, theme),
                 if (message.text.isNotEmpty)
                   Text(
                     message.text,
-                    style: TextStyle(fontSize: 14.sp, color: message.isMe ? Colors.white : theme.colorScheme.secondary, height: 1.4),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color:
+                          message.isMe
+                              ? Colors.white
+                              : theme.colorScheme.secondary,
+                      height: 1.4,
+                    ),
                   ),
                 SizedBox(height: 1.h),
                 Row(
@@ -448,7 +681,10 @@ class MessageScreen extends HookConsumerWidget {
                     Text(
                       MessagesModel.formatMessageTime(message.timestamp),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: message.isMe ? Colors.white.withValues(alpha: 0.7) : theme.colorScheme.onPrimaryContainer,
+                        color:
+                            message.isMe
+                                ? Colors.white.withValues(alpha: 0.7)
+                                : theme.colorScheme.onPrimaryContainer,
                       ),
                     ),
                     if (message.isMe) ...[
@@ -456,7 +692,10 @@ class MessageScreen extends HookConsumerWidget {
                       Icon(
                         message.isRead ? Icons.done_all : Icons.done,
                         size: 3.w,
-                        color: message.isRead ? theme.colorScheme.onPrimary : Colors.white.withValues(alpha: 0.7),
+                        color:
+                            message.isRead
+                                ? theme.colorScheme.onPrimary
+                                : Colors.white.withValues(alpha: 0.7),
                       ),
                     ],
                   ],
@@ -471,7 +710,10 @@ class MessageScreen extends HookConsumerWidget {
           Container(
             width: 8.w,
             height: 8.w,
-            decoration: BoxDecoration(color: theme.colorScheme.secondary, borderRadius: BorderRadius.circular(4.w)),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.secondary,
+              borderRadius: BorderRadius.circular(4.w),
+            ),
             child: Icon(Icons.person, color: Colors.white, size: 4.w),
           ),
         ],
@@ -505,7 +747,10 @@ class MessageScreen extends HookConsumerWidget {
       margin: EdgeInsets.only(bottom: 2.h),
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
-        color: message.isMe ? Colors.white.withValues(alpha: 0.2) : theme.colorScheme.onTertiaryContainer,
+        color:
+            message.isMe
+                ? Colors.white.withValues(alpha: 0.2)
+                : theme.colorScheme.onTertiaryContainer,
         borderRadius: BorderRadius.circular(3.w),
       ),
       child: Row(
@@ -513,17 +758,32 @@ class MessageScreen extends HookConsumerWidget {
         children: [
           Container(
             padding: EdgeInsets.all(2.w),
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(2.w)),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(2.w),
+            ),
             child: Icon(icon, color: color, size: 5.w),
           ),
           SizedBox(width: 3.w),
           Expanded(
             child: Text(
               message.attachmentName!,
-              style: TextStyle(fontSize: 12.sp, color: message.isMe ? Colors.white : theme.colorScheme.secondary, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 12.sp,
+                color:
+                    message.isMe ? Colors.white : theme.colorScheme.secondary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          Icon(Icons.download_outlined, color: message.isMe ? Colors.white.withValues(alpha: 0.7) : theme.colorScheme.onPrimaryContainer, size: 4.w),
+          Icon(
+            Icons.download_outlined,
+            color:
+                message.isMe
+                    ? Colors.white.withValues(alpha: 0.7)
+                    : theme.colorScheme.onPrimaryContainer,
+            size: 4.w,
+          ),
         ],
       ),
     );
@@ -543,7 +803,13 @@ class MessageScreen extends HookConsumerWidget {
         padding: EdgeInsets.all(4.w),
         decoration: BoxDecoration(
           color: theme.colorScheme.onTertiaryContainer,
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2))],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -552,8 +818,15 @@ class MessageScreen extends HookConsumerWidget {
               child: Container(
                 width: 12.w,
                 height: 12.w,
-                decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6.w)),
-                child: Icon(Icons.attach_file, color: theme.colorScheme.primary, size: 6.w),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(6.w),
+                ),
+                child: Icon(
+                  Icons.attach_file,
+                  color: theme.colorScheme.primary,
+                  size: 6.w,
+                ),
               ),
             ),
             SizedBox(width: 3.w),
@@ -561,7 +834,10 @@ class MessageScreen extends HookConsumerWidget {
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-                decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(6.w)),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(6.w),
+                ),
                 child: TextField(
                   controller: messageController,
                   focusNode: focusNode,
@@ -570,7 +846,9 @@ class MessageScreen extends HookConsumerWidget {
                   style: theme.textTheme.bodyMedium,
                   decoration: InputDecoration(
                     hintText: 'Type a message...',
-                    hintStyle: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer),
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     enabledBorder: InputBorder.none,
@@ -589,12 +867,21 @@ class MessageScreen extends HookConsumerWidget {
                 height: 12.w,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [theme.colorScheme.primary, theme.colorScheme.onSurface],
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.onSurface,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(6.w),
-                  boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 2))],
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Icon(Icons.send, color: Colors.white, size: 5.w),
               ),
@@ -610,7 +897,10 @@ class MessageScreen extends HookConsumerWidget {
       padding: EdgeInsets.all(6.w),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(6.w), topRight: Radius.circular(6.w)),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(6.w),
+          topRight: Radius.circular(6.w),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -618,28 +908,49 @@ class MessageScreen extends HookConsumerWidget {
           Container(
             width: 15.w,
             height: 1.h,
-            decoration: BoxDecoration(color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(0.5.h)),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.onPrimaryContainer.withValues(
+                alpha: 0.3,
+              ),
+              borderRadius: BorderRadius.circular(0.5.h),
+            ),
           ),
           SizedBox(height: 4.h),
-
           Text('Send Attachment', style: theme.textTheme.titleSmall),
           SizedBox(height: 4.h),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              buildAttachmentOption(theme, 'Document', Icons.description_outlined, theme.colorScheme.primary, () {
-                context.pop();
-                // Handle document selection
-              }),
-              buildAttachmentOption(theme, 'Photos', Icons.photo_library_outlined, theme.colorScheme.onSurface, () {
-                context.pop();
-                // Handle photo selection
-              }),
-              buildAttachmentOption(theme, 'Files', Icons.folder_outlined, theme.colorScheme.onPrimary, () {
-                context.pop();
-                // Handle file selection
-              }),
+              buildAttachmentOption(
+                theme,
+                'Document',
+                Icons.description_outlined,
+                theme.colorScheme.primary,
+                () async {
+                  context.pop();
+                  await _handleDocumentSelection(context);
+                },
+              ),
+              buildAttachmentOption(
+                theme,
+                'Photos',
+                Icons.photo_library_outlined,
+                theme.colorScheme.onSurface,
+                () async {
+                  context.pop();
+                  await _handlePhotoSelection(context);
+                },
+              ),
+              buildAttachmentOption(
+                theme,
+                'Files',
+                Icons.folder_outlined,
+                theme.colorScheme.onPrimary,
+                () async {
+                  context.pop();
+                  await _handleFileSelection(context);
+                },
+              ),
             ],
           ),
           SizedBox(height: 4.h),
@@ -648,7 +959,65 @@ class MessageScreen extends HookConsumerWidget {
     );
   }
 
-  Widget buildAttachmentOption(ThemeData theme, String title, IconData icon, Color color, GestureTapCallback onTap) {
+  // Add these new methods to handle file selections
+  Future<void> _handleDocumentSelection(BuildContext context) async {
+    final result = await FileAttachmentService.selectFiles(
+      context: context,
+      config: FileSelectionConfig.documents,
+    );
+
+    FileAttachmentService.handleFileSelectionResult(
+      context,
+      result,
+      onSuccess: () {
+        // Handle successful document selection
+        // You can add the files to your message or state management here
+        print(
+          'Selected documents: ${result.files.map((f) => f.path).join(', ')}',
+        );
+      },
+    );
+  }
+
+  Future<void> _handlePhotoSelection(BuildContext context) async {
+    final result = await FileAttachmentService.selectFiles(
+      context: context,
+      config: FileSelectionConfig.multipleImages,
+    );
+
+    FileAttachmentService.handleFileSelectionResult(
+      context,
+      result,
+      onSuccess: () {
+        // Handle successful photo selection
+        print('Selected photos: ${result.files.map((f) => f.path).join(', ')}');
+      },
+    );
+  }
+
+  Future<void> _handleFileSelection(BuildContext context) async {
+    final result = await FileAttachmentService.selectFiles(
+      context: context,
+      config: FileSelectionConfig.anyFile,
+    );
+
+    FileAttachmentService.handleFileSelectionResult(
+      context,
+      result,
+      onSuccess: () {
+        // Handle successful file selection
+        print('Selected files: ${result.files.map((f) => f.path).join(', ')}');
+      },
+    );
+  }
+
+  Widget buildAttachmentOption(
+    ThemeData theme,
+    String title,
+    IconData icon,
+    Color color,
+    GestureTapCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -656,7 +1025,10 @@ class MessageScreen extends HookConsumerWidget {
           Container(
             width: 15.w,
             height: 15.w,
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(7.5.w)),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(7.5.w),
+            ),
             child: Icon(icon, color: color, size: 7.w),
           ),
           SizedBox(height: 2.h),

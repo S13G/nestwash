@@ -22,7 +22,8 @@ class BottomNavScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(bottomNavigationProvider);
-    final accountType = ref.read(userProvider)?.accountType;
+    // final accountType = ref.read(userProvider)?.accountType;
+    final accountType = 'service_provider';
 
     final List<Widget> screens;
     if (accountType == "service_provider") {
