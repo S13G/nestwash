@@ -5,6 +5,7 @@ import 'package:nestcare/features/auth/presentation/login_screen.dart';
 import 'package:nestcare/features/auth/presentation/otp_screen.dart';
 import 'package:nestcare/features/auth/presentation/registration_screen.dart';
 import 'package:nestcare/features/auth/presentation/signup_screen.dart';
+import 'package:nestcare/features/general/model/discount_model.dart';
 import 'package:nestcare/features/general/presentation/bottom_nav_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/clothes_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/make_order_screen.dart';
@@ -20,6 +21,7 @@ import 'package:nestcare/features/general/presentation/menus/customer/customer_o
 import 'package:nestcare/features/general/presentation/menus/customer/customer_profile_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/customer/delivery_address_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/invites_screen.dart';
+import 'package:nestcare/features/general/presentation/menus/service_provider/service_provider_menu_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/support_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/terms_screen.dart';
 import 'package:nestcare/features/general/presentation/menus/transaction_history_screen.dart';
@@ -27,12 +29,16 @@ import 'package:nestcare/features/general/presentation/message_profile_view_scre
 import 'package:nestcare/features/general/presentation/message_screen.dart';
 import 'package:nestcare/features/general/presentation/messages_screen.dart';
 import 'package:nestcare/features/general/services/model/service_provider_model.dart';
+import 'package:nestcare/features/general/services/presentation/customer_profile_view_screen.dart';
+import 'package:nestcare/features/general/services/presentation/discount_details_screen.dart';
+import 'package:nestcare/features/general/services/presentation/provider_main_profile_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_info_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_order_details_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_profile_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_reviews_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_providers_screen.dart';
 import 'package:nestcare/features/general/presentation/customer/order_summary_screen.dart';
+import 'package:nestcare/features/general/services/presentation/manage_services_screen.dart';
 
 class AppRouter {
   final Ref ref;
@@ -80,6 +86,14 @@ final _authRoutes = <GoRoute>[
             builder: (context, state) => const ForgotPasswordScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/discount_details',
+        name: 'discount_details',
+        builder: (context, state) {
+          final discount = state.extra as DiscountModel;
+          return DiscountDetailsScreen(discount: discount);
+        },
       ),
     ],
   ),
@@ -187,6 +201,10 @@ final _generalRoutes = <GoRoute>[
               return MessageProfileViewScreen(provider: provider);
             },
           ),
+          GoRoute(path: '/profile/customer', name: 'customer_profile_view', builder: (context, state) {
+            // final provider = state.extra as String;
+            return CustomerProfileViewScreen(customerId: "1");
+          }),
         ],
       ),
     ],
@@ -264,6 +282,30 @@ final _serviceProviderRoutes = <GoRoute>[
   GoRoute(
     path: '/service_provider/order_details',
     name: 'service_provider_order_details',
-    builder: (context, state) => const ServiceProviderOrderDetailsScreen(),
+    builder: (context, state) {
+      // final order = state.extra as Order;
+      // return ServiceProviderOrderDetailsScreen(order: "1");
+      return ServiceProviderOrderDetailsScreen(orderId: "1");
+    },
+  ),
+  GoRoute(
+    path: '/service_provider_menu',
+    name: 'service_provider_menu',
+    builder: (context, state) => const ServiceProviderMenuScreen(),
+    routes: [
+      GoRoute(
+        path: '/service_provider/edit/profile',
+        name: 'service_provider_main_profile',
+        builder: (context, state) {
+          final provider = state.extra as ServiceProvider;
+          return ProviderMainProfileScreen(provider: provider);
+        },
+      ),
+    ],
+  ),
+  GoRoute(
+    path: '/service_provider/manage_services',
+    name: 'service_provider_manage_services',
+    builder: (context, state) => const ManageServicesScreen(),
   ),
 ];
