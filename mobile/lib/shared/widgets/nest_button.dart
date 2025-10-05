@@ -15,6 +15,7 @@ class NestButton extends HookConsumerWidget {
     this.mediumText = false,
     this.prefixIcon,
     this.buttonSize,
+    this.round = false,
   });
 
   final String text;
@@ -24,6 +25,7 @@ class NestButton extends HookConsumerWidget {
   final bool mediumText;
   final Icon? prefixIcon;
   final Size? buttonSize;
+  final bool round;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,7 +44,8 @@ class NestButton extends HookConsumerWidget {
                   : color ?? theme.colorScheme.primary,
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius:
+                round ? BorderRadius.circular(50) : BorderRadius.circular(10),
             side: BorderSide.none,
           ),
         ),
@@ -57,6 +60,7 @@ class NestButton extends HookConsumerWidget {
                       SizedBox(width: 2.w),
                     ],
                     Text(
+                      textAlign: TextAlign.center,
                       text[0].toUpperCase() + text.substring(1).toLowerCase(),
                       style:
                           mediumText
