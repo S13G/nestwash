@@ -7,7 +7,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ToastUtil {
   static OverlayEntry? _currentToast;
-  static Timer? _currentTimer;
 
   static void showSuccessToast(
     BuildContext context,
@@ -31,17 +30,30 @@ class ToastUtil {
     );
   }
 
+  static void showInfoToast(BuildContext context, String message) {
+    _showCustomToast(
+      context,
+      message,
+      backgroundColor: Colors.amber,
+      icon: Icons.info,
+    );
+  }
+
   static void _showCustomToast(
     BuildContext context,
     String message, {
     required Color backgroundColor,
     required IconData icon,
   }) {
-    // Remove existing toast if present
-    _dismissCurrentToast();
+    // Immediately remove any existing toast to avoid race conditions on rapid clicks
+    try {
+      _currentToast?.remove();
+    } catch (_) {}
+    _currentToast = null;
+
+    final overlay = Overlay.of(context);
 
     final theme = Theme.of(context);
-    final overlay = Overlay.of(context);
 
     _currentToast = OverlayEntry(
       builder:
@@ -50,28 +62,10 @@ class ToastUtil {
             backgroundColor: backgroundColor,
             icon: icon,
             theme: theme,
-            onAnimationComplete: () {
-              _dismissCurrentToast();
-            },
           ),
     );
 
-    // Insert the new toast
     overlay.insert(_currentToast!);
-  }
-
-  static void _dismissCurrentToast() {
-    try {
-      _currentTimer?.cancel();
-      _currentTimer = null;
-
-      if (_currentToast?.mounted == true) {
-        _currentToast?.remove();
-      }
-      _currentToast = null;
-    } catch (e) {
-      debugPrint('Toast dismissal error: $e');
-    }
   }
 }
 
@@ -80,14 +74,12 @@ class _AnimatedToast extends HookConsumerWidget {
   final Color backgroundColor;
   final IconData icon;
   final ThemeData theme;
-  final VoidCallback onAnimationComplete;
 
   const _AnimatedToast({
     required this.message,
     required this.backgroundColor,
     required this.icon,
     required this.theme,
-    required this.onAnimationComplete,
   });
 
   @override
@@ -126,7 +118,6 @@ class _AnimatedToast extends HookConsumerWidget {
       if (isDismissed.value) return;
       isDismissed.value = true;
 
-      // Cancel local timer
       localTimer.value?.cancel();
       localTimer.value = null;
 
@@ -138,23 +129,22 @@ class _AnimatedToast extends HookConsumerWidget {
       } catch (e) {
         debugPrint('Toast animation error: $e');
       } finally {
-        onAnimationComplete();
+        // Ensure overlay entry is removed when this instance completes
+        try {
+          ToastUtil._currentToast?.remove();
+        } catch (_) {}
+        ToastUtil._currentToast = null;
       }
-    }, [controller, onAnimationComplete]);
+    }, [controller]);
 
-    // Start animation and auto-dismiss effect
     useEffect(() {
       controller.forward();
 
-      // Use local timer instead of static timer
       localTimer.value = Timer(const Duration(milliseconds: 1400), () {
         if (!isDismissed.value) {
           dismissToast();
         }
       });
-
-      // Also store in ToastUtil for external cancellation
-      ToastUtil._currentTimer = localTimer.value;
 
       return () {
         localTimer.value?.cancel();
@@ -162,12 +152,10 @@ class _AnimatedToast extends HookConsumerWidget {
       };
     }, [controller, dismissToast]);
 
-    // Handle widget disposal
     useEffect(() {
       return () {
         if (!isDismissed.value) {
           localTimer.value?.cancel();
-          onAnimationComplete();
         }
       };
     }, []);
@@ -207,6 +195,7 @@ class _AnimatedToast extends HookConsumerWidget {
                         message,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: Colors.white,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
