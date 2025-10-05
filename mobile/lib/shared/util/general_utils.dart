@@ -4,6 +4,8 @@ import 'package:nestcare/core/config/app_theme.dart';
 
 enum FilterType { all, active, past }
 
+enum DiscountFilter { all, active, expired, completed }
+
 enum OrderStatus {
   active,
   completed,
@@ -11,6 +13,7 @@ enum OrderStatus {
   pending,
   readyForPickup,
   readyForDelivery,
+  outForDelivery,
 }
 
 enum ReviewFilterType { all, fiveStar, fourStar, threeStar, twoStar, oneStar }
@@ -32,6 +35,8 @@ class OrderUtils {
         return Colors.amber;
       case OrderStatus.readyForDelivery:
         return Colors.orange;
+      case OrderStatus.outForDelivery:
+        return Colors.blue;
     }
   }
 
@@ -49,6 +54,8 @@ class OrderUtils {
         return 'Ready for pickup';
       case OrderStatus.readyForDelivery:
         return 'Ready for delivery';
+      case OrderStatus.outForDelivery:
+        return 'Out for delivery';
     }
   }
 
@@ -66,6 +73,8 @@ class OrderUtils {
         return 0.3;
       case OrderStatus.readyForDelivery:
         return 0.75;
+      case OrderStatus.outForDelivery:
+        return 0.85;
     }
   }
 
@@ -76,6 +85,8 @@ class OrderUtils {
       case OrderStatus.active:
         return Icons.local_laundry_service;
       case OrderStatus.readyForDelivery:
+        return Icons.local_shipping;
+      case OrderStatus.outForDelivery:
         return Icons.local_shipping;
       case OrderStatus.completed:
         return Icons.check_circle;
@@ -136,7 +147,9 @@ class OrderUtils {
       case OrderStatus.completed:
         return 'Delivered';
       case OrderStatus.cancelled:
-        return 'Order Cancelled'; // A cancelled status would typically override the timeline
+        return 'Order Cancelled';
+      case OrderStatus.outForDelivery:
+        return 'Out for Delivery';
     }
   }
 
@@ -154,6 +167,8 @@ class OrderUtils {
         return 'Your order has been successfully delivered and confirmed.';
       case OrderStatus.cancelled:
         return 'This order was cancelled by you or the service provider.';
+      case OrderStatus.outForDelivery:
+        return 'Your order is out for delivery. Please wait for the driver to arrive.';
     }
   }
 }
