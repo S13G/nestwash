@@ -6,11 +6,10 @@ import 'package:nestcare/features/general/widgets/search_widget.dart';
 import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/chat_provider.dart';
 import 'package:nestcare/providers/home_provider.dart';
-import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class MessagesScreen extends HookConsumerWidget {
-  const MessagesScreen({super.key});
+class ServiceProviderMessagesScreen extends HookConsumerWidget {
+  const ServiceProviderMessagesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,43 +21,61 @@ class MessagesScreen extends HookConsumerWidget {
     final totalUnreadCount = ref.watch(totalUnreadCountProvider);
     final animations = useLaundryAnimations(null);
 
-    return NestScaffold(
-      showBackButton: true,
-      title: 'messages',
-      body: FadeTransition(
-        opacity: animations.fadeAnimation,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search Bar
-            _buildSearchBar(),
-            SizedBox(height: 2.h),
+    return FadeTransition(
+      opacity: animations.fadeAnimation,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // header section
+          _buildHeader(theme),
 
-            // Filter Tabs
-            _buildFilterTabs(
-              theme,
-              ref,
-              filteredChats: filteredChats.length,
-              totalUnreadCount: totalUnreadCount,
-              selectedFilter: selectedFilter,
-            ),
-            SizedBox(height: 2.h),
+          SizedBox(height: 2.h),
 
-            // Chat List
-            Expanded(
-              child: SlideTransition(
-                position: animations.slideAnimation,
-                child: _buildChatList(
-                  context,
-                  theme,
-                  filteredChats: filteredChats,
-                  searchText: searchText,
-                ),
+          // Search Bar
+          _buildSearchBar(),
+          SizedBox(height: 2.h),
+
+          // Filter Tabs
+          _buildFilterTabs(
+            theme,
+            ref,
+            filteredChats: filteredChats.length,
+            totalUnreadCount: totalUnreadCount,
+            selectedFilter: selectedFilter,
+          ),
+          SizedBox(height: 2.h),
+
+          // Chat List
+          Expanded(
+            child: SlideTransition(
+              position: animations.slideAnimation,
+              child: _buildChatList(
+                context,
+                theme,
+                filteredChats: filteredChats,
+                searchText: searchText,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  /// header section
+  Widget _buildHeader(ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Messages', style: theme.textTheme.titleLarge),
+        SizedBox(height: 0.5.h),
+        Text(
+          'Stay connected with your clients',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onPrimaryContainer,
+          ),
+        ),
+      ],
     );
   }
 

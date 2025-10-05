@@ -304,6 +304,8 @@ class MessageScreen extends HookConsumerWidget {
     String providerName,
     ServiceProvider serviceProvider,
   ) {
+    final accountType = 'service_provider';
+
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.all(6.w),
@@ -338,10 +340,14 @@ class MessageScreen extends HookConsumerWidget {
               'View Profile',
               Icons.person_outline,
               () {
-                context.pushNamed(
-                  'message_profile_view',
-                  extra: serviceProvider,
-                );
+                if (accountType == 'service_provider') {
+                  context.pushNamed('customer_profile_view', extra: "1");
+                } else {
+                  context.pushNamed(
+                    'message_profile_view',
+                    extra: serviceProvider,
+                  );
+                }
               },
             ),
             SizedBox(height: 2.h),
