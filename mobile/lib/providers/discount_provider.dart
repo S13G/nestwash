@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/core/config/app_theme.dart';
 import 'package:nestcare/features/general/model/discount_model.dart';
+import 'package:nestcare/features/general/services/model/discount_usage_model.dart';
 
 // Discount categories
 final selectedDiscountCategoryProvider = StateProvider<String>((ref) => 'All');
@@ -63,5 +64,47 @@ final filteredDiscountsProvider = StateProvider<List<DiscountModel>>((ref) {
   final allDiscounts = ref.read(allDiscountsProvider);
 
   if (selectedCategory == 'All') return allDiscounts;
-  return allDiscounts.where((discount) => discount.category == selectedCategory).toList();
+  return allDiscounts
+      .where((discount) => discount.category == selectedCategory)
+      .toList();
 });
+
+// Provide mock discount usages and family selector
+final discountUsagesProvider = Provider<List<DiscountUsage>>((ref) {
+  return [
+    DiscountUsage(
+      discountId: '1',
+      customerName: 'Adaeze Okafor',
+      customerImage: 'assets/images/user_pic.png',
+      orderId: 'ORD-1024',
+      serviceName: 'Wash & Fold',
+      usedAt: DateTime.now().subtract(const Duration(days: 1, hours: 2)),
+      amountSaved: 1500,
+    ),
+    DiscountUsage(
+      discountId: '2',
+      customerName: 'Tunde Bello',
+      customerImage: 'assets/images/user_pic.png',
+      orderId: 'ORD-1031',
+      serviceName: 'Dry Cleaning',
+      usedAt: DateTime.now().subtract(const Duration(days: 3, hours: 4)),
+      amountSaved: 2000,
+    ),
+    DiscountUsage(
+      discountId: '1',
+      customerName: 'Maryam Yusuf',
+      customerImage: 'assets/images/user_pic.png',
+      orderId: 'ORD-1040',
+      serviceName: 'Wash & Iron',
+      usedAt: DateTime.now().subtract(const Duration(hours: 6)),
+      amountSaved: 1200,
+    ),
+  ];
+});
+
+final discountUsagesByIdProvider = Provider.family<List<DiscountUsage>, String>(
+  (ref, discountId) {
+    final all = ref.watch(discountUsagesProvider);
+    return all.where((u) => u.discountId == discountId).toList();
+  },
+);
