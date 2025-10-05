@@ -4,12 +4,11 @@ import 'package:nestcare/features/general/presentation/customer/customer_discoun
 import 'package:nestcare/features/general/presentation/customer/customer_home_screen.dart';
 import 'package:nestcare/features/general/presentation/notifications_screen.dart';
 import 'package:nestcare/features/general/services/presentation/laundry_services_screen.dart';
-import 'package:nestcare/features/general/services/presentation/service_provider_chat_list_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_discounts_screen.dart';
 import 'package:nestcare/features/general/services/presentation/service_provider_home_screen.dart';
+import 'package:nestcare/features/general/services/presentation/service_provider_messages_screen.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/notifications_provider.dart';
-import 'package:nestcare/providers/user_provider.dart';
 import 'package:nestcare/shared/widgets/image_widget.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -30,7 +29,7 @@ class BottomNavScreen extends ConsumerWidget {
       screens = [
         const ServiceProviderHomeScreen(),
         const LaundryOrdersScreen(),
-        const ServiceProviderChatListScreen(),
+        const ServiceProviderMessagesScreen(),
         const ServiceProviderDiscountsScreen(),
         const NotificationsScreen(),
       ];
@@ -60,7 +59,8 @@ class NestCareBottomNavBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final selectedIndex = ref.watch(bottomNavigationProvider);
-    final accountType = ref.read(userProvider)?.accountType;
+    // final accountType = ref.read(userProvider)?.accountType;
+    final accountType = 'service_provider';
 
     final unreadNotifications = ref.watch(allUnreadNotificationsProvider);
     final hasUnreadNotifications = unreadNotifications.isNotEmpty;
