@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/features/general/widgets/menu_options_widget.dart';
@@ -7,7 +9,7 @@ import 'package:nestcare/hooks/use_laundry_animations.dart';
 import 'package:nestcare/providers/home_provider.dart';
 import 'package:nestcare/providers/orders_provider.dart';
 import 'package:nestcare/providers/services_provider.dart';
-import 'package:nestcare/providers/reviews_provider.dart';
+import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/nest_scaffold.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -19,7 +21,13 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
     final theme = Theme.of(context);
     final animations = useLaundryAnimations(null);
     final allActiveOrders = ref.watch(allActiveOrdersProvider);
-    final reviewsStats = ref.watch(reviewsStatsProvider);
+
+    final animatedListKey = useRef(GlobalKey<AnimatedListState>()).value;
+    final newOrderIds = useState<List<String>>([
+      'LN2024001',
+      'LN2024002',
+      'LN2024003',
+    ]);
 
     return NestScaffold(
       padding: EdgeInsets.zero,
@@ -40,27 +48,21 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
               SizedBox(height: 3.h),
 
               // Quick Actions Section
-              _buildQuickActions(theme, ref),
+              _buildQuickActions(context, theme, ref),
               SizedBox(height: 3.h),
 
               // Upcoming Appointments
-              _buildAppointmentsSection(theme, ref),
+              _buildAppointmentsSection(theme, ref, allActiveOrders),
               SizedBox(height: 3.h),
 
               // New Orders Section
-              _buildNewOrdersSection(theme, ref, allActiveOrders),
-              SizedBox(height: 3.h),
-
-              // Performance Metrics
-              _buildPerformanceMetrics(theme, reviewsStats),
-              SizedBox(height: 3.h),
-
-              // Service Management
-              _buildServiceManagement(theme, ref),
-              SizedBox(height: 3.h),
-
-              // Customer Interaction Hub
-              _buildCustomerInteractionHub(theme, ref),
+              _buildNewOrdersSection(
+                context,
+                theme,
+                ref,
+                animatedListKey,
+                newOrderIds,
+              ),
             ],
           ),
         ),
@@ -87,7 +89,7 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
           Row(
             children: [
               Container(
-                width: 12.w,
+                width: 15.w,
                 height: 6.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -119,14 +121,14 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Good morning, William👋',
+                      'Hello, William👋',
                       style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(height: 0.5.h),
                     Text(
-                      'Ready to serve your customers today',
+                      'Ready to serve your customers today?',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onPrimaryContainer,
                       ),
@@ -170,7 +172,8 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
     ThemeData theme,
   ) {
     return Container(
-      padding: EdgeInsets.all(3.w),
+      width: 22.w,
+      height: 12.h,
       decoration: BoxDecoration(
         color: theme.colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(15),
@@ -179,21 +182,26 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
         ),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: theme.colorScheme.primary, size: 20),
           SizedBox(height: 0.5.h),
           Text(
             value,
-            style: theme.textTheme.titleMedium?.copyWith(
+            style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: theme.colorScheme.primary,
             ),
+            textAlign: TextAlign.center,
           ),
           Text(
             title,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onPrimaryContainer,
             ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -206,7 +214,7 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Earnings Overview 💰', style: theme.textTheme.titleSmall),
+            Text('Earnings Overview', style: theme.textTheme.titleSmall),
             GestureDetector(
               onTap: () {
                 HapticFeedback.lightImpact();
@@ -321,22 +329,28 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildQuickActions(ThemeData theme, WidgetRef ref) {
+  Widget _buildQuickActions(
+    BuildContext context,
+    ThemeData theme,
+    WidgetRef ref,
+  ) {
+    final isAvailable = ref.watch(serviceProviderAvailabilityProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quick Actions ⚡', style: theme.textTheme.titleSmall),
+        Text('Quick Actions', style: theme.textTheme.titleSmall),
         SizedBox(height: 2.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildActionButton(
-              'Set Availability',
-              LucideIcons.clock,
+            _buildAvailabilityActionButton(
+              LucideIcons.clock1,
               theme.colorScheme.primary,
+              isAvailable,
               () {
                 HapticFeedback.lightImpact();
-                // Navigate to availability settings
+                ref.read(serviceProviderAvailabilityProvider.notifier).state =
+                    !isAvailable;
               },
               theme,
             ),
@@ -346,23 +360,99 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
               theme.colorScheme.onTertiary,
               () {
                 HapticFeedback.lightImpact();
-                // Navigate to add service
+                context.pushNamed('service_provider_manage_services');
               },
               theme,
             ),
             _buildActionButton(
-              'View Analytics',
-              LucideIcons.chartBar,
-              theme.colorScheme.onSurface,
+              'Support',
+              LucideIcons.headphones,
+              Colors.purple,
               () {
                 HapticFeedback.lightImpact();
-                // Navigate to analytics
+                // Navigate to analytics dashboard
               },
               theme,
             ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildAvailabilityActionButton(
+    IconData icon,
+    Color color,
+    bool isAvailable,
+    VoidCallback onTap,
+    ThemeData theme,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 28.w,
+        padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
+        decoration: BoxDecoration(
+          color:
+              isAvailable
+                  ? Colors.green.withValues(alpha: 0.1)
+                  : Colors.grey.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color:
+                isAvailable
+                    ? Colors.green.withValues(alpha: 0.3)
+                    : Colors.grey.withValues(alpha: 0.3),
+          ),
+        ),
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Icon(
+                  icon,
+                  color: isAvailable ? Colors.green : Colors.grey,
+                  size: 24,
+                ),
+                Positioned(
+                  right: -2,
+                  top: -2,
+                  child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isAvailable ? Colors.green : Colors.grey,
+                      border: Border.all(
+                        color: theme.colorScheme.surface,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 0.5.h),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.3.h),
+              decoration: BoxDecoration(
+                color: (isAvailable ? Colors.green : Colors.grey).withValues(
+                  alpha: 0.2,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                isAvailable ? 'Active' : 'Busy',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: isAvailable ? Colors.green[700] : Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -401,13 +491,17 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildAppointmentsSection(ThemeData theme, WidgetRef ref) {
+  Widget _buildAppointmentsSection(
+    ThemeData theme,
+    WidgetRef ref,
+    dynamic allActiveOrders,
+  ) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Upcoming Appointments 📅', style: theme.textTheme.titleSmall),
+            Text('Ongoing Orders', style: theme.textTheme.titleSmall),
             GestureDetector(
               onTap: () {
                 HapticFeedback.lightImpact();
@@ -424,9 +518,18 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
           ],
         ),
         SizedBox(height: 2.h),
-        _buildAppointmentCard(theme),
-        SizedBox(height: 1.h),
-        _buildAppointmentCard(theme),
+        if (!(allActiveOrders is List && allActiveOrders.isNotEmpty))
+          _buildEmptyState(
+            theme: theme,
+            title: 'No ongoing orders',
+            subtitle: 'You have no ongoing orders currently.',
+            icon: LucideIcons.calendarX,
+          )
+        else ...[
+          _buildAppointmentCard(theme),
+          SizedBox(height: 1.h),
+          _buildAppointmentCard(theme),
+        ],
       ],
     );
   }
@@ -470,7 +573,7 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Pickup - Sarah Johnson',
+                  'Delivery - Sarah Johnson',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -510,16 +613,18 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
   }
 
   Widget _buildNewOrdersSection(
+    BuildContext context,
     ThemeData theme,
     WidgetRef ref,
-    List allActiveOrders,
+    GlobalKey<AnimatedListState> animatedListKey,
+    ValueNotifier<List<String>> newOrderIds,
   ) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('New Orders 🧺', style: theme.textTheme.titleSmall),
+            Text('New Orders', style: theme.textTheme.titleSmall),
             GestureDetector(
               onTap: () {
                 HapticFeedback.lightImpact();
@@ -537,18 +642,95 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
           ],
         ),
         SizedBox(height: 2.h),
-        _buildEnhancedOrderCard(theme),
-        SizedBox(height: 1.h),
-        _buildEnhancedOrderCard(theme),
+        if (newOrderIds.value.isEmpty)
+          _buildEmptyState(
+            theme: theme,
+            title: 'No new orders',
+            subtitle: 'New customer orders will appear here.',
+            icon: LucideIcons.package,
+          )
+        else
+          AnimatedList(
+            key: animatedListKey,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            initialItemCount: newOrderIds.value.length,
+            itemBuilder: (context, index, animation) {
+              final orderId = newOrderIds.value[index];
+              return SizeTransition(
+                sizeFactor: animation,
+                axisAlignment: -1.0,
+                child: _buildEnhancedOrderCard(
+                  context,
+                  theme,
+                  orderId,
+                  onAccept: () {
+                    HapticFeedback.lightImpact();
+                    ToastUtil.showSuccessToast(
+                      context,
+                      'Order accepted successfully!',
+                    );
+                    final removeIndex = newOrderIds.value.indexOf(orderId);
+                    newOrderIds.value.removeAt(removeIndex);
+                    animatedListKey.currentState?.removeItem(
+                      removeIndex,
+                      (context, animation) => SizeTransition(
+                        sizeFactor: animation,
+                        axisAlignment: -1.0,
+                        child: _buildEnhancedOrderCard(
+                          context,
+                          theme,
+                          orderId,
+                          onAccept:
+                              () => _handleOrderAction(context, 'accepted'),
+                          onDecline:
+                              () => _handleOrderAction(context, 'declined'),
+                        ),
+                      ),
+                    );
+                  },
+                  onDecline: () {
+                    HapticFeedback.lightImpact();
+                    ToastUtil.showErrorToast(context, 'Order declined.');
+                    final removeIndex = newOrderIds.value.indexOf(orderId);
+                    newOrderIds.value.removeAt(removeIndex);
+                    animatedListKey.currentState?.removeItem(
+                      removeIndex,
+                      (context, animation) => SizeTransition(
+                        sizeFactor: animation,
+                        axisAlignment: -1.0,
+                        child: _buildEnhancedOrderCard(
+                          context,
+                          theme,
+                          orderId,
+                          onAccept:
+                              () => _handleOrderAction(context, 'accepted'),
+                          onDecline:
+                              () => _handleOrderAction(context, 'declined'),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
       ],
     );
   }
 
-  Widget _buildEnhancedOrderCard(ThemeData theme) {
+  Widget _buildEnhancedOrderCard(
+    BuildContext context,
+    ThemeData theme,
+    String orderId, {
+    required VoidCallback onAccept,
+    required VoidCallback onDecline,
+  }) {
+    // ... existing code ...
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
-        // Navigate to order details
+        context.pushNamed("service_provider_order_details");
       },
       child: Container(
         padding: EdgeInsets.all(4.5.w),
@@ -571,30 +753,11 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Order #LN2024001',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Text(
-                    'New',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.orange[700],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            Text(
+              'Order #$orderId',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             SizedBox(height: 1.5.h),
             Row(
@@ -657,10 +820,7 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      // Accept order
-                    },
+                    onPressed: onAccept,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.colorScheme.primary,
                       foregroundColor: Colors.white,
@@ -674,10 +834,7 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
                 SizedBox(width: 2.w),
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      // Decline order
-                    },
+                    onPressed: onDecline,
                     style: OutlinedButton.styleFrom(
                       foregroundColor: theme.colorScheme.onPrimaryContainer,
                       side: BorderSide(
@@ -698,202 +855,38 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildPerformanceMetrics(
-    ThemeData theme,
-    Map<String, dynamic> reviewsStats,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Performance Metrics 📊', style: theme.textTheme.titleSmall),
-        SizedBox(height: 2.h),
-        Container(
-          padding: EdgeInsets.all(4.w),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: theme.colorScheme.onPrimary.withValues(alpha: 0.3),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                blurRadius: 15,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildPerformanceItem(
-                    'Average Rating',
-                    '${reviewsStats['averageRating']?.toStringAsFixed(1) ?? '0.0'}',
-                    LucideIcons.star,
-                    theme,
-                  ),
-                  _buildPerformanceItem(
-                    'Total Reviews',
-                    '${reviewsStats['totalReviews'] ?? 0}',
-                    LucideIcons.messageSquare,
-                    theme,
-                  ),
-                  _buildPerformanceItem(
-                    'Completion Rate',
-                    '98%',
-                    LucideIcons.checkCheck,
-                    theme,
-                  ),
-                ],
-              ),
-              SizedBox(height: 2.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildPerformanceItem(
-                    'Response Time',
-                    '< 10 min',
-                    LucideIcons.clock,
-                    theme,
-                  ),
-                  _buildPerformanceItem(
-                    'Orders Completed',
-                    '156',
-                    LucideIcons.package,
-                    theme,
-                  ),
-                  _buildPerformanceItem(
-                    'Customer Retention',
-                    '85%',
-                    LucideIcons.users,
-                    theme,
-                  ),
-                ],
-              ),
-            ],
-          ),
+  Widget _buildEmptyState({
+    required ThemeData theme,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(4.w),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
         ),
-      ],
-    );
-  }
-
-  Widget _buildPerformanceItem(
-    String label,
-    String value,
-    IconData icon,
-    ThemeData theme,
-  ) {
-    return Column(
-      children: [
-        Icon(icon, color: theme.colorScheme.primary, size: 20),
-        SizedBox(height: 0.5.h),
-        Text(
-          value,
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.primary,
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
           ),
-        ),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onPrimaryContainer,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServiceManagement(ThemeData theme, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Service Management 🛠️', style: theme.textTheme.titleSmall),
-        SizedBox(height: 2.h),
-        Container(
-          padding: EdgeInsets.all(4.w),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: theme.colorScheme.onPrimary.withValues(alpha: 0.3),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                blurRadius: 15,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildServiceItem(
-                'Wash & Fold',
-                'Active • \$15/load',
-                true,
-                theme,
-                ref,
-              ),
-              Divider(
-                color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
-              ),
-              _buildServiceItem(
-                'Dry Cleaning',
-                'Active • \$25/item',
-                true,
-                theme,
-                ref,
-              ),
-              Divider(
-                color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
-              ),
-              _buildServiceItem(
-                'Express Service',
-                'Inactive • \$30/load',
-                false,
-                theme,
-                ref,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServiceItem(
-    String serviceName,
-    String details,
-    bool isActive,
-    ThemeData theme,
-    WidgetRef ref,
-  ) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 1.h),
+        ],
+      ),
       child: Row(
         children: [
           Container(
-            width: 10.w,
-            height: 4.h,
+            width: 12.w,
+            height: 5.h,
             decoration: BoxDecoration(
-              color: (isActive
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.onPrimaryContainer)
-                  .withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: theme.colorScheme.primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              LucideIcons.washingMachine,
-              color:
-                  isActive
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.onPrimaryContainer,
-              size: 16,
-            ),
+            child: Icon(icon, color: theme.colorScheme.primary, size: 20),
           ),
           SizedBox(width: 3.w),
           Expanded(
@@ -901,13 +894,14 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  serviceName,
+                  title,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                SizedBox(height: 0.5.h),
                 Text(
-                  details,
+                  subtitle,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onPrimaryContainer,
                   ),
@@ -915,144 +909,26 @@ class ServiceProviderHomeScreen extends HookConsumerWidget {
               ],
             ),
           ),
-          Switch(
-            value: isActive,
-            onChanged: (value) {
-              HapticFeedback.lightImpact();
-              // Toggle service availability
-            },
-            activeColor: theme.colorScheme.primary,
+          SizedBox(width: 3.w),
+          SizedBox(
+            width: 14.w,
+            height: 6.h,
+            child: Image.asset(
+              'assets/images/empty_orders.png',
+              fit: BoxFit.contain,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCustomerInteractionHub(ThemeData theme, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Customer Interaction 💬', style: theme.textTheme.titleSmall),
-        SizedBox(height: 2.h),
-        Row(
-          children: [
-            Expanded(
-              child: _buildInteractionCard(
-                'Messages',
-                '3 unread',
-                LucideIcons.messageCircle,
-                theme.colorScheme.primary,
-                () {
-                  HapticFeedback.lightImpact();
-                  ref.read(bottomNavigationProvider.notifier).state = 2;
-                },
-                theme,
-              ),
-            ),
-            SizedBox(width: 3.w),
-            Expanded(
-              child: _buildInteractionCard(
-                'Notifications',
-                '5 new',
-                LucideIcons.bell,
-                theme.colorScheme.onTertiary,
-                () {
-                  HapticFeedback.lightImpact();
-                  // Navigate to notifications
-                },
-                theme,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 2.h),
-        Row(
-          children: [
-            Expanded(
-              child: _buildInteractionCard(
-                'Reviews',
-                'View latest',
-                LucideIcons.star,
-                theme.colorScheme.onSurface,
-                () {
-                  HapticFeedback.lightImpact();
-                  // Navigate to reviews
-                },
-                theme,
-              ),
-            ),
-            SizedBox(width: 3.w),
-            Expanded(
-              child: _buildInteractionCard(
-                'Support',
-                'Get help',
-                LucideIcons.lifeBuoy,
-                Colors.purple,
-                () {
-                  HapticFeedback.lightImpact();
-                  // Navigate to support
-                },
-                theme,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInteractionCard(
-    String title,
-    String subtitle,
-    IconData icon,
-    Color color,
-    VoidCallback onTap,
-    ThemeData theme,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(4.w),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(icon, color: color, size: 24),
-                if (title == 'Messages' || title == 'Notifications')
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-              ],
-            ),
-            SizedBox(height: 1.h),
-            Text(
-              title,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            Text(
-              subtitle,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: color.withValues(alpha: 0.8),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  void _handleOrderAction(BuildContext context, String action) {
+    // Show toast notification
+    if (action == 'accepted') {
+      ToastUtil.showSuccessToast(context, 'Order accepted successfully!');
+    } else {
+      ToastUtil.showErrorToast(context, 'Order declined');
+    }
   }
 }

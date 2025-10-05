@@ -73,6 +73,7 @@ final allServicesProvider = StateProvider<List<LaundryServiceModel>>((ref) {
   ];
 });
 final selectedServiceProvider = StateProvider<String?>((ref) => null);
+
 final filteredServiceProvider =
     Provider.family<List<LaundryServiceModel>, String>((ref, searchQuery) {
       final search = searchQuery.toLowerCase();
@@ -161,3 +162,13 @@ final ratingProvider = StateProvider<int>((ref) => 0);
 final serviceProviderExpandedDescriptionProvider = StateProvider<bool>(
   (ref) => false,
 );
+
+// Track services the current service provider is offering
+final offeredServiceIdsProvider = StateProvider<Set<String>>((ref) {
+  // Seed with a few sample offered services; adjust as needed
+  return {
+    'wash_fold',
+    'dry_clean',
+    'ironing',
+  };
+});

@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/general/services/model/service_provider_model.dart';
 import 'package:nestcare/shared/util/service_provider_utils.dart';
 
-final selectedServiceProvider = StateProvider<ServiceProvider?>((ref) => null);
+final selectedServiceProviderProvider = StateProvider<ServiceProvider?>((ref) => null);
 final selectedServiceFilterProvider = StateProvider<ServiceProviderFilterType>(
   (ref) => ServiceProviderFilterType.all,
 );
