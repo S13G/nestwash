@@ -6,6 +6,7 @@ class DiscountModel {
   final String description;
   final String code;
   final int discountPercentage;
+  final double? discountAmount; // optional amount-based discount
   final String serviceProviderName;
   final String serviceProviderImage;
   final DateTime expiryDate;
@@ -21,6 +22,7 @@ class DiscountModel {
     required this.description,
     required this.code,
     required this.discountPercentage,
+    this.discountAmount,
     required this.serviceProviderName,
     required this.serviceProviderImage,
     required this.expiryDate,
