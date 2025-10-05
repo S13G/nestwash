@@ -9,10 +9,14 @@ class MenuOptionsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final accountType = 'service_provider';
+
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
-        context.pushNamed("customer_menu");
+        context.pushNamed(
+          accountType == 'customer' ? "customer_menu" : "service_provider_menu",
+        );
       },
       child: Container(
         padding: const EdgeInsets.all(12),
