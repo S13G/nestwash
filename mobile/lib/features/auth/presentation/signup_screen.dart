@@ -18,6 +18,10 @@ class SignupScreen extends HookConsumerWidget {
     final theme = Theme.of(context);
     final formKey = useRef(GlobalKey<FormState>()).value;
 
+    final accountType =
+        GoRouterState.of(context).uri.queryParameters['accountType'] ??
+        'customer';
+
     final emailController = useTextEditingController();
     final state = ref.watch(signupProvider);
     final controller = ref.read(signupProvider.notifier);
@@ -35,22 +39,44 @@ class SignupScreen extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Welcome to NestWash",
-                      style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                      accountType == 'service_provider'
+                          ? "Join NestWash as a Service Provider"
+                          : "Welcome to NestWash",
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.5,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      "Sign up to experience premium laundry services",
-                      style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500, fontSize: 18),
+                      accountType == 'service_provider'
+                          ? "Sign up to start offering your laundry services"
+                          : "Sign up to experience premium laundry services",
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 1.h),
-                    ImageWidget(imageName: "email_icon", width: double.infinity, height: 32.h, fit: BoxFit.contain),
+                    ImageWidget(
+                      imageName:
+                          accountType == 'service_provider'
+                              ? "delivery_man_image"
+                              : "email_icon",
+                      width: double.infinity,
+                      height: 32.h,
+                      fit: BoxFit.contain,
+                    ),
                     SizedBox(height: 2.h),
                     Text(
                       "Enter your email to get started",
-                      style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500, fontSize: 18),
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 2.h),
@@ -86,11 +112,16 @@ class SignupScreen extends HookConsumerWidget {
             RichText(
               text: TextSpan(
                 text: "I have an account? ",
-                style: theme.textTheme.bodyLarge?.copyWith(color: Colors.black, fontStyle: FontStyle.italic),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: Colors.black,
+                  fontStyle: FontStyle.italic,
+                ),
                 children: [
                   TextSpan(
                     text: "Log in",
-                    style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary),
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
                     recognizer:
                         TapGestureRecognizer()
                           ..onTap = () {

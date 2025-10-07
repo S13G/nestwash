@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nestcare/features/auth/presentation/forgot_password_screen.dart';
 import 'package:nestcare/features/auth/presentation/login_screen.dart';
+import 'package:nestcare/features/auth/presentation/onboarding_screen.dart';
 import 'package:nestcare/features/auth/presentation/otp_screen.dart';
 import 'package:nestcare/features/auth/presentation/registration_screen.dart';
 import 'package:nestcare/features/auth/presentation/signup_screen.dart';
@@ -46,8 +47,13 @@ class AppRouter {
   AppRouter(this.ref);
 
   GoRouter get router => GoRouter(
-    initialLocation: '/signup',
+    initialLocation: '/',
     routes: [
+      GoRoute(
+        path: '/',
+        name: 'onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
       ..._authRoutes,
       ..._generalRoutes,
       ..._customerRoutes,

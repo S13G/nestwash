@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/features/general/services/presentation/widgets/add_service_widget.dart';
+import 'package:nestcare/features/general/services/presentation/widgets/service_item_pricing_sheet.dart';
 import 'package:nestcare/providers/services_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:nestcare/shared/widgets/nest_button.dart';
@@ -76,109 +77,156 @@ class ManageServicesScreen extends HookConsumerWidget {
                         ),
                       ],
                     ),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Container(
-                          width: 12.w,
-                          height: 12.w,
-                          decoration: BoxDecoration(
-                            color: service.color.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            service.icon,
-                            color: service.color,
-                            size: 22,
-                          ),
-                        ),
-                        SizedBox(width: 3.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                service.name,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 12.w,
+                              height: 12.w,
+                              decoration: BoxDecoration(
+                                color: service.color.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              SizedBox(height: 0.5.h),
-                              Text(
-                                service.description,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onPrimaryContainer,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                              child: Icon(
+                                service.icon,
+                                color: service.color,
+                                size: 22,
                               ),
-                              SizedBox(height: 0.8.h),
-                              Row(
+                            ),
+                            SizedBox(width: 3.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(
-                                    LucideIcons.timer,
-                                    size: 16,
-                                    color: service.color,
-                                  ),
-                                  SizedBox(width: 1.w),
                                   Text(
-                                    service.duration,
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: service.color,
+                                    service.name,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
                                     ),
+                                  ),
+                                  SizedBox(height: 0.5.h),
+                                  Text(
+                                    service.description,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.onPrimaryContainer,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 0.8.h),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        LucideIcons.timer,
+                                        size: 16,
+                                        color: service.color,
+                                      ),
+                                      SizedBox(width: 1.w),
+                                      Text(
+                                        service.duration,
+                                        style: theme.textTheme.bodySmall?.copyWith(
+                                          color: service.color,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(width: 3.w),
+                            GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                final current = {...offeredIds};
+                                if (current.remove(service.id)) {
+                                  ref
+                                      .read(offeredServiceIdsProvider.notifier)
+                                      .state = current;
+                                  ToastUtil.showSuccessToast(
+                                    context,
+                                    '${service.name} removed from your services',
+                                  );
+                                } else {
+                                  ToastUtil.showErrorToast(
+                                    context,
+                                    'Service not found in your offerings',
+                                  );
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 3.w,
+                                  vertical: 1.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.error.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: theme.colorScheme.error.withValues(
+                                      alpha: 0.2,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      LucideIcons.trash2,
+                                      color: theme.colorScheme.error,
+                                      size: 18,
+                                    ),
+                                    SizedBox(width: 1.w),
+                                    Text(
+                                      'Remove',
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.colorScheme.error,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 3.w),
+                        SizedBox(height: 2.h),
                         GestureDetector(
                           onTap: () {
                             HapticFeedback.lightImpact();
-                            final current = {...offeredIds};
-                            if (current.remove(service.id)) {
-                              ref
-                                  .read(offeredServiceIdsProvider.notifier)
-                                  .state = current;
-                              ToastUtil.showSuccessToast(
-                                context,
-                                '${service.name} removed from your services',
-                              );
-                            } else {
-                              ToastUtil.showErrorToast(
-                                context,
-                                'Service not found in your offerings',
-                              );
-                            }
+                            _showServiceItemPricingSheet(context, ref, service.id, service.name);
                           },
                           child: Container(
+                            width: double.infinity,
                             padding: EdgeInsets.symmetric(
                               horizontal: 3.w,
                               vertical: 1.h,
                             ),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.error.withValues(
+                              color: theme.colorScheme.primary.withValues(
                                 alpha: 0.1,
                               ),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                color: theme.colorScheme.error.withValues(
+                                color: theme.colorScheme.primary.withValues(
                                   alpha: 0.2,
                                 ),
                               ),
                             ),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  LucideIcons.trash2,
-                                  color: theme.colorScheme.error,
+                                  LucideIcons.plus,
+                                  color: theme.colorScheme.primary,
                                   size: 18,
                                 ),
                                 SizedBox(width: 1.w),
                                 Text(
-                                  'Remove',
+                                  'Manage Item Prices',
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.colorScheme.error,
+                                    color: theme.colorScheme.primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -215,6 +263,23 @@ class ManageServicesScreen extends HookConsumerWidget {
           theme: theme,
           availableServices: availableServices,
           offeredIds: offeredIds,
+        );
+      },
+    );
+  }
+
+  void _showServiceItemPricingSheet(BuildContext context, WidgetRef ref, String serviceId, String serviceName) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return ServiceItemPricingSheet(
+          serviceId: serviceId,
+          serviceName: serviceName,
         );
       },
     );

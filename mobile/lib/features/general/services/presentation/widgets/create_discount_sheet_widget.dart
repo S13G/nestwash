@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestcare/features/general/model/discount_model.dart';
 import 'package:nestcare/features/general/services/presentation/widgets/discount_widgets.dart';
+import 'package:nestcare/features/general/services/presentation/widgets/service_item_pricing_sheet.dart';
 import 'package:nestcare/providers/discount_provider.dart';
 import 'package:nestcare/shared/util/toast_util.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -78,11 +79,51 @@ class CreateDiscountSheet extends HookConsumerWidget {
               ),
             ),
           SizedBox(height: 1.h),
-          LabeledDropdown(
-            label: 'Service',
-            value: selectedService.value,
-            items: offeredServices,
-            onChanged: (v) => selectedService.value = v ?? '',
+          Row(
+            children: [
+              Expanded(
+                child: LabeledDropdown(
+                  label: 'Service',
+                  value: selectedService.value,
+                  items: offeredServices,
+                  onChanged: (v) => selectedService.value = v ?? '',
+                ),
+              ),
+              SizedBox(width: 2.w),
+              GestureDetector(
+                onTap: () {
+                  if (selectedService.value.isNotEmpty) {
+                    HapticFeedback.lightImpact();
+                    _showServiceItemPricingSheet(
+                      context,
+                      ref,
+                      selectedService.value,
+                      offeredServices.firstWhere(
+                        (service) => service == selectedService.value,
+                        orElse: () => selectedService.value,
+                      ),
+                    );
+                  } else {
+                    ToastUtil.showErrorToast(
+                      context,
+                      'Please select a service first',
+                    );
+                  }
+                },
+                child: Container(
+                  padding: EdgeInsets.all(2.w),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    LucideIcons.plus,
+                    color: theme.colorScheme.primary,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 1.h),
           ToggleRow(
@@ -280,6 +321,28 @@ class CreateDiscountSheet extends HookConsumerWidget {
           SizedBox(height: 1.h),
         ],
       ),
+    );
+  }
+
+  void _showServiceItemPricingSheet(
+    BuildContext context,
+    WidgetRef ref,
+    String serviceId,
+    String serviceName,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return ServiceItemPricingSheet(
+          serviceId: serviceId,
+          serviceName: serviceName,
+        );
+      },
     );
   }
 
