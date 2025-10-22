@@ -1,0 +1,487 @@
+import os
+from datetime import timedelta
+from pathlib import Path
+
+from celery.schedules import crontab
+from decouple import config
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config("SECRET_KEY")
+
+DEBUG = True
+
+ALLOWED_HOSTS = ["*"]
+
+# Application definition
+DJANGO_APPS = [
+    "jazzmin",
+    "django.contrib.auth",
+    "django.contrib.admin",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+]
+
+LOCAL_APPS = [
+    "apps.common.apps.CommonConfig",
+    "apps.core.apps.CoreConfig",
+]
+
+THIRD_PARTY_APPS = [
+    "csp",
+    "cloudinary_storage",
+    "corsheaders",  # for cors headers
+    "django_extensions",
+    "debug_toolbar",
+    "drf_spectacular",  # for documentation
+    "rest_framework",
+    "rest_framework.authtoken",  # for testing purposes
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+]
+
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "csp.middleware.CSPMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    # middleware to blacklist tokens
+    "apps.common.middleware.BlacklistMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda request: True,  # Always show toolbar
+    "INTERCEPT_REDIRECTS": False,  # Prevent Debug Toolbar from intercepting redirects
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "COERCE_DECIMAL_TO_STRING": False,
+    "EXCEPTION_HANDLER": "nestwash.apps.common.exception_handler.process_exception",  # noqa
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 30,
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "1000/day"},
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+    "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
+}
+
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "accept-language",
+    "access-control-request-headers",
+    "access-control-request-method",
+    "authorization",
+    "content-disposition",
+    "content-encoding",
+    "content-length",
+    "content-type",
+    "cookie",
+    "host",
+    "origin",
+    "referer",
+    "user-agent",
+    "x-forwarded-for",
+    "x-requested-with",
+)
+
+CORS_ALLOW_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOW_CREDENTIALS = True
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "NESTWASH API",
+    "DESCRIPTION": """
+        NESTWASH API
+    """,
+    "VERSION": "1.0.0",
+    "CONTACT": "siliconsynergy@gmail.com",
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "DISABLE_ERRORS_AND_WARNINGS": True,
+    "UPLOADED_FILES_USE_URL": True,
+    "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": True,
+}
+
+AUTH_USER_MODEL = "core.User"
+
+ROOT_URLCONF = "nestwash.urls"
+
+JWT_SECRET_KEY = config("JWT_SECRET_KEY")
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # Adjust as needed
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),  # Adjust as needed
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": JWT_SECRET_KEY,
+    # Custom token claims and authentication settings
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    # Token blacklist settings (if using blacklisting feature)
+    "BLACKLIST_ENABLED": True,
+    "JTI_CLAIM": "jti",
+}
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+
+WSGI_APPLICATION = "nestwash.wsgi.application"
+
+
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
+
+# Password validation
+# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
+
+# Internationalization
+# https://docs.djangoproject.com/en/5.2/topics/i18n/
+
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "UTC"
+
+USE_I18N = True
+
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
+
+STATIC_URL = "static/"
+
+STATICFILES_DIRS = [BASE_DIR / "assets"]  # noqa
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "media/"
+
+MEDIA_ROOT = BASE_DIR / "assets/media"
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# Email settings for SSL(Mainly for development and websocket_test)
+EMAIL_USE_TLS = False
+
+EMAIL_USE_SSL = True
+
+EMAIL_HOST = "smtp.gmail.com"
+
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+
+EMAIL_PORT = 465
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID")
+
+# Jazzmin settings
+JAZZMIN_SETTINGS = {
+    "site_brand": "NESTWASH ADMIN",
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "NESTWASH ADMIN",
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_header": "",
+    # Logo to use for your site, must be present in static files, used for brand on top left
+    "site_logo": "logo.png",
+    # Logo to use for your site, must be present in static files, used for login form logo (defaults to site_logo)
+    "login_logo": "logo.png",
+    # CSS classes that are applied to the logo above
+    "site_logo_classes": "img-circle",
+    # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
+    "site_icon": "logo.png",
+    # Welcome text on the login screen
+    "welcome_sign": "Welcome to the NESTWASH Admin Section",
+    # Copyright on the footer
+    "copyright": "NESTWASH Ltd 2023",
+    # The model admin to search from the search bar, search bar omitted if excluded
+    "search_model": [],
+    # Field name on user model that contains avatar ImageField/URLField/Charfield or a callable that receives the user
+    # "user_avatar": "avatar",
+    #############
+    # User Menu #
+    #############
+    # Additional links to include in the user menu on the top right ("app" url type is not allowed)
+    "usermenu_links": [{"name": " Platform"}, {"model": "auth.user"}],
+    #############
+    # Side Menu #
+    #############
+    # Whether to display the side menu
+    "show_sidebar": True,
+    # Whether to aut expand the menu
+    "navigation_expanded": True,
+    # Hide these apps when generating side menu e.g (auth)
+    "hide_apps": {
+        "authtoken": ["tokenproxy"],
+        "token_blacklist": ["blacklistedtoken", "outstandingtoken"],
+    },
+    # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
+    "order_with_respect_to": ["auth", "", ""],
+    "icons": {
+        "core.group": "fas fa-users",
+        "core.user": "fas fa-universal-access",
+        "core.customerprofile": "fas fa-user",
+        "core.serviceproviderprofile": "fas fa-user",
+        # "core.interest": "fas fa-heart",
+        # "core.animalavatar": "fas fa-paw",
+        # "core.content": "fas fa-link",
+        # "core.reportedcontent": "fas fa-exclamation-triangle",
+        # "core.contentcategory": "fas fa-list",
+        # "core.contentplatform": "fab fa-facebook",
+        # "core.engagementcontent": "fas fa-thumbs-up",
+        # "core.engagementcontentorder": "fab fa-first-order",
+        # "core.engagementcontenttasksubmission": "fas fa-tasks",
+        # "core.blastnotification": "fas fa-bell",
+        # "core.transaction": "fas fa-receipt",
+        # "core.generalnotice": "fas fa-comments",
+    },
+    # Icons that are used when one is not manually specified
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    #############
+    # UI Tweaks #
+    #############
+    # "show_ui_builder": True,
+    "changeform_format": "horizontal_tabs",
+    # override change forms on a per modeladmin basis
+    "changeform_format_overrides": {
+        "auth.user": "collapsible",
+        "auth.group": "vertical_tabs",
+    },
+}
+
+# Jazzmin UI Tweaks
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-warning",
+    "accent": "accent-navy",
+    "navbar": "navbar-warning navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": True,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-light-warning",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "minty",
+    "dark_mode_theme": "darkly",
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-outline-success",
+    },
+}
+
+# Logging configuration
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",  # noqa
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",  # noqa
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",  # Set to DEBUG for more detailed logs
+        },
+        "django.request": {
+            "handlers": ["console"],  # Remove 'file' handler, keep 'console'
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "rest_framework": {
+            "handlers": ["console"],  # Remove 'file' handler, keep 'console'
+            "level": "INFO",
+            "propagate": True,
+        },
+        "apps": {
+            "handlers": ["console"],
+            "level": "DEBUG",  # Set to DEBUG for detailed logs
+            "propagate": False,
+        },
+    },
+}
+
+# Report-only CSP for development or testing purposes (doesn’t block, only reports)  # noqa
+CONTENT_SECURITY_POLICY_REPORT_ONLY = {
+    "EXCLUDE_URL_PREFIXES": ["/excluded-path/"],
+    "DIRECTIVES": {
+        "default-src": ["'self'", "'unsafe-inline'"],
+        "connect-src": [
+            "'self'"
+        ],  # Allow same-origin connections for WebSocket, AJAX, etc.
+        "img-src": [
+            "'self'",
+            "https://res.cloudinary.com",
+            "data:",
+            "cdn.redoc.ly",
+        ],  # Restrict image sources to same-origin
+        "media-src": [
+            "'self'",
+            "https://res.cloudinary.com",
+        ],  # Allow media files from Cloudinary
+        "form-action": ["'self'"],  # Allow forms to submit to same-origin only
+        "frame-ancestors": ["'self'"],  # Only allow embedding within the same-origin
+        "script-src": [
+            "'self'",  # Restrict JavaScript to same-origin
+            "cdn.jsdelivr.net",  # Example for Swagger-hosted scripts
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            "*",
+        ],
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'",  # Swagger uses inline styles
+            "fonts.googleapis.com",
+            "cdn.jsdelivr.net",
+            "cdnjs.cloudflare.com",
+        ],
+        "upgrade-insecure-requests": True,  # Enforce HTTPS for all requests
+        "report-uri": "/csp-report/",  # Reporting endpoint for testing purposes
+    },
+}
+
+# FLUTTERWAVE_SECRET_KEY = config("FLUTTERWAVE_SECRET_KEY")
+# FLUTTERWAVE_VERIFY_HASH = config("FLUTTERWAVE_VERIFY_HASH")
+# FLUTTERWAVE_VERIFY_TRANSACTION_LINK = (
+#     "https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref="
+# )
+# FLUTTERWAVE_INITIATE_TRANSFERS = "https://api.flutterwave.com/v3/transfers"
+# FLUTTERWAVE_RETRY_LINK = FLUTTERWAVE_INITIATE_TRANSFERS
+
+# CALLBACK URLS
+# REFUND_CALLBACK_URL = "https://1636-102-89-85-191.ngrok-free.app/api/v1/nestwash/refund/transaction-callback"
+
+# CELERY_BROKER_URL = "redis://localhost:6379/0"
+# CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+# CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+# CELERY_ENABLED = False
+# CELERY_TIMEZONE = "UTC"
+
+# CELERY_BEAT_SCHEDULE = {
+#     "check_event_status_and_reset": {
+#         "task": "apps.core.tasks.check_event_status_and_reset",
+#         "schedule": crontab(minute="0", hour="0"),  # Runs daily at midnight
+#     },
+#     "end_expired_wagers": {
+#         "task": "apps.event.tasks.end_expired_wagers",
+#         "schedule": crontab(minute="*/1"),  # Runs every minute
+#     },
+# }
