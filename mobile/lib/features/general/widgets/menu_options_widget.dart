@@ -9,7 +9,7 @@ class MenuOptionsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final accountType = 'service_provider';
+    final accountType = 'customer';
 
     return GestureDetector(
       onTap: () {

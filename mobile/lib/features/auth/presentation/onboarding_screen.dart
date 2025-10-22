@@ -142,7 +142,7 @@ class OnboardingScreen extends HookConsumerWidget {
   }
 
   void _navigateToSignup(BuildContext context, String accountType) {
-    context.goNamed('signup', queryParameters: {'accountType': accountType});
+    context.pushNamed('signup', queryParameters: {'accountType': accountType});
   }
 }
 

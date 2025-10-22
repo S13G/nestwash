@@ -228,7 +228,7 @@ class LaundryOrdersScreen extends HookConsumerWidget {
   ) {
     final theme = Theme.of(context);
     // final accountType = ref.read(userProvider)?.accountType;
-    final accountType = 'service_provider';
+    final accountType = 'customer';
 
     return AnimatedContainer(
       duration: Duration(milliseconds: 300 + (index * 100)),

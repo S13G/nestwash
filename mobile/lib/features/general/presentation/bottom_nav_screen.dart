@@ -22,7 +22,7 @@ class BottomNavScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(bottomNavigationProvider);
     // final accountType = ref.read(userProvider)?.accountType;
-    final accountType = 'service_provider';
+    final accountType = 'customer';
 
     final List<Widget> screens;
     if (accountType == "service_provider") {
@@ -60,7 +60,7 @@ class NestCareBottomNavBar extends ConsumerWidget {
     final theme = Theme.of(context);
     final selectedIndex = ref.watch(bottomNavigationProvider);
     // final accountType = ref.read(userProvider)?.accountType;
-    final accountType = 'service_provider';
+    final accountType = 'customer';
 
     final unreadNotifications = ref.watch(allUnreadNotificationsProvider);
     final hasUnreadNotifications = unreadNotifications.isNotEmpty;

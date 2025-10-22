@@ -207,10 +207,14 @@ final _generalRoutes = <GoRoute>[
               return MessageProfileViewScreen(provider: provider);
             },
           ),
-          GoRoute(path: '/profile/customer', name: 'customer_profile_view', builder: (context, state) {
-            // final provider = state.extra as String;
-            return CustomerProfileViewScreen(customerId: "1");
-          }),
+          GoRoute(
+            path: '/profile/customer',
+            name: 'customer_profile_view',
+            builder: (context, state) {
+              // final provider = state.extra as String;
+              return CustomerProfileViewScreen(customerId: "1");
+            },
+          ),
         ],
       ),
     ],

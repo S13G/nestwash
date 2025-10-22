@@ -25,6 +25,7 @@ class SignUpData {
       otp: otp ?? this.otp,
       fullName: fullName ?? this.fullName,
       password: password ?? this.password,
+      accountType: accountType ?? this.accountType,
     );
   }
 }

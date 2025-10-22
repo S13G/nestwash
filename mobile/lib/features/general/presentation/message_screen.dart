@@ -304,7 +304,7 @@ class MessageScreen extends HookConsumerWidget {
     String providerName,
     ServiceProvider serviceProvider,
   ) {
-    final accountType = 'service_provider';
+    final accountType = 'customer';
 
     return SingleChildScrollView(
       child: Container(

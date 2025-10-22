@@ -10,7 +10,7 @@ class ProfileCardWidget extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final accountType = 'service_provider';
+    final accountType = 'customer';
     final provider = ref.read(allServiceProviders).last;
 
     return GestureDetector(
